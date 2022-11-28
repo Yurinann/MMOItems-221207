@@ -14,7 +14,6 @@ public class MMOItemsBukkit {
      * all the listeners required for MMOItems to run
      */
     public MMOItemsBukkit(MMOItems plugin) {
-
         Bukkit.getPluginManager().registerEvents(new ItemUse(), plugin);
         Bukkit.getPluginManager().registerEvents(new ItemListener(), plugin);
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), plugin);

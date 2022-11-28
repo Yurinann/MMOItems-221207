@@ -1,5 +1,6 @@
 package net.Indyuce.mmoitems;
 
+import io.lumine.mythic.lib.adventure.platform.bukkit.BukkitAudiences;
 import io.lumine.mythic.lib.api.item.NBTItem;
 import io.lumine.mythic.lib.api.util.ui.FriendlyFeedbackMessage;
 import io.lumine.mythic.lib.api.util.ui.FriendlyFeedbackProvider;
@@ -95,6 +96,8 @@ public class MMOItems extends JavaPlugin {
     private VaultSupport vaultSupport;
     private RPGHandler rpgPlugin;
 
+    private static BukkitAudiences ADVENTURE;
+
     /**
      * Startup issues usually prevent the plugin from loading and just
      * call {@link #onDisable()} directly afterwards which prints out
@@ -140,8 +143,13 @@ public class MMOItems extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        // Metrics
         new SpigotPlugin(39267, this).checkForUpdate();
         new MMOItemsMetrics();
+
+        // Adventure
+        ADVENTURE = BukkitAudiences.create(this);
+
         MMOItemUIFilter.register();
 
         RecipeBrowserGUI.registerNativeRecipes();
@@ -178,7 +186,7 @@ public class MMOItems extends JavaPlugin {
         dropTableManager = new DropTableManager();
         worldGenManager = new WorldGenManager();
         blockManager = new BlockManager();
-       statManager.reload(false);
+        statManager.reload(false);
 
 
         PluginUtils.hookDependencyIfPresent("Vault", u -> vaultSupport = new VaultSupport());
@@ -264,10 +272,13 @@ public class MMOItems extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
         // Support for early plugin disabling
         if (!hasLoadedSuccessfully)
             return;
+
+        // Adventure
+        ADVENTURE.close();
+        ADVENTURE = null;
 
         // Save player data
         PlayerData.getLoaded().forEach(data -> data.save(false));
@@ -777,4 +788,10 @@ public class MMOItems extends JavaPlugin {
         return plugin.getServer().getConsoleSender();
     }
     //endregion
+
+    public @NotNull BukkitAudiences adventure() {
+        if (ADVENTURE == null)
+            throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
+        return ADVENTURE;
+    }
 }

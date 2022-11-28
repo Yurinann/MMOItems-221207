@@ -1,5 +1,9 @@
 package net.Indyuce.mmoitems.api.player;
 
+import io.lumine.mythic.lib.adventure.audience.Audience;
+import io.lumine.mythic.lib.adventure.text.Component;
+import io.lumine.mythic.lib.adventure.text.ComponentLike;
+import io.lumine.mythic.lib.adventure.title.Title;
 import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.util.message.Message;
@@ -18,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class RPGPlayer {
     private final PlayerData playerData;
     private final Player player;
+    private final Audience audience;
 
     @Deprecated
     public RPGPlayer(Player player) {
@@ -35,6 +40,7 @@ public abstract class RPGPlayer {
     public RPGPlayer(@NotNull PlayerData playerData) {
         this.player = playerData.getPlayer();
         this.playerData = playerData;
+        this.audience = MMOItems.ADVENTURE.player(player);
     }
 
     public PlayerData getPlayerData() {
@@ -123,5 +129,30 @@ public abstract class RPGPlayer {
 
         //REQ//MMOItems. Log(" \u00a7a> Success use");
         return true;
+    }
+
+    /* Adventure */
+    public void message(final @NotNull ComponentLike message) {
+        audience.sendMessage(message);
+    }
+
+    public void message(final @NotNull Component message) {
+        audience.sendMessage(message);
+    }
+
+    public void actionBar(final @NotNull ComponentLike message) {
+        audience.sendActionBar(message);
+    }
+
+    public void actionBar(final @NotNull Component message) {
+        audience.sendActionBar(message);
+    }
+
+    public void title(final @NotNull Component title, final @NotNull Component subtitle) {
+        audience.showTitle(Title.title(title, subtitle));
+    }
+
+    public void title(final @NotNull Component title, final @NotNull Component subtitle, final @NotNull Title.Times times) {
+        audience.showTitle(Title.title(title, subtitle, times));
     }
 }

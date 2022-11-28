@@ -96,7 +96,7 @@ public class MMOItems extends JavaPlugin {
     private VaultSupport vaultSupport;
     private RPGHandler rpgPlugin;
 
-    private static BukkitAudiences ADVENTURE;
+    public static BukkitAudiences ADVENTURE;
 
     /**
      * Startup issues usually prevent the plugin from loading and just

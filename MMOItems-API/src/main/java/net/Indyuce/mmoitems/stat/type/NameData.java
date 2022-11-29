@@ -1,10 +1,8 @@
 package net.Indyuce.mmoitems.stat.type;
 
 import io.lumine.mythic.lib.api.item.ItemTag;
-import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.stat.data.StringData;
 import net.Indyuce.mmoitems.stat.data.type.Mergeable;
-import net.Indyuce.mmoitems.stat.data.type.StatData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

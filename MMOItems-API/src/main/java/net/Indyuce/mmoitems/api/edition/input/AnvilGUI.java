@@ -1,5 +1,8 @@
 package net.Indyuce.mmoitems.api.edition.input;
 
+import io.lumine.mythic.lib.MythicLib;
+import net.Indyuce.mmoitems.MMOItems;
+import net.Indyuce.mmoitems.api.edition.Edition;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -10,10 +13,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.edition.Edition;
-import io.lumine.mythic.lib.MythicLib;
 
 public class AnvilGUI extends PlayerInputHandler implements Listener {
 	private final int containerId;

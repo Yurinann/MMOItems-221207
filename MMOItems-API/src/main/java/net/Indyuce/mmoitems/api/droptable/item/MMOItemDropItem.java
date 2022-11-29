@@ -1,13 +1,12 @@
 package net.Indyuce.mmoitems.api.droptable.item;
 
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
+import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.util.RandomAmount;
-import io.lumine.mythic.lib.api.item.NBTItem;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 public class MMOItemDropItem extends DropItem {
 	private final Type type;

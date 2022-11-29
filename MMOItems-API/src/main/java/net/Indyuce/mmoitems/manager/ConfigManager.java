@@ -49,7 +49,6 @@ public class ConfigManager implements Reloadable {
     private static final String[] languages = {"french", "chinese", "spanish", "russian", "polish"};
 
     public ConfigManager() {
-
         mkdir("layouts");
         mkdir("item");
         mkdir("language");

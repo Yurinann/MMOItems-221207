@@ -1,14 +1,12 @@
 package net.Indyuce.mmoitems.stat.data;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.commons.lang.Validate;
-
 import net.Indyuce.mmoitems.stat.data.type.Mergeable;
 import net.Indyuce.mmoitems.stat.data.type.StatData;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class PotionEffectListData implements StatData, Mergeable<PotionEffectListData> {
 	private final List<PotionEffectData> effects = new ArrayList<>();

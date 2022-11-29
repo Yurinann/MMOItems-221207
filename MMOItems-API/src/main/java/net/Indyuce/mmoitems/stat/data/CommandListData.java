@@ -1,14 +1,14 @@
 package net.Indyuce.mmoitems.stat.data;
 
-import java.util.*;
-
-import org.apache.commons.lang.Validate;
-
 import net.Indyuce.mmoitems.api.item.build.MMOItemBuilder;
 import net.Indyuce.mmoitems.stat.data.random.RandomStatData;
 import net.Indyuce.mmoitems.stat.data.type.Mergeable;
 import net.Indyuce.mmoitems.stat.data.type.StatData;
+import org.apache.commons.lang.Validate;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommandListData implements StatData, Mergeable, RandomStatData<CommandListData> {
 	@NotNull private final List<CommandData> commands;

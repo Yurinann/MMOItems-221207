@@ -1,7 +1,6 @@
 package net.Indyuce.mmoitems.api.event.item;
 
 import net.Indyuce.mmoitems.api.event.PlayerDataEvent;
-import net.Indyuce.mmoitems.api.interaction.UseItem;
 import net.Indyuce.mmoitems.api.interaction.weapon.Weapon;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import org.bukkit.entity.LivingEntity;

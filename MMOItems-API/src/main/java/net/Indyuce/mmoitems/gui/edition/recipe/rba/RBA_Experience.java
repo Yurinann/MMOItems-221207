@@ -1,10 +1,10 @@
 package net.Indyuce.mmoitems.gui.edition.recipe.rba;
 
+import io.lumine.mythic.lib.api.util.ItemFactory;
 import io.lumine.mythic.lib.api.util.ui.QuickNumberRange;
 import io.lumine.mythic.lib.api.util.ui.SilentNumbers;
-import io.lumine.mythic.lib.api.util.ItemFactory;
-import net.Indyuce.mmoitems.gui.edition.recipe.rba.type.RBA_DoubleButton;
 import net.Indyuce.mmoitems.gui.edition.recipe.gui.RecipeMakerGUI;
+import net.Indyuce.mmoitems.gui.edition.recipe.rba.type.RBA_DoubleButton;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;

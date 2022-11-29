@@ -90,24 +90,15 @@ public class MMOUtils {
         if (nbt.hasTag("MMOITEMS_PICKAXE_POWER"))
             return nbt.getInteger("MMOITEMS_PICKAXE_POWER");
 
-        switch (item.getType().name()) {
-            case "WOODEN_PICKAXE":
-            case "WOOD_PICKAXE":
-                return 5;
-            case "STONE_PICKAXE":
-                return 10;
-            case "GOLDEN_PICKAXE":
-            case "GOLD_PICKAXE":
-                return 15;
-            case "IRON_PICKAXE":
-                return 20;
-            case "DIAMOND_PICKAXE":
-                return 25;
-            case "NETHERITE_PICKAXE":
-                return 30;
-            default:
-                return 0;
-        }
+        return switch (item.getType().name()) {
+            case "WOODEN_PICKAXE", "WOOD_PICKAXE" -> 5;
+            case "STONE_PICKAXE" -> 10;
+            case "GOLDEN_PICKAXE", "GOLD_PICKAXE" -> 15;
+            case "IRON_PICKAXE" -> 20;
+            case "DIAMOND_PICKAXE" -> 25;
+            case "NETHERITE_PICKAXE" -> 30;
+            default -> 0;
+        };
     }
 
     /**

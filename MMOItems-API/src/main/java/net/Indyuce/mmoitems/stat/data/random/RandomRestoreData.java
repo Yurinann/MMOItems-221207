@@ -1,12 +1,10 @@
 package net.Indyuce.mmoitems.stat.data.random;
 
-import org.apache.commons.lang.Validate;
-import org.bukkit.configuration.ConfigurationSection;
-
 import net.Indyuce.mmoitems.api.item.build.MMOItemBuilder;
 import net.Indyuce.mmoitems.api.util.NumericStatFormula;
 import net.Indyuce.mmoitems.stat.data.RestoreData;
-import net.Indyuce.mmoitems.stat.data.type.StatData;
+import org.apache.commons.lang.Validate;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class RandomRestoreData implements RandomStatData<RestoreData> {
 	private final NumericStatFormula health, food, saturation;

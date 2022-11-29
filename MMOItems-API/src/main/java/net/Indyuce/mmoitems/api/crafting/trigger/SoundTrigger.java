@@ -1,7 +1,7 @@
 package net.Indyuce.mmoitems.api.crafting.trigger;
 
-import net.Indyuce.mmoitems.api.player.PlayerData;
 import io.lumine.mythic.lib.api.MMOLineConfig;
+import net.Indyuce.mmoitems.api.player.PlayerData;
 import org.bukkit.Sound;
 
 public class SoundTrigger extends Trigger {

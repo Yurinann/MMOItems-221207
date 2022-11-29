@@ -1,8 +1,13 @@
 package net.Indyuce.mmoitems.gui.edition.recipe;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import io.lumine.mythic.lib.api.util.AltChar;
+import net.Indyuce.mmoitems.ItemStats;
+import net.Indyuce.mmoitems.MMOItems;
+import net.Indyuce.mmoitems.api.edition.StatEdition;
+import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
+import net.Indyuce.mmoitems.gui.edition.EditionInventory;
+import net.Indyuce.mmoitems.gui.edition.recipe.registry.burninglegacy.CraftingType;
+import net.Indyuce.mmoitems.util.MMOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -13,14 +18,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import net.Indyuce.mmoitems.ItemStats;
-import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.util.MMOUtils;
-import net.Indyuce.mmoitems.api.edition.StatEdition;
-import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
-import net.Indyuce.mmoitems.gui.edition.recipe.registry.burninglegacy.CraftingType;
-import net.Indyuce.mmoitems.gui.edition.EditionInventory;
-import io.lumine.mythic.lib.api.util.AltChar;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RecipeListEdition extends EditionInventory {
 	public RecipeListEdition(Player player, MMOItemTemplate template) {

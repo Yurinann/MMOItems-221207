@@ -1,7 +1,6 @@
 package net.Indyuce.mmoitems.comp.enchants;
 
 import net.Indyuce.mmoitems.stat.type.DisableStat;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
 public class DisableAdvancedEnchantments extends DisableStat {

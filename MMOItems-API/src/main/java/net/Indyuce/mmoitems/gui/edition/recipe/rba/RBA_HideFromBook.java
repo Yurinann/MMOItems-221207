@@ -1,11 +1,11 @@
 package net.Indyuce.mmoitems.gui.edition.recipe.rba;
 
 import io.lumine.mythic.lib.api.util.AltChar;
-import io.lumine.mythic.lib.api.util.ui.SilentNumbers;
 import io.lumine.mythic.lib.api.util.ItemFactory;
+import io.lumine.mythic.lib.api.util.ui.SilentNumbers;
 import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.gui.edition.recipe.rba.type.RBA_BooleanButton;
 import net.Indyuce.mmoitems.gui.edition.recipe.gui.RecipeMakerGUI;
+import net.Indyuce.mmoitems.gui.edition.recipe.rba.type.RBA_BooleanButton;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;

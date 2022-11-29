@@ -1,13 +1,6 @@
 package net.Indyuce.mmoitems.stat;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
-
-import net.Indyuce.mmoitems.util.MMOUtils;
+import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.event.item.IdentifyItemEvent;
 import net.Indyuce.mmoitems.api.interaction.Consumable;
@@ -16,7 +9,13 @@ import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.util.message.Message;
 import net.Indyuce.mmoitems.stat.type.BooleanStat;
 import net.Indyuce.mmoitems.stat.type.ConsumableItemInteraction;
-import io.lumine.mythic.lib.api.item.NBTItem;
+import net.Indyuce.mmoitems.util.MMOUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class CanIdentify extends BooleanStat implements ConsumableItemInteraction {

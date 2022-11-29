@@ -1,14 +1,14 @@
 package net.Indyuce.mmoitems.api.item.template.explorer;
 
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Random;
-import java.util.function.Predicate;
-
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
 import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
 import net.Indyuce.mmoitems.api.player.RPGPlayer;
+
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Random;
+import java.util.function.Predicate;
 
 /**
  * Used to explore currently registered templates and randomly pick a template

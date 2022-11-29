@@ -1,8 +1,8 @@
 package net.Indyuce.mmoitems.gui.edition.recipe.rba;
 
 import io.lumine.mythic.lib.api.util.AltChar;
-import io.lumine.mythic.lib.api.util.ui.SilentNumbers;
 import io.lumine.mythic.lib.api.util.ItemFactory;
+import io.lumine.mythic.lib.api.util.ui.SilentNumbers;
 import net.Indyuce.mmoitems.gui.edition.recipe.gui.RecipeMakerGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

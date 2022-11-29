@@ -1,8 +1,8 @@
 package net.Indyuce.mmoitems.api.crafting.trigger;
 
-import net.Indyuce.mmoitems.api.player.PlayerData;
 import io.lumine.mythic.lib.api.MMOLineConfig;
 import io.lumine.mythic.lib.api.util.SmartGive;
+import net.Indyuce.mmoitems.api.player.PlayerData;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

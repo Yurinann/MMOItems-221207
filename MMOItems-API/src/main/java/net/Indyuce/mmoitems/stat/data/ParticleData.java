@@ -1,17 +1,6 @@
 package net.Indyuce.mmoitems.stat.data;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang.Validate;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.configuration.ConfigurationSection;
-
 import com.google.gson.JsonObject;
-
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.item.build.MMOItemBuilder;
 import net.Indyuce.mmoitems.api.player.PlayerData;
@@ -19,6 +8,15 @@ import net.Indyuce.mmoitems.particle.api.ParticleRunnable;
 import net.Indyuce.mmoitems.particle.api.ParticleType;
 import net.Indyuce.mmoitems.stat.data.random.RandomStatData;
 import net.Indyuce.mmoitems.stat.data.type.StatData;
+import org.apache.commons.lang.Validate;
+import org.bukkit.Color;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.configuration.ConfigurationSection;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class ParticleData implements StatData, RandomStatData<ParticleData> {
 	private final ParticleType type;

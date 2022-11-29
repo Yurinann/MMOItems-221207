@@ -1,10 +1,9 @@
 package net.Indyuce.mmoitems.api.crafting;
 
+import net.Indyuce.mmoitems.api.item.util.ConfigItem;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
-
-import net.Indyuce.mmoitems.api.item.util.ConfigItem;
 
 public class StationItemOptions {
 	private final ItemStack fill, noRecipe, noQueueItem;

@@ -1,12 +1,12 @@
 package net.Indyuce.mmoitems.stat.data;
 
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import net.Indyuce.mmoitems.stat.data.type.Mergeable;
 import net.Indyuce.mmoitems.stat.data.type.StatData;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class AbilityListData implements StatData, Mergeable<AbilityListData> {
 	@NotNull private final Set<AbilityData> abilities = new LinkedHashSet<>();

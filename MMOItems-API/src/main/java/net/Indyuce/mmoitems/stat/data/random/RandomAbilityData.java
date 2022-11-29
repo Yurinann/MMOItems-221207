@@ -1,19 +1,18 @@
 package net.Indyuce.mmoitems.stat.data.random;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
-import net.Indyuce.mmoitems.util.MMOUtils;
-import net.Indyuce.mmoitems.skill.RegisteredSkill;
-import org.apache.commons.lang.Validate;
-import org.bukkit.configuration.ConfigurationSection;
-
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.item.build.MMOItemBuilder;
 import net.Indyuce.mmoitems.api.util.NumericStatFormula;
+import net.Indyuce.mmoitems.skill.RegisteredSkill;
 import net.Indyuce.mmoitems.stat.data.AbilityData;
+import net.Indyuce.mmoitems.util.MMOUtils;
+import org.apache.commons.lang.Validate;
+import org.bukkit.configuration.ConfigurationSection;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class RandomAbilityData {
 	private final RegisteredSkill ability;

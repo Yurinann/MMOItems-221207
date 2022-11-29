@@ -1,12 +1,10 @@
 package net.Indyuce.mmoitems.stat.block;
 
+import io.lumine.mythic.lib.api.item.ItemTag;
 import net.Indyuce.mmoitems.api.item.build.ItemStackBuilder;
 import net.Indyuce.mmoitems.api.util.NumericStatFormula;
 import net.Indyuce.mmoitems.stat.data.DoubleData;
-import net.Indyuce.mmoitems.stat.data.random.RandomStatData;
-import net.Indyuce.mmoitems.stat.data.type.StatData;
 import net.Indyuce.mmoitems.stat.type.DoubleStat;
-import io.lumine.mythic.lib.api.item.ItemTag;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 

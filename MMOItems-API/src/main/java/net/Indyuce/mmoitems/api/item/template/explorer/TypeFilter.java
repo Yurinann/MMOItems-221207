@@ -1,9 +1,9 @@
 package net.Indyuce.mmoitems.api.item.template.explorer;
 
-import java.util.function.Predicate;
-
 import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
+
+import java.util.function.Predicate;
 
 /**
  * Filters items with a specific type

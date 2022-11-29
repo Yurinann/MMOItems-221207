@@ -1,8 +1,7 @@
 package net.Indyuce.mmoitems.api.edition.input;
 
-import org.bukkit.entity.Player;
-
 import net.Indyuce.mmoitems.api.edition.Edition;
+import org.bukkit.entity.Player;
 
 public abstract class PlayerInputHandler {
 

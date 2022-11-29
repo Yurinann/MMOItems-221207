@@ -1,18 +1,17 @@
 package net.Indyuce.mmoitems.api.item.template;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.logging.Level;
-
-import org.apache.commons.lang.Validate;
-import org.bukkit.configuration.ConfigurationSection;
-
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.item.template.NameModifier.ModifierType;
 import net.Indyuce.mmoitems.manager.TemplateManager;
 import net.Indyuce.mmoitems.stat.data.random.RandomStatData;
 import net.Indyuce.mmoitems.stat.type.ItemStat;
+import org.apache.commons.lang.Validate;
+import org.bukkit.configuration.ConfigurationSection;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.logging.Level;
 
 public class TemplateModifier {
 

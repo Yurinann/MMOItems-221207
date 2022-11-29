@@ -1,10 +1,9 @@
 package net.Indyuce.mmoitems.stat.data.random;
 
-import java.util.Random;
-
 import net.Indyuce.mmoitems.api.item.build.MMOItemBuilder;
 import net.Indyuce.mmoitems.stat.data.BooleanData;
-import net.Indyuce.mmoitems.stat.data.type.StatData;
+
+import java.util.Random;
 
 public class RandomBooleanData implements RandomStatData<BooleanData> {
 	private final double chance;

@@ -16,10 +16,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
 /**
  * mmoitems
@@ -32,20 +32,16 @@ public class AdventureUtils {
     private static final MiniMessage MINI_MESSAGE;
 
     static {
-        Map<Character, String> LEGACY_COLORS = new HashMap<>(Map.of('0', "black", '1', "dark_blue", '2', "dark_green", '3', "dark_aqua", '4', "dark_red", '5', "dark_purple", '6', "gold", '7', "gray", '8', "dark_gray", '9', "blue"));
-        LEGACY_COLORS.putAll(Map.of('a', "green", 'b', "aqua", 'c', "red", 'd', "light_purple", 'e', "yellow", 'f', "white"));
-        LEGACY_COLORS.putAll(Map.of('k', "obfuscated", 'l', "bold", 'm', "strikethrough", 'n', "underline", 'o', "italic", 'r', "reset"));
         final UnaryOperator<String> LEGACY_TRANSLATOR = s -> {
-            for (Map.Entry<Character, String> entry : LEGACY_COLORS.entrySet())
-                s = s.replace("&%c".formatted(entry.getKey()), "<%s>".formatted(entry.getValue()))
-                        .replace("%c%c".formatted(ChatColor.COLOR_CHAR, entry.getKey()), "<%s>".formatted(entry.getValue()));
+            for (ChatColor color : ChatColor.values())
+                s = s.replace("&%c".formatted(color.getChar()), "<%s>".formatted(color.name().toLowerCase()))
+                        .replace("%c%c".formatted(ChatColor.COLOR_CHAR, color.getChar()), "<%s>".formatted(color.name().toLowerCase()));
             return s;
         };
 
         final BiFunction<ArgumentQueue, Context, Tag> MATH_TAG = (argumentQueue, context) -> {
             final String expression = argumentQueue.popOr("The <math> tag requires exactly one argument, the formula to apply.").value();
             final String result = MythicLib.plugin.getMMOConfig().decimals.format(new DoubleEvaluator().evaluate(expression));
-
             return Tag.inserting(Component.text(result));
         };
 
@@ -88,6 +84,10 @@ public class AdventureUtils {
      */
     public static @NotNull Component miniMessage(@NotNull String string, TagResolver... resolvers) {
         return MINI_MESSAGE.deserialize(string, resolvers);
+    }
+
+    public static @NotNull List<Component> miniMessage(@NotNull List<String> strings) {
+        return strings.stream().map(AdventureUtils::miniMessage).collect(Collectors.toList());
     }
 
     public static @NotNull Collection<Component> miniMessage(@NotNull Collection<String> strings) {

@@ -1,9 +1,8 @@
 package net.Indyuce.mmoitems.api.droptable.item;
 
-import org.bukkit.inventory.ItemStack;
-
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.player.PlayerData;
+import org.bukkit.inventory.ItemStack;
 
 public class BlockDropItem extends DropItem {
 	private final int blockId;

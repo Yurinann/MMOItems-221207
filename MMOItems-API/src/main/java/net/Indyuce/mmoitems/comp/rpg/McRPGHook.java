@@ -1,10 +1,9 @@
 package net.Indyuce.mmoitems.comp.rpg;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.player.RPGPlayer;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import us.eunoians.mcrpg.api.events.mcrpg.McRPGPlayerLevelChangeEvent;
 import us.eunoians.mcrpg.players.PlayerManager;
 

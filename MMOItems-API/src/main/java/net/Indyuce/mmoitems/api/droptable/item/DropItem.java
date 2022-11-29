@@ -1,12 +1,10 @@
 package net.Indyuce.mmoitems.api.droptable.item;
 
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
+import net.Indyuce.mmoitems.api.player.PlayerData;
 import org.bukkit.inventory.ItemStack;
 
-import net.Indyuce.mmoitems.api.player.PlayerData;
+import javax.annotation.Nullable;
+import java.util.Random;
 
 public abstract class DropItem {
 	private final double drop;

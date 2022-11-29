@@ -1,11 +1,11 @@
 package net.Indyuce.mmoitems.api;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.commons.lang.Validate;
 import org.bukkit.command.CommandSender;
 import org.bukkit.util.Consumer;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class PluginUpdate {
 	private final int id;

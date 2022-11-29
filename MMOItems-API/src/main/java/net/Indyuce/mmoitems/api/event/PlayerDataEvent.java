@@ -1,9 +1,8 @@
 package net.Indyuce.mmoitems.api.event;
 
+import net.Indyuce.mmoitems.api.player.PlayerData;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.player.PlayerEvent;
-
-import net.Indyuce.mmoitems.api.player.PlayerData;
 
 public abstract class PlayerDataEvent extends PlayerEvent implements Cancellable {
 	private final PlayerData playerData;

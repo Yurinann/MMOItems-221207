@@ -1,12 +1,10 @@
 package net.Indyuce.mmoitems.stat.data;
 
-import java.util.UUID;
-
+import com.google.gson.JsonObject;
+import net.Indyuce.mmoitems.stat.data.type.StatData;
 import org.bukkit.entity.Player;
 
-import com.google.gson.JsonObject;
-
-import net.Indyuce.mmoitems.stat.data.type.StatData;
+import java.util.UUID;
 
 public class SoulboundData implements StatData {
 	private final UUID uuid;

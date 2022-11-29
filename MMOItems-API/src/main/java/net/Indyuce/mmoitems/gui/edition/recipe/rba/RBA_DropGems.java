@@ -1,9 +1,9 @@
 package net.Indyuce.mmoitems.gui.edition.recipe.rba;
 
-import io.lumine.mythic.lib.api.util.ui.SilentNumbers;
 import io.lumine.mythic.lib.api.util.ItemFactory;
-import net.Indyuce.mmoitems.gui.edition.recipe.rba.type.RBA_BooleanButton;
+import io.lumine.mythic.lib.api.util.ui.SilentNumbers;
 import net.Indyuce.mmoitems.gui.edition.recipe.gui.RecipeMakerGUI;
+import net.Indyuce.mmoitems.gui.edition.recipe.rba.type.RBA_BooleanButton;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;

@@ -1,15 +1,14 @@
 package net.Indyuce.mmoitems.comp.eco;
 
-import java.util.logging.Level;
-
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.RegisteredServiceProvider;
-
+import io.lumine.mythic.lib.api.util.AltChar;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.crafting.ConditionalDisplay;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
-import io.lumine.mythic.lib.api.util.AltChar;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.RegisteredServiceProvider;
+
+import java.util.logging.Level;
 
 public class VaultSupport {
 	private final Economy economy;

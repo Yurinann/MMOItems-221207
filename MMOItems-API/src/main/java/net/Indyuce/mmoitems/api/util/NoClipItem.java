@@ -1,9 +1,10 @@
 package net.Indyuce.mmoitems.api.util;
 
-import java.lang.reflect.Field;
-import java.util.Random;
-import java.util.logging.Level;
-
+import com.mojang.authlib.GameProfile;
+import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.item.ItemTag;
+import io.lumine.mythic.lib.api.item.NBTItem;
+import net.Indyuce.mmoitems.MMOItems;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.enchantments.Enchantment;
@@ -20,12 +21,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import com.mojang.authlib.GameProfile;
-
-import net.Indyuce.mmoitems.MMOItems;
-import io.lumine.mythic.lib.MythicLib;
-import io.lumine.mythic.lib.api.item.ItemTag;
-import io.lumine.mythic.lib.api.item.NBTItem;
+import java.lang.reflect.Field;
+import java.util.Random;
+import java.util.logging.Level;
 
 public class NoClipItem implements Listener {
 	private final Item item;

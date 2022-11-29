@@ -1,11 +1,10 @@
 package net.Indyuce.mmoitems.stat.data;
 
-import org.apache.commons.lang.Validate;
-import org.bukkit.Material;
-
 import net.Indyuce.mmoitems.api.item.build.MMOItemBuilder;
 import net.Indyuce.mmoitems.stat.data.random.RandomStatData;
 import net.Indyuce.mmoitems.stat.data.type.StatData;
+import org.apache.commons.lang.Validate;
+import org.bukkit.Material;
 
 public class MaterialData implements StatData, RandomStatData<MaterialData> {
 	private Material material;

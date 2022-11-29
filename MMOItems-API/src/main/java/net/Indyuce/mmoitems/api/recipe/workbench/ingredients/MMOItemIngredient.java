@@ -1,11 +1,10 @@
 package net.Indyuce.mmoitems.api.recipe.workbench.ingredients;
 
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.RecipeChoice;
-
+import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.Type;
-import io.lumine.mythic.lib.api.item.NBTItem;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
 
 public class MMOItemIngredient extends WorkbenchIngredient {
 	private final Type type;

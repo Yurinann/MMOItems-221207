@@ -1,7 +1,7 @@
 package net.Indyuce.mmoitems.stat;
 
-import net.Indyuce.mmoitems.stat.type.AttackWeaponStat;
 import io.lumine.mythic.lib.version.VersionMaterial;
+import net.Indyuce.mmoitems.stat.type.AttackWeaponStat;
 import org.bukkit.attribute.Attribute;
 
 public class AttackSpeed extends AttackWeaponStat {

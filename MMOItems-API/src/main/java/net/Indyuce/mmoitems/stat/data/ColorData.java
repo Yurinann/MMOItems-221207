@@ -1,11 +1,10 @@
 package net.Indyuce.mmoitems.stat.data;
 
-import org.apache.commons.lang.Validate;
-import org.bukkit.Color;
-
 import net.Indyuce.mmoitems.api.item.build.MMOItemBuilder;
 import net.Indyuce.mmoitems.stat.data.random.RandomStatData;
 import net.Indyuce.mmoitems.stat.data.type.StatData;
+import org.apache.commons.lang.Validate;
+import org.bukkit.Color;
 
 public class ColorData implements StatData, RandomStatData<ColorData> {
 	private final int red, green, blue;

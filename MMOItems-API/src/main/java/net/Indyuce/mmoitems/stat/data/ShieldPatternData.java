@@ -1,15 +1,14 @@
 package net.Indyuce.mmoitems.stat.data;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.bukkit.DyeColor;
-import org.bukkit.block.banner.Pattern;
-
 import net.Indyuce.mmoitems.api.item.build.MMOItemBuilder;
 import net.Indyuce.mmoitems.stat.data.random.RandomStatData;
 import net.Indyuce.mmoitems.stat.data.type.StatData;
+import org.bukkit.DyeColor;
+import org.bukkit.block.banner.Pattern;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ShieldPatternData implements StatData, RandomStatData<ShieldPatternData> {
 	private final DyeColor base;

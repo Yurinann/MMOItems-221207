@@ -1,21 +1,17 @@
 package net.Indyuce.mmoitems.stat.data;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import io.lumine.mythic.lib.api.util.ui.SilentNumbers;
-import org.apache.commons.lang.Validate;
-
 import com.google.gson.JsonArray;
-
+import io.lumine.mythic.lib.api.util.ui.SilentNumbers;
 import net.Indyuce.mmoitems.api.item.build.MMOItemBuilder;
 import net.Indyuce.mmoitems.stat.data.random.RandomStatData;
 import net.Indyuce.mmoitems.stat.data.type.Mergeable;
 import net.Indyuce.mmoitems.stat.data.type.StatData;
-import org.bouncycastle.util.StringList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class StringListData implements StatData, RandomStatData<StringListData>, Mergeable<StringListData> {
 	@NotNull private List<String> list;

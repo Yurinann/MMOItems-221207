@@ -1,8 +1,6 @@
 package net.Indyuce.mmoitems.comp.mmocore.load;
 
-import org.apache.commons.lang.Validate;
-import org.bukkit.inventory.ItemStack;
-
+import io.lumine.mythic.lib.api.MMOLineConfig;
 import net.Indyuce.mmocore.loot.droptable.dropitem.DropItem;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.ItemTier;
@@ -11,7 +9,8 @@ import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
 import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
 import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate.TemplateOption;
 import net.Indyuce.mmoitems.api.player.RPGPlayer;
-import io.lumine.mythic.lib.api.MMOLineConfig;
+import org.apache.commons.lang.Validate;
+import org.bukkit.inventory.ItemStack;
 
 public abstract class ItemGenerationDropItem extends DropItem {
 	protected final int level;

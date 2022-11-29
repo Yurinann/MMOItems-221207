@@ -1,14 +1,13 @@
 package net.Indyuce.mmoitems.api.edition;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-
+import io.lumine.mythic.lib.MythicLib;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.edition.input.AnvilGUI;
 import net.Indyuce.mmoitems.api.edition.input.ChatEdition;
 import net.Indyuce.mmoitems.gui.ItemBrowser;
 import net.Indyuce.mmoitems.gui.PluginInventory;
-import io.lumine.mythic.lib.MythicLib;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 
 public class NewItemEdition implements Edition {
 	private final ItemBrowser inv;

@@ -1,9 +1,8 @@
 package net.Indyuce.mmoitems.stat;
 
-import org.bukkit.Material;
-
 import net.Indyuce.mmoitems.stat.type.DoubleStat;
 import net.Indyuce.mmoitems.stat.type.GemStoneStat;
+import org.bukkit.Material;
 
 public class SuccessRate extends DoubleStat implements GemStoneStat {
 

@@ -1,11 +1,9 @@
 package net.Indyuce.mmoitems.comp;
 
+import com.gmail.nossr50.events.skills.repair.McMMOPlayerRepairCheckEvent;
+import io.lumine.mythic.lib.api.item.NBTItem;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
-import com.gmail.nossr50.events.skills.repair.McMMOPlayerRepairCheckEvent;
-
-import io.lumine.mythic.lib.api.item.NBTItem;
 
 /**
  * The McMMOHook class is only instantiated if McMMO is being used by MMOItems

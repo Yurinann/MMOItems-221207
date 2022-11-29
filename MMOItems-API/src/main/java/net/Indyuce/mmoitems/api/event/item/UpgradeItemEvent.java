@@ -1,12 +1,11 @@
 package net.Indyuce.mmoitems.api.event.item;
 
-import org.bukkit.event.HandlerList;
-
 import net.Indyuce.mmoitems.api.event.PlayerDataEvent;
 import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
 import net.Indyuce.mmoitems.api.item.mmoitem.VolatileMMOItem;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.stat.data.UpgradeData;
+import org.bukkit.event.HandlerList;
 
 public class UpgradeItemEvent extends PlayerDataEvent {
 	private static final HandlerList handlers = new HandlerList();

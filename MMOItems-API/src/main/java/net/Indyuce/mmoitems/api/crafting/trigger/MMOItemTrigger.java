@@ -1,15 +1,14 @@
 package net.Indyuce.mmoitems.api.crafting.trigger;
 
-import org.apache.commons.lang.Validate;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
+import io.lumine.mythic.lib.api.MMOLineConfig;
+import io.lumine.mythic.lib.api.util.SmartGive;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
 import net.Indyuce.mmoitems.api.player.PlayerData;
-import io.lumine.mythic.lib.api.MMOLineConfig;
-import io.lumine.mythic.lib.api.util.SmartGive;
+import org.apache.commons.lang.Validate;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 public class MMOItemTrigger extends Trigger {
 	private final MMOItemTemplate template;

@@ -1,12 +1,11 @@
 package net.Indyuce.mmoitems.api.event.item;
 
+import net.Indyuce.mmoitems.api.event.PlayerDataEvent;
+import net.Indyuce.mmoitems.api.player.PlayerData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
-
-import net.Indyuce.mmoitems.api.event.PlayerDataEvent;
-import net.Indyuce.mmoitems.api.player.PlayerData;
 
 public class ItemEquipEvent extends PlayerDataEvent implements Cancellable {
 	private static final HandlerList handlers = new HandlerList();

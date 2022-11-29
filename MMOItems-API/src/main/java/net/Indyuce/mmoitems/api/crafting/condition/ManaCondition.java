@@ -1,7 +1,7 @@
 package net.Indyuce.mmoitems.api.crafting.condition;
 
-import net.Indyuce.mmoitems.api.player.PlayerData;
 import io.lumine.mythic.lib.api.MMOLineConfig;
+import net.Indyuce.mmoitems.api.player.PlayerData;
 
 public class ManaCondition extends Condition {
 	private final double amount;

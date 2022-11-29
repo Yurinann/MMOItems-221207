@@ -1,14 +1,13 @@
 package net.Indyuce.mmoitems.api.item.util.identify;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
+import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmoitems.api.item.mmoitem.LiveMMOItem;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
-import io.lumine.mythic.lib.api.item.NBTItem;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 public class IdentifiedItem {
 	private final NBTItem item;

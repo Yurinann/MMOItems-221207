@@ -1,13 +1,12 @@
 package net.Indyuce.mmoitems.stat.data.random;
 
-import org.apache.commons.lang.Validate;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.potion.PotionEffectType;
-
-import net.Indyuce.mmoitems.util.MMOUtils;
 import net.Indyuce.mmoitems.api.item.build.MMOItemBuilder;
 import net.Indyuce.mmoitems.api.util.NumericStatFormula;
 import net.Indyuce.mmoitems.stat.data.PotionEffectData;
+import net.Indyuce.mmoitems.util.MMOUtils;
+import org.apache.commons.lang.Validate;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.potion.PotionEffectType;
 
 public class RandomPotionEffectData {
 	private final PotionEffectType type;

@@ -1,10 +1,10 @@
 package net.Indyuce.mmoitems.gui.edition.recipe.rba;
 
-import io.lumine.mythic.lib.api.util.ui.SilentNumbers;
 import io.lumine.mythic.lib.api.util.ItemFactory;
+import io.lumine.mythic.lib.api.util.ui.SilentNumbers;
 import net.Indyuce.mmoitems.api.crafting.recipe.SmithingCombinationType;
-import net.Indyuce.mmoitems.gui.edition.recipe.rba.type.RBA_ChooseableButton;
 import net.Indyuce.mmoitems.gui.edition.recipe.gui.RecipeMakerGUI;
+import net.Indyuce.mmoitems.gui.edition.recipe.rba.type.RBA_ChooseableButton;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;

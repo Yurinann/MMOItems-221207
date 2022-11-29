@@ -1,14 +1,13 @@
 package net.Indyuce.mmoitems.api.event.item;
 
-import java.util.List;
-
-import org.bukkit.event.HandlerList;
-import org.bukkit.inventory.ItemStack;
-
+import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmoitems.api.event.PlayerDataEvent;
 import net.Indyuce.mmoitems.api.item.mmoitem.VolatileMMOItem;
 import net.Indyuce.mmoitems.api.player.PlayerData;
-import io.lumine.mythic.lib.api.item.NBTItem;
+import org.bukkit.event.HandlerList;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public class DeconstructItemEvent extends PlayerDataEvent {
 	private static final HandlerList handlers = new HandlerList();

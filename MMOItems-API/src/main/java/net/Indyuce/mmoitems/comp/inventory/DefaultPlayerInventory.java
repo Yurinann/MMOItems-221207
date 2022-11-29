@@ -3,7 +3,6 @@ package net.Indyuce.mmoitems.comp.inventory;
 import io.lumine.mythic.lib.api.player.EquipmentSlot;
 import net.Indyuce.mmoitems.api.player.inventory.EquippedItem;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

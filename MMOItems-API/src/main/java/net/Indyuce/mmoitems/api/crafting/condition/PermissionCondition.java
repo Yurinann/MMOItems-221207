@@ -1,10 +1,10 @@
 package net.Indyuce.mmoitems.api.crafting.condition;
 
+import io.lumine.mythic.lib.api.MMOLineConfig;
+import net.Indyuce.mmoitems.api.player.PlayerData;
+
 import java.util.Arrays;
 import java.util.List;
-
-import net.Indyuce.mmoitems.api.player.PlayerData;
-import io.lumine.mythic.lib.api.MMOLineConfig;
 
 public class PermissionCondition extends GenericCondition {
     private final List<String> permissions;

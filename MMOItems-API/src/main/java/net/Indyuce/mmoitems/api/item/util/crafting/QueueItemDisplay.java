@@ -11,11 +11,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class QueueItemDisplay extends ConfigItem {
 	private static final long[] ms = { 1000, 60 * 1000, 60 * 60 * 1000, 24 * 60 * 60 * 1000 };

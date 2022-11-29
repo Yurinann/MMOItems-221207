@@ -1,12 +1,11 @@
 package net.Indyuce.mmoitems.comp.rpg;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-
 import me.robin.battlelevels.api.BattleLevelsAPI;
 import me.robin.battlelevels.events.PlayerLevelUpEvent;
 import net.Indyuce.mmoitems.api.player.PlayerData;
 import net.Indyuce.mmoitems.api.player.RPGPlayer;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 public class BattleLevelsHook implements RPGHandler, Listener {
 

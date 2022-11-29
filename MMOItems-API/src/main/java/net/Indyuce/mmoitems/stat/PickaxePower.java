@@ -1,17 +1,14 @@
 package net.Indyuce.mmoitems.stat;
 
 import io.lumine.mythic.lib.MythicLib;
+import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.util.ui.SilentNumbers;
+import net.Indyuce.mmoitems.api.item.build.ItemStackBuilder;
 import net.Indyuce.mmoitems.api.util.NumericStatFormula;
-import net.Indyuce.mmoitems.stat.data.random.RandomStatData;
+import net.Indyuce.mmoitems.stat.data.DoubleData;
+import net.Indyuce.mmoitems.stat.type.DoubleStat;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
-
-import net.Indyuce.mmoitems.api.item.build.ItemStackBuilder;
-import net.Indyuce.mmoitems.stat.data.DoubleData;
-import net.Indyuce.mmoitems.stat.data.type.StatData;
-import net.Indyuce.mmoitems.stat.type.DoubleStat;
-import io.lumine.mythic.lib.api.item.ItemTag;
 import org.jetbrains.annotations.NotNull;
 
 public class PickaxePower extends DoubleStat {

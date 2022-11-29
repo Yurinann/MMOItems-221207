@@ -1,19 +1,18 @@
 package net.Indyuce.mmoitems.stat.data.random;
 
+import io.lumine.mythic.lib.api.util.ui.FriendlyFeedbackProvider;
+import io.lumine.mythic.lib.api.util.ui.SilentNumbers;
+import net.Indyuce.mmoitems.api.item.build.MMOItemBuilder;
+import net.Indyuce.mmoitems.api.util.NumericStatFormula;
+import net.Indyuce.mmoitems.api.util.message.FFPMMOItems;
+import net.Indyuce.mmoitems.stat.data.PotionEffectListData;
+import org.apache.commons.lang.Validate;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.potion.PotionEffectType;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import io.lumine.mythic.lib.api.util.ui.FriendlyFeedbackProvider;
-import io.lumine.mythic.lib.api.util.ui.SilentNumbers;
-import net.Indyuce.mmoitems.api.util.NumericStatFormula;
-import net.Indyuce.mmoitems.api.util.message.FFPMMOItems;
-import org.apache.commons.lang.Validate;
-import org.bukkit.configuration.ConfigurationSection;
-
-import net.Indyuce.mmoitems.api.item.build.MMOItemBuilder;
-import net.Indyuce.mmoitems.stat.data.PotionEffectListData;
-import org.bukkit.potion.PotionEffectType;
 
 public class RandomPotionEffectListData implements RandomStatData<PotionEffectListData> {
 	private final List<RandomPotionEffectData> effects = new ArrayList<>();

@@ -2,8 +2,8 @@ package net.Indyuce.mmoitems.gui.edition.recipe.registry.burninglegacy;
 
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.version.VersionMaterial;
-import net.Indyuce.mmoitems.util.MMOUtils;
 import net.Indyuce.mmoitems.manager.RecipeManager;
+import net.Indyuce.mmoitems.util.MMOUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;

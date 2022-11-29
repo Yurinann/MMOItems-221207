@@ -1,9 +1,9 @@
 package net.Indyuce.mmoitems.api.item.util;
 
+import io.lumine.mythic.lib.version.VersionMaterial;
 import net.Indyuce.mmoitems.api.item.util.crafting.CraftingRecipeDisplay;
 import net.Indyuce.mmoitems.api.item.util.crafting.QueueItemDisplay;
 import net.Indyuce.mmoitems.api.item.util.crafting.UpgradingRecipeDisplay;
-import io.lumine.mythic.lib.version.VersionMaterial;
 
 public class ConfigItems {
 	public static final ConfigItem CONFIRM = new ConfigItem("CONFIRM", VersionMaterial.GREEN_STAINED_GLASS_PANE.toMaterial(), "&aConfirm");

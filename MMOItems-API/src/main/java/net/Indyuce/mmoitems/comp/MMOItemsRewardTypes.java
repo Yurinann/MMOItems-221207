@@ -1,7 +1,8 @@
 package net.Indyuce.mmoitems.comp;
 
-import java.util.List;
-
+import net.Indyuce.mmoitems.MMOItems;
+import net.Indyuce.mmoitems.api.Type;
+import net.Indyuce.mmoitems.api.player.PlayerData;
 import org.black_ixx.bossshop.core.BSBuy;
 import org.black_ixx.bossshop.core.rewards.BSRewardType;
 import org.black_ixx.bossshop.managers.ClassManager;
@@ -10,9 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
-import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.api.Type;
-import net.Indyuce.mmoitems.api.player.PlayerData;
+import java.util.List;
 
 public class MMOItemsRewardTypes extends BSRewardType {
 

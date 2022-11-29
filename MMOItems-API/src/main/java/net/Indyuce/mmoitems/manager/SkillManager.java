@@ -3,10 +3,10 @@ package net.Indyuce.mmoitems.manager;
 import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.skill.handler.SkillHandler;
 import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.util.MMOUtils;
 import net.Indyuce.mmoitems.api.ConfigFile;
 import net.Indyuce.mmoitems.skill.RegisteredSkill;
 import net.Indyuce.mmoitems.skill.ShulkerMissile;
+import net.Indyuce.mmoitems.util.MMOUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -61,7 +61,7 @@ public class SkillManager {
 
     /**
      * @return Collection of all registered skills. It has the same number
-     *         of elements as MythicLib's skill handler registry.
+     * of elements as MythicLib's skill handler registry.
      */
     @NotNull
     public Collection<RegisteredSkill> getAll() {

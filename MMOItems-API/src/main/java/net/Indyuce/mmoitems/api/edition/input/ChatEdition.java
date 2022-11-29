@@ -12,34 +12,34 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class ChatEdition extends PlayerInputHandler implements Listener {
 
-	/**
-	 * Allows to retrieve player input using chat messages
-	 * 
-	 * @param edition The type of data being edited
-	 */
-	public ChatEdition(Edition edition) {
-		super(edition);
+    /**
+     * Allows to retrieve player input using chat messages
+     *
+     * @param edition The type of data being edited
+     */
+    public ChatEdition(Edition edition) {
+        super(edition);
 
-		Bukkit.getPluginManager().registerEvents(this, MMOItems.plugin);
-	}
+        Bukkit.getPluginManager().registerEvents(this, MMOItems.plugin);
+    }
 
-	@Override
-	public void close() {
-		HandlerList.unregisterAll(this);
-	}
+    @Override
+    public void close() {
+        HandlerList.unregisterAll(this);
+    }
 
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void a(AsyncPlayerChatEvent event) {
-		if (getPlayer() != null && event.getPlayer().equals(getPlayer())) {
-			event.setCancelled(true);
-			registerInput(event.getMessage());
-		}
-	}
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void a(AsyncPlayerChatEvent event) {
+        if (getPlayer() != null && event.getPlayer().equals(getPlayer())) {
+            event.setCancelled(true);
+            registerInput(event.getMessage());
+        }
+    }
 
-	// cancel stat edition when opening any gui
-	@EventHandler
-	public void b(InventoryOpenEvent event) {
-		if (event.getPlayer().equals(getPlayer()))
-			close();
-	}
+    // cancel stat edition when opening any gui
+    @EventHandler
+    public void b(InventoryOpenEvent event) {
+        if (event.getPlayer().equals(getPlayer()))
+            close();
+    }
 }

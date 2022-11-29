@@ -24,14 +24,16 @@ import java.util.HashMap;
 public class RMG_BurningLegacy extends RecipeMakerGUI {
 
     @NotNull
+    final RMGRI_BurningLegacy interpreter;
+    @NotNull
     HashMap<Integer, Integer> inputLinks = new HashMap<>();
 
     /**
      * An editor for a Shaped Recipe. Because the recipe is loaded from the YML when this is created,
      * concurrent modifications of the same recipe are unsupported.
      *
-     * @param player Player editing the recipe ig
-     * @param template Template of which a recipe is being edited
+     * @param player     Player editing the recipe ig
+     * @param template   Template of which a recipe is being edited
      * @param recipeName Name of this recipe
      */
     public RMG_BurningLegacy(@NotNull Player player, @NotNull MMOItemTemplate template, @NotNull String recipeName, @NotNull RecipeRegistry recipeRegistry) {
@@ -41,7 +43,9 @@ public class RMG_BurningLegacy extends RecipeMakerGUI {
         addButton(new RBA_CookingTime(this));
 
         // NO OUTPUT
-        if (!isShowingInput()) { switchInput(); }
+        if (!isShowingInput()) {
+            switchInput();
+        }
 
         // Get section and build interpreter
         interpreter = new RMGRI_BurningLegacy(getNameSection());
@@ -50,13 +54,18 @@ public class RMG_BurningLegacy extends RecipeMakerGUI {
         inputLinks.put(40, 0);
     }
 
-    @Override public int getButtonsRow() { return 2; }
+    @Override
+    public int getButtonsRow() {
+        return 2;
+    }
 
     @Override
     public void putRecipe(@NotNull Inventory target) {
 
         // Fill inputs
-        for (Integer s : inputLinks.keySet()) { target.setItem(s, getDisplay(isShowingInput(), inputLinks.get(s))); }
+        for (Integer s : inputLinks.keySet()) {
+            target.setItem(s, getDisplay(isShowingInput(), inputLinks.get(s)));
+        }
     }
 
     @Override
@@ -69,6 +78,9 @@ public class RMG_BurningLegacy extends RecipeMakerGUI {
         return found != null ? found : -1;
     }
 
-    @NotNull final RMGRI_BurningLegacy interpreter;
-    @NotNull @Override public RMG_RecipeInterpreter getInterpreter() { return interpreter; }
+    @NotNull
+    @Override
+    public RMG_RecipeInterpreter getInterpreter() {
+        return interpreter;
+    }
 }

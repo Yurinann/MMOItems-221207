@@ -7,5 +7,9 @@ import org.jetbrains.annotations.NotNull;
  * The blast furnace yes
  */
 public class RMGRR_LBBlast extends RMGRR_LegacyBurning {
-    @NotNull @Override public CraftingType getLegacyBurningType() { return CraftingType.BLAST; }
+    @NotNull
+    @Override
+    public CraftingType getLegacyBurningType() {
+        return CraftingType.BLAST;
+    }
 }

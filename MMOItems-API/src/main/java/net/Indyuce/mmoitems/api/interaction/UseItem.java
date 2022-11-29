@@ -21,11 +21,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Random;
 
 public class UseItem {
+    protected static final Random RANDOM = new Random();
     protected final Player player;
     protected final PlayerData playerData;
     protected final VolatileMMOItem mmoitem;
-
-    protected static final Random RANDOM = new Random();
 
     public UseItem(Player player, NBTItem nbtItem) {
         this(PlayerData.get(player), nbtItem);
@@ -35,6 +34,32 @@ public class UseItem {
         this.player = playerData.getPlayer();
         this.playerData = playerData;
         this.mmoitem = new VolatileMMOItem(nbtItem);
+    }
+
+    public static UseItem getItem(Player player, NBTItem item, String type) {
+        return getItem(player, item, Type.get(type));
+    }
+
+    public static UseItem getItem(@NotNull Player player, @NotNull NBTItem item, @NotNull Type type) {
+        if (type.corresponds(Type.CONSUMABLE))
+            return new Consumable(player, item);
+        if (type.corresponds(Type.SKIN))
+            return new ItemSkin(player, item);
+        if (type.corresponds(Type.GEM_STONE))
+            return new GemStone(player, item);
+        if (type.corresponds(Type.MUSKET))
+            return new Musket(player, item);
+        if (type.corresponds(Type.CROSSBOW))
+            return new Crossbow(player, item);
+        if (type.corresponds(Type.GAUNTLET))
+            return new Gauntlet(player, item);
+        if (type.corresponds(Type.WHIP))
+            return new Whip(player, item);
+        if (type.corresponds(Type.LUTE))
+            return new Lute(player, item);
+        if (type.corresponds(Type.STAFF))
+            return new Staff(player, item);
+        return type.isWeapon() ? new Weapon(player, item) : new UseItem(player, item);
     }
 
     public Player getPlayer() {
@@ -118,31 +143,5 @@ public class UseItem {
             }
         } else
             Bukkit.dispatchCommand(player, parsed);
-    }
-
-    public static UseItem getItem(Player player, NBTItem item, String type) {
-        return getItem(player, item, Type.get(type));
-    }
-
-    public static UseItem getItem(@NotNull Player player, @NotNull NBTItem item, @NotNull Type type) {
-        if (type.corresponds(Type.CONSUMABLE))
-            return new Consumable(player, item);
-        if (type.corresponds(Type.SKIN))
-            return new ItemSkin(player, item);
-        if (type.corresponds(Type.GEM_STONE))
-            return new GemStone(player, item);
-        if (type.corresponds(Type.MUSKET))
-            return new Musket(player, item);
-        if (type.corresponds(Type.CROSSBOW))
-            return new Crossbow(player, item);
-        if (type.corresponds(Type.GAUNTLET))
-            return new Gauntlet(player, item);
-        if (type.corresponds(Type.WHIP))
-            return new Whip(player, item);
-        if (type.corresponds(Type.LUTE))
-            return new Lute(player, item);
-        if (type.corresponds(Type.STAFF))
-            return new Staff(player, item);
-        return type.isWeapon() ? new Weapon(player, item) : new UseItem(player, item);
     }
 }

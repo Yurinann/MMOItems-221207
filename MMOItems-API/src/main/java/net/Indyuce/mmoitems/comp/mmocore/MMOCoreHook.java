@@ -109,13 +109,13 @@ public class MMOCoreHook implements RPGHandler, Listener {
         }
 
         @Override
-        public double getStamina() {
-            return data.getStamina();
+        public void setMana(double value) {
+            data.setMana(value);
         }
 
         @Override
-        public void setMana(double value) {
-            data.setMana(value);
+        public double getStamina() {
+            return data.getStamina();
         }
 
         @Override

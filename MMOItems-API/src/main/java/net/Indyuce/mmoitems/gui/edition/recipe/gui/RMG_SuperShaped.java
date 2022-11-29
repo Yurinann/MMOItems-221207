@@ -19,14 +19,17 @@ import java.util.HashMap;
  */
 public class RMG_SuperShaped extends RecipeMakerGUI {
 
-    @NotNull HashMap<Integer, Integer> inputLinks = new HashMap<>();
+    @NotNull
+    final RMGRI_SuperShaped interpreter;
+    @NotNull
+    HashMap<Integer, Integer> inputLinks = new HashMap<>();
 
     /**
      * An editor for a Super Shaped Recipe. Because the recipe is loaded from the YML when this is created,
      * concurrent modifications of the same recipe are unsupported.
      *
-     * @param player Player editing the recipe ig
-     * @param template Template of which a recipe is being edited
+     * @param player     Player editing the recipe ig
+     * @param template   Template of which a recipe is being edited
      * @param recipeName Name of this recipe
      */
     public RMG_SuperShaped(@NotNull Player player, @NotNull MMOItemTemplate template, @NotNull String recipeName, @NotNull RecipeRegistry recipeRegistry) {
@@ -68,13 +71,18 @@ public class RMG_SuperShaped extends RecipeMakerGUI {
         inputLinks.put(51, 24);
     }
 
-    @Override public int getButtonsRow() { return 0; }
+    @Override
+    public int getButtonsRow() {
+        return 0;
+    }
 
     @Override
     public void putRecipe(@NotNull Inventory target) {
 
         // Fill inputs
-        for (Integer s : inputLinks.keySet()) { target.setItem(s, getDisplay(isShowingInput(), inputLinks.get(s))); }
+        for (Integer s : inputLinks.keySet()) {
+            target.setItem(s, getDisplay(isShowingInput(), inputLinks.get(s)));
+        }
     }
 
     @Override
@@ -87,8 +95,9 @@ public class RMG_SuperShaped extends RecipeMakerGUI {
         return found != null ? found : -1;
     }
 
-    @NotNull final RMGRI_SuperShaped interpreter;
     @NotNull
     @Override
-    public RMG_RecipeInterpreter getInterpreter() { return interpreter; }
+    public RMG_RecipeInterpreter getInterpreter() {
+        return interpreter;
+    }
 }

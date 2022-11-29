@@ -15,57 +15,57 @@ import java.util.Map;
 import java.util.Set;
 
 public class RandomAbilityData {
-	private final RegisteredSkill ability;
-	private final TriggerType triggerType;
-	private final Map<String, NumericStatFormula> modifiers = new HashMap<>();
+    private final RegisteredSkill ability;
+    private final TriggerType triggerType;
+    private final Map<String, NumericStatFormula> modifiers = new HashMap<>();
 
-	public RandomAbilityData(ConfigurationSection config) {
-		Validate.isTrue(config.contains("type") && config.contains("mode"), "Ability is missing type or mode");
+    public RandomAbilityData(ConfigurationSection config) {
+        Validate.isTrue(config.contains("type") && config.contains("mode"), "Ability is missing type or mode");
 
-		String abilityFormat = config.getString("type").toUpperCase().replace("-", "_").replace(" ", "_");
-		Validate.isTrue(MMOItems.plugin.getSkills().hasSkill(abilityFormat), "Could not find ability called '" + abilityFormat + "'");
-		ability = MMOItems.plugin.getSkills().getSkill(abilityFormat);
+        String abilityFormat = config.getString("type").toUpperCase().replace("-", "_").replace(" ", "_");
+        Validate.isTrue(MMOItems.plugin.getSkills().hasSkill(abilityFormat), "Could not find ability called '" + abilityFormat + "'");
+        ability = MMOItems.plugin.getSkills().getSkill(abilityFormat);
 
-		String modeFormat = config.getString("mode").toUpperCase().replace("-", "_").replace(" ", "_");
-		triggerType = MMOUtils.backwardsCompatibleTriggerType(modeFormat);
+        String modeFormat = config.getString("mode").toUpperCase().replace("-", "_").replace(" ", "_");
+        triggerType = MMOUtils.backwardsCompatibleTriggerType(modeFormat);
 
-		for (String key : config.getKeys(false))
-			if (!key.equalsIgnoreCase("mode") && !key.equalsIgnoreCase("type") && ability.getHandler().getModifiers().contains(key))
-				modifiers.put(key, new NumericStatFormula(config.get(key)));
-	}
+        for (String key : config.getKeys(false))
+            if (!key.equalsIgnoreCase("mode") && !key.equalsIgnoreCase("type") && ability.getHandler().getModifiers().contains(key))
+                modifiers.put(key, new NumericStatFormula(config.get(key)));
+    }
 
-	public RandomAbilityData(RegisteredSkill ability, TriggerType triggerType) {
-		this.ability = ability;
-		this.triggerType = triggerType;
-	}
+    public RandomAbilityData(RegisteredSkill ability, TriggerType triggerType) {
+        this.ability = ability;
+        this.triggerType = triggerType;
+    }
 
-	public RegisteredSkill getAbility() {
-		return ability;
-	}
+    public RegisteredSkill getAbility() {
+        return ability;
+    }
 
-	public TriggerType getTriggerType() {
-		return triggerType;
-	}
+    public TriggerType getTriggerType() {
+        return triggerType;
+    }
 
-	public Set<String> getModifiers() {
-		return modifiers.keySet();
-	}
+    public Set<String> getModifiers() {
+        return modifiers.keySet();
+    }
 
-	public void setModifier(String path, NumericStatFormula value) {
-		modifiers.put(path, value);
-	}
+    public void setModifier(String path, NumericStatFormula value) {
+        modifiers.put(path, value);
+    }
 
-	public boolean hasModifier(String path) {
-		return modifiers.containsKey(path);
-	}
+    public boolean hasModifier(String path) {
+        return modifiers.containsKey(path);
+    }
 
-	public NumericStatFormula getModifier(String path) {
-		return modifiers.get(path);
-	}
+    public NumericStatFormula getModifier(String path) {
+        return modifiers.get(path);
+    }
 
-	public AbilityData randomize(MMOItemBuilder builder) {
-		AbilityData data = new AbilityData(ability, triggerType);
-		modifiers.forEach((key, formula) -> data.setModifier(key, formula.calculate(builder.getLevel())));
-		return data;
-	}
+    public AbilityData randomize(MMOItemBuilder builder) {
+        AbilityData data = new AbilityData(ability, triggerType);
+        modifiers.forEach((key, formula) -> data.setModifier(key, formula.calculate(builder.getLevel())));
+        return data;
+    }
 }

@@ -39,9 +39,8 @@ public class UnidentifiedItem extends ConfigItem {
     public class ItemBuilder {
         private final int amount;
         private final NBTItem item;
-
-        private String name = getName();
         private final List<String> lore = new ArrayList<>(getLore());
+        private String name = getName();
 
         public ItemBuilder(NBTItem item) {
             this.amount = item.getItem().getAmount();

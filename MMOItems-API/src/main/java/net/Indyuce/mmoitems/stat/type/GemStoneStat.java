@@ -7,4 +7,5 @@ package net.Indyuce.mmoitems.stat.type;
  *
  * @author indyuce
  */
-public interface GemStoneStat { }
+public interface GemStoneStat {
+}

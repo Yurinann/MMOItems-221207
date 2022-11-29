@@ -7,11 +7,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 // TODO: 2/13/2021 Remove this eventually.
 public class NamedItemStack extends ItemStack {
-	public NamedItemStack(Material material, String name) {
-		super(material);
+    public NamedItemStack(Material material, String name) {
+        super(material);
 
-		ItemMeta meta = getItemMeta();
-		meta.setDisplayName(MythicLib.plugin.parseColors(name));
-		setItemMeta(meta);
-	}
+        ItemMeta meta = getItemMeta();
+        meta.setDisplayName(MythicLib.plugin.parseColors(name));
+        setItemMeta(meta);
+    }
 }

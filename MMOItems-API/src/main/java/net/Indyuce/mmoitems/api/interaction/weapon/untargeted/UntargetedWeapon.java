@@ -26,7 +26,7 @@ public abstract class UntargetedWeapon extends Weapon {
      *
      * @param slot Slot being interacted with
      * @implNote Since MI 6.7.3 this method handles custom durability, cooldown
-     *         checks and player stat snapshots.
+     * checks and player stat snapshots.
      */
     public void handleTargetFreeAttack(EquipmentSlot slot) {
 

@@ -89,15 +89,15 @@ public class ProSkillAPIHook implements RPGHandler, Listener, AttackHandler {
         }
 
         @Override
-        public double getStamina() {
-            return getPlayer().getFoodLevel();
-        }
-
-        @Override
         public void setMana(double value) {
             PlayerData rpgdata = SkillAPI.getPlayerData(getPlayer());
             if (rpgdata.hasClass())
                 rpgdata.setMana(value);
+        }
+
+        @Override
+        public double getStamina() {
+            return getPlayer().getFoodLevel();
         }
 
         @Override

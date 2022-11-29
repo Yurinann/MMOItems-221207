@@ -26,6 +26,8 @@ import java.util.Optional;
  * List of enchantments in an item yes
  */
 public class AdvancedEnchantsStat extends ItemStat<RandomStatData<AdvancedEnchantMap>, AdvancedEnchantMap> implements InternalStat {
+    private static final String AE_TAG = "ae_enchantment";
+
     public AdvancedEnchantsStat() {
         super("ADVANCED_ENCHANTS", VersionMaterial.EXPERIENCE_BOTTLE.toMaterial(), "Advanced Enchants", new String[]{"The AEnchants of this item. Format:", "\u00a7e[internal_name] [level]"}, new String[]{"!miscellaneous", "!block", "all"});
     }
@@ -93,8 +95,6 @@ public class AdvancedEnchantsStat extends ItemStat<RandomStatData<AdvancedEnchan
     public AdvancedEnchantMap getClearStatData() {
         return new AdvancedEnchantMap();
     }
-
-    private static final String AE_TAG = "ae_enchantment";
 
     /**
      * @param name  Name of the AEnch ~ arrow_deflect

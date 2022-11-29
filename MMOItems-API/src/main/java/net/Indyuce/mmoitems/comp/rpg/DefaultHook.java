@@ -8,52 +8,52 @@ import org.bukkit.event.player.PlayerLevelChangeEvent;
 
 public class DefaultHook implements RPGHandler, Listener {
 
-	@Override
-	public void refreshStats(PlayerData data) {
-	}
+    @Override
+    public void refreshStats(PlayerData data) {
+    }
 
-	@EventHandler
-	public void a(PlayerLevelChangeEvent event) {
-		PlayerData.get(event.getPlayer()).getInventory().scheduleUpdate();
-	}
+    @EventHandler
+    public void a(PlayerLevelChangeEvent event) {
+        PlayerData.get(event.getPlayer()).getInventory().scheduleUpdate();
+    }
 
-	@Override
-	public RPGPlayer getInfo(PlayerData data) {
-		return new DefaultRPGPlayer(data);
-	}
+    @Override
+    public RPGPlayer getInfo(PlayerData data) {
+        return new DefaultRPGPlayer(data);
+    }
 
-	public static class DefaultRPGPlayer extends RPGPlayer {
-		public DefaultRPGPlayer(PlayerData playerData) {
-			super(playerData);
-		}
+    public static class DefaultRPGPlayer extends RPGPlayer {
+        public DefaultRPGPlayer(PlayerData playerData) {
+            super(playerData);
+        }
 
-		@Override
-		public int getLevel() {
-			return getPlayer().getLevel();
-		}
+        @Override
+        public int getLevel() {
+            return getPlayer().getLevel();
+        }
 
-		@Override
-		public String getClassName() {
-			return "";
-		}
+        @Override
+        public String getClassName() {
+            return "";
+        }
 
-		@Override
-		public double getMana() {
-			return getPlayer().getFoodLevel();
-		}
+        @Override
+        public double getMana() {
+            return getPlayer().getFoodLevel();
+        }
 
-		@Override
-		public double getStamina() {
-			return 0;
-		}
+        @Override
+        public void setMana(double value) {
+            getPlayer().setFoodLevel((int) value);
+        }
 
-		@Override
-		public void setMana(double value) {
-			getPlayer().setFoodLevel((int) value);
-		}
+        @Override
+        public double getStamina() {
+            return 0;
+        }
 
-		@Override
-		public void setStamina(double value) {
-		}
-	}
+        @Override
+        public void setStamina(double value) {
+        }
+    }
 }

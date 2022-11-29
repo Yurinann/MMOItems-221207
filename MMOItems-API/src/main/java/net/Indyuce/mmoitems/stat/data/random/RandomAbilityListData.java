@@ -8,24 +8,24 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class RandomAbilityListData implements RandomStatData<AbilityListData> {
-	private final Set<RandomAbilityData> abilities = new LinkedHashSet<>();
+    private final Set<RandomAbilityData> abilities = new LinkedHashSet<>();
 
-	public RandomAbilityListData(RandomAbilityData... abilities) {
-		add(abilities);
-	}
+    public RandomAbilityListData(RandomAbilityData... abilities) {
+        add(abilities);
+    }
 
-	public void add(RandomAbilityData... abilities) {
-		this.abilities.addAll(Arrays.asList(abilities));
-	}
+    public void add(RandomAbilityData... abilities) {
+        this.abilities.addAll(Arrays.asList(abilities));
+    }
 
-	public Set<RandomAbilityData> getAbilities() {
-		return abilities;
-	}
+    public Set<RandomAbilityData> getAbilities() {
+        return abilities;
+    }
 
-	@Override
-	public AbilityListData randomize(MMOItemBuilder builder) {
-		AbilityListData list = new AbilityListData();
-		abilities.forEach(random -> list.add(random.randomize(builder)));
-		return list;
-	}
+    @Override
+    public AbilityListData randomize(MMOItemBuilder builder) {
+        AbilityListData list = new AbilityListData();
+        abilities.forEach(random -> list.add(random.randomize(builder)));
+        return list;
+    }
 }

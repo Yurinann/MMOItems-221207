@@ -13,6 +13,10 @@ public class ItemBuildEvent extends Event {
         this.itemStack = itemStack;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     public ItemStack getItemStack() {
         return itemStack;
     }
@@ -32,7 +36,7 @@ public class ItemBuildEvent extends Event {
 
     /**
      * @deprecated Set the generated item stack to null instead. Cancelling
-     *         the build event does not cancel the process that generated the item
+     * the build event does not cancel the process that generated the item
      */
     @Deprecated
     public void setCancelled(boolean cancel) {
@@ -41,10 +45,6 @@ public class ItemBuildEvent extends Event {
     }
 
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

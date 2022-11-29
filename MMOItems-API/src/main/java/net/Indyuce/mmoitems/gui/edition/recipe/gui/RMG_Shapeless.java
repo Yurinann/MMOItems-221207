@@ -28,13 +28,15 @@ public class RMG_Shapeless extends RecipeMakerGUI {
 
     @NotNull
     final HashMap<Integer, Integer> inputLinks = new HashMap<>();
+    @NotNull
+    final RMGRI_Shapeless interpreter;
 
     /**
      * An editor for a Shapeless Recipe. Because the recipe is loaded from the YML when this is created,
      * concurrent modifications of the same recipe are unsupported.
      *
-     * @param player Player editing the recipe ig
-     * @param template Template of which a recipe is being edited
+     * @param player     Player editing the recipe ig
+     * @param template   Template of which a recipe is being edited
      * @param recipeName Name of this recipe
      */
     public RMG_Shapeless(@NotNull Player player, @NotNull MMOItemTemplate template, @NotNull String recipeName, @NotNull RecipeRegistry recipeRegistry) {
@@ -61,13 +63,19 @@ public class RMG_Shapeless extends RecipeMakerGUI {
         inputLinks.put(49, 7);
         inputLinks.put(50, 8);
     }
-    @Override public int getButtonsRow() { return 1; }
+
+    @Override
+    public int getButtonsRow() {
+        return 1;
+    }
 
     @Override
     public void putRecipe(@NotNull Inventory target) {
 
         // Fill inputs
-        for (Integer s : inputLinks.keySet()) { target.setItem(s, getDisplay(isShowingInput(), inputLinks.get(s))); }
+        for (Integer s : inputLinks.keySet()) {
+            target.setItem(s, getDisplay(isShowingInput(), inputLinks.get(s)));
+        }
     }
 
     @Override
@@ -80,7 +88,10 @@ public class RMG_Shapeless extends RecipeMakerGUI {
         return found != null ? found : -1;
     }
 
-    @NotNull final RMGRI_Shapeless interpreter;
-    @NotNull @Override public RMG_RecipeInterpreter getInterpreter() { return interpreter; }
+    @NotNull
+    @Override
+    public RMG_RecipeInterpreter getInterpreter() {
+        return interpreter;
+    }
 
 }

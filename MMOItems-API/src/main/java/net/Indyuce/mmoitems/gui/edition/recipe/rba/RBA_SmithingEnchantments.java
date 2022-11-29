@@ -18,26 +18,53 @@ import java.util.ArrayList;
  */
 public class RBA_SmithingEnchantments extends RBA_ChooseableButton {
 
+    public static final String SMITH_ENCHANTS = "enchantments";
+    @NotNull
+    final ItemStack chooseableButton = ItemFactory.of(Material.ENCHANTING_TABLE).name("\u00a7aEnchantment Transfer").lore(SilentNumbers.chop(
+            "What will happen to the enchantments of the ingredients? Will enchanted ingredients produce an enchanted output item?"
+            , 65, "\u00a77")).build();
+
     /**
      * A button of an Edition Inventory. Nice!
      *
      * @param inv The edition inventory this is a button of
      */
-    public RBA_SmithingEnchantments(@NotNull RecipeMakerGUI inv) { super(inv); }
+    public RBA_SmithingEnchantments(@NotNull RecipeMakerGUI inv) {
+        super(inv);
+    }
 
-    @NotNull final ItemStack chooseableButton = ItemFactory.of(Material.ENCHANTING_TABLE).name("\u00a7aEnchantment Transfer").lore(SilentNumbers.chop(
-            "What will happen to the enchantments of the ingredients? Will enchanted ingredients produce an enchanted output item?"
-            , 65, "\u00a77")).build();
+    @NotNull
+    @Override
+    public ItemStack getChooseableButton() {
+        return chooseableButton;
+    }
 
-    @NotNull @Override public ItemStack getChooseableButton() { return chooseableButton; }
+    @NotNull
+    @Override
+    public String getChooseableConfigPath() {
+        return SMITH_ENCHANTS;
+    }
 
-    public static final String SMITH_ENCHANTS = "enchantments";
-    @NotNull @Override public String getChooseableConfigPath() { return SMITH_ENCHANTS; }
-    @NotNull @Override public ArrayList<String> getChooseableList() { return RBA_SmithingUpgrades.getSmithingList(); }
-    @NotNull @Override public String getDefaultValue() { return SmithingCombinationType.MAXIMUM.toString(); }
-    @NotNull @Override public String getChooseableDefinition(@NotNull String ofChooseable) {
+    @NotNull
+    @Override
+    public ArrayList<String> getChooseableList() {
+        return RBA_SmithingUpgrades.getSmithingList();
+    }
+
+    @NotNull
+    @Override
+    public String getDefaultValue() {
+        return SmithingCombinationType.MAXIMUM.toString();
+    }
+
+    @NotNull
+    @Override
+    public String getChooseableDefinition(@NotNull String ofChooseable) {
         SmithingCombinationType sct = SmithingCombinationType.MAXIMUM;
-        try { sct = SmithingCombinationType.valueOf(getCurrentChooseableValue()); } catch (IllegalArgumentException ignored) {}
+        try {
+            sct = SmithingCombinationType.valueOf(getCurrentChooseableValue());
+        } catch (IllegalArgumentException ignored) {
+        }
 
         switch (sct) {
             case EVEN:
@@ -51,7 +78,8 @@ public class RBA_SmithingEnchantments extends RBA_ChooseableButton {
             case ADDITIVE:
                 return "The enchantments of all ingredients will add together.";
 
-            default: return "Unknown behaviour. Add description in net.Indyuce.mmoitems.gui.edition.recipe.rba.RBA_SmithingEnchantments";
+            default:
+                return "Unknown behaviour. Add description in net.Indyuce.mmoitems.gui.edition.recipe.rba.RBA_SmithingEnchantments";
         }
     }
 }

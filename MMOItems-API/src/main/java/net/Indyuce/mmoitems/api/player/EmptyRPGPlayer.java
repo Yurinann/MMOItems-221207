@@ -28,13 +28,13 @@ public class EmptyRPGPlayer extends RPGPlayer {
     }
 
     @Override
-    public double getStamina() {
-        return 0;
+    public void setMana(double value) {
+
     }
 
     @Override
-    public void setMana(double value) {
-
+    public double getStamina() {
+        return 0;
     }
 
     @Override

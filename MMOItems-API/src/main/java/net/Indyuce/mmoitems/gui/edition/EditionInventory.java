@@ -31,31 +31,30 @@ import java.util.Optional;
 
 public abstract class EditionInventory extends PluginInventory {
 
+    @NotNull
+    final FriendlyFeedbackProvider ffp;
+    /**
+     * Config file being edited. It is cached when the edition inventory is
+     * opened and can only be accessed through the getEditedSection() method
+     */
+    private final ConfigFile configFile;
     /**
      * Item template currently being edited. This field is not final as it is
      * refreshed every time the item is edited (after applying a config change,
      * MMOItems updates the registered template and removes the old one)
      */
     protected MMOItemTemplate template;
-
-    /**
-     * Config file being edited. It is cached when the edition inventory is
-     * opened and can only be accessed through the getEditedSection() method
-     */
-    private final ConfigFile configFile;
-
+    int previousPage;
     /**
      * Template modifier being edited, if it is null then the player is directly
      * base item data
      *
      * @deprecated Not being used atm, the item editor only lets the user
-     *         edit the base item data
+     * edit the base item data
      */
     @Deprecated
     private TemplateModifier editedModifier;
-
     private ItemStack cachedItem;
-    int previousPage;
 
     public EditionInventory(@NotNull Player player, @NotNull MMOItemTemplate template) {
         super(player);
@@ -78,9 +77,9 @@ public abstract class EditionInventory extends PluginInventory {
 
     /**
      * @return The currently edited configuration section. It depends on if the
-     *         player is editing the base item data or editing a modifier. This
-     *         config section contains item data (either the 'base' config
-     *         section or the 'stats' section for modifiers).
+     * player is editing the base item data or editing a modifier. This
+     * config section contains item data (either the 'base' config
+     * section or the 'stats' section for modifiers).
      */
     public ConfigurationSection getEditedSection() {
         ConfigurationSection config = configFile.getConfig().getConfigurationSection(template.getId());
@@ -183,9 +182,6 @@ public abstract class EditionInventory extends PluginInventory {
     public int getPreviousPage() {
         return previousPage;
     }
-
-    @NotNull
-    final FriendlyFeedbackProvider ffp;
 
     @NotNull
     public FriendlyFeedbackProvider getFFP() {

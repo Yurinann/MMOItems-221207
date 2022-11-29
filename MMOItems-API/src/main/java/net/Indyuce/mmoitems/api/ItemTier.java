@@ -18,25 +18,21 @@ import java.util.List;
 import java.util.Random;
 
 public class ItemTier {
+    @NotNull
+    private static final Random RANDOM = new Random();
     private final String name, id;
     private final UnidentificationInfo unidentificationInfo;
-
     // Deconstruction
     @Nullable
     private final DropTable deconstructTable;
-
     // Item glow options
     @Nullable
     private final ChatColor glowColor;
     private final boolean itemHint;
-
     // Item generation
     @Nullable
     private final NumericStatFormula capacity;
     private final double chance;
-
-    @NotNull
-    private static final Random RANDOM = new Random();
 
     /**
      * Load an ItemTier from the YML Configuration Itself
@@ -68,6 +64,12 @@ public class ItemTier {
         capacity = config.contains("generation.capacity") ? new NumericStatFormula(config.get("generation.capacity")) : null;
     }
 
+    @Nullable
+    public static ItemTier ofItem(NBTItem item) {
+        final @Nullable String format = item.getString("MMOITEMS_TIER");
+        return format == null ? null : MMOItems.plugin.getTiers().get(format);
+    }
+
     @NotNull
     public String getId() {
         return id;
@@ -89,8 +91,8 @@ public class ItemTier {
 
     /**
      * @return Reads the deconstruction drop table. This may return a list
-     *         containing multiple items and they should all be added to the
-     *         player's inventory
+     * containing multiple items and they should all be added to the
+     * player's inventory
      */
     public List<ItemStack> getDeconstructedLoot(@NotNull PlayerData player) {
         //noinspection ConstantConditions
@@ -119,7 +121,7 @@ public class ItemTier {
 
     /**
      * @return If the item tier has a modifier capacity ie if this tier let
-     *         generated items have modifiers
+     * generated items have modifiers
      */
     public boolean hasCapacity() {
         return capacity != null;
@@ -127,8 +129,8 @@ public class ItemTier {
 
     /**
      * @return The formula for modifier capacity which can be then rolled to
-     *         generate a random amount of modifier capacity when generating a
-     *         random item
+     * generate a random amount of modifier capacity when generating a
+     * random item
      */
     @Nullable
     public NumericStatFormula getModifierCapacity() {
@@ -141,13 +143,12 @@ public class ItemTier {
     }
 
     public static class UnidentificationInfo {
-        @NotNull
-        private final String name, prefix;
-        private final int range;
-
         public static final String DEFAULT_NAME = "Unidentified Item";
         public static final String DEFAULT_PREFIX = "Unknown";
         public static final UnidentificationInfo DEFAULT = new UnidentificationInfo(UnidentificationInfo.DEFAULT_NAME, UnidentificationInfo.DEFAULT_PREFIX, 0);
+        @NotNull
+        private final String name, prefix;
+        private final int range;
 
         public UnidentificationInfo(@NotNull ConfigurationSection config) {
             this(config.getString("name", DEFAULT_NAME), config.getString("prefix", DEFAULT_PREFIX), config.getInt("range"));
@@ -173,11 +174,5 @@ public class ItemTier {
             int min = (int) Math.max(1, (level - (double) range * RANDOM.nextDouble()));
             return new int[]{min, min + range};
         }
-    }
-
-    @Nullable
-    public static ItemTier ofItem(NBTItem item) {
-        final @Nullable String format = item.getString("MMOITEMS_TIER");
-        return format == null ? null : MMOItems.plugin.getTiers().get(format);
     }
 }

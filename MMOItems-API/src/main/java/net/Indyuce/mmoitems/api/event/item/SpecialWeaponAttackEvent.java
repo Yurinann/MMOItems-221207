@@ -9,12 +9,10 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 public class SpecialWeaponAttackEvent extends PlayerDataEvent implements Cancellable {
+    private static final HandlerList handlers = new HandlerList();
     private final Weapon weapon;
     private final LivingEntity target;
-
     private boolean cancelled;
-
-    private static final HandlerList handlers = new HandlerList();
 
     /**
      * Called when performing a special weapon attack using a staff or gauntlet
@@ -28,6 +26,10 @@ public class SpecialWeaponAttackEvent extends PlayerDataEvent implements Cancell
 
         this.weapon = weapon;
         this.target = target;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 
     /**
@@ -59,10 +61,6 @@ public class SpecialWeaponAttackEvent extends PlayerDataEvent implements Cancell
     @NotNull
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

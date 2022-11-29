@@ -38,7 +38,7 @@ public class InventoryUpdateHandler {
      * - the player meets the item requirements (class, level etc)
      *
      * @return All equipped MMOItems in the player's inventory. Also includes
-     *         items from custom inventory plugins like MMOInventory
+     * items from custom inventory plugins like MMOInventory
      */
     public List<EquippedItem> getEquipped() {
         return items;

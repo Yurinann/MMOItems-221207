@@ -35,37 +35,8 @@ public class ProjectileParticlesData implements StatData, RandomStatData<Project
         this.colored = true;
     }
 
-    public Particle getParticle() {
-        return particle;
-    }
-
-    public int getRed() {
-        return red;
-    }
-
-    public int getGreen() {
-        return green;
-    }
-
-    public int getBlue() {
-        return blue;
-    }
-
     public static boolean isColorable(Particle particle) {
         return particle == Particle.REDSTONE || particle == Particle.SPELL_MOB || particle == Particle.SPELL_MOB_AMBIENT || particle == Particle.NOTE;
-    }
-
-    @Override
-    public String toString() {
-        JsonObject object = new JsonObject();
-        object.addProperty("Particle", particle.name());
-        if (colored) {
-            object.addProperty("Red", red);
-            object.addProperty("Green", green);
-            object.addProperty("Blue", blue);
-        }
-
-        return object.toString();
     }
 
     public static void shootParticle(Player player, Particle particle, Location loc, double offsetX, double offsetY, double offsetZ) {
@@ -104,6 +75,35 @@ public class ProjectileParticlesData implements StatData, RandomStatData<Project
                 player.getWorld().spawnParticle(particle, loc, 0);
             }
         }
+    }
+
+    public Particle getParticle() {
+        return particle;
+    }
+
+    public int getRed() {
+        return red;
+    }
+
+    public int getGreen() {
+        return green;
+    }
+
+    public int getBlue() {
+        return blue;
+    }
+
+    @Override
+    public String toString() {
+        JsonObject object = new JsonObject();
+        object.addProperty("Particle", particle.name());
+        if (colored) {
+            object.addProperty("Red", red);
+            object.addProperty("Green", green);
+            object.addProperty("Blue", blue);
+        }
+
+        return object.toString();
     }
 
     @Override

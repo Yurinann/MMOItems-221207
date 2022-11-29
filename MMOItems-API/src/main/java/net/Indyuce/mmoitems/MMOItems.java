@@ -62,11 +62,10 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class MMOItems extends JavaPlugin {
-    public static MMOItems plugin;
-
     // Increment this when making breaking changes to items.
     public static final int INTERNAL_REVISION_ID = 1;
-
+    public static MMOItems plugin;
+    public static BukkitAudiences ADVENTURE;
     private final PluginUpdateManager pluginUpdateManager = new PluginUpdateManager();
     private final CraftingManager stationRecipeManager = new CraftingManager();
     private final LoreFormatManager formatManager = new LoreFormatManager();
@@ -82,7 +81,6 @@ public class MMOItems extends JavaPlugin {
     private final List<StringInputParser> stringInputParsers = new ArrayList<>();
     private final List<EnchantPlugin<? extends Enchantment>> enchantPlugins = new ArrayList<>();
     private final StatManager statManager = new StatManager();
-
     private DropTableManager dropTableManager;
     private WorldGenManager worldGenManager;
     private UpgradeManager upgradeManager;
@@ -90,14 +88,10 @@ public class MMOItems extends JavaPlugin {
     private BlockManager blockManager;
     private TierManager tierManager;
     private SetManager setManager;
-
     @Deprecated
     private PlaceholderParser placeholderParser = new DefaultPlaceholderParser();
     private VaultSupport vaultSupport;
     private RPGHandler rpgPlugin;
-
-    public static BukkitAudiences ADVENTURE;
-
     /**
      * Startup issues usually prevent the plugin from loading and just
      * call {@link #onDisable()} directly afterwards which prints out
@@ -110,6 +104,132 @@ public class MMOItems extends JavaPlugin {
 
     public MMOItems() {
         plugin = this;
+    }
+
+    /**
+     * @param stack The stack you trying to read
+     * @return The MMOItems type of this stack, if it has one
+     * @see #getType(NBTItem)
+     */
+    @Nullable
+    public static Type getType(@Nullable ItemStack stack) {
+
+        // Get from nbt
+        return getType(NBTItem.get(stack));
+    }
+
+    /**
+     * @param nbt The NBTItem you trying to read
+     * @return The MMOItems type of this nbt, if it has one
+     */
+    @Nullable
+    public static Type getType(@Nullable NBTItem nbt) {
+
+        // That's it
+        return plugin.getTypes().get(getTypeName(nbt));
+    }
+
+    /**
+     * @param stack The stack you trying to read
+     * @return The MMOItems type of this stack, if it has one
+     * @see #getTypeName(NBTItem)
+     */
+    @Nullable
+    public static String getTypeName(@Nullable ItemStack stack) {
+
+        // Get from nbt
+        return getTypeName(NBTItem.get(stack));
+    }
+
+    /**
+     * @param nbt The NBTItem you trying to read
+     * @return The MMOItems type of this nbt, if it has one
+     */
+    @Nullable
+    public static String getTypeName(@Nullable NBTItem nbt) {
+
+        // Straight up no
+        if (nbt == null) {
+            return null;
+        }
+
+        // Get from nbt
+        if (!nbt.hasType()) {
+            return null;
+        }
+
+        // That's it
+        return nbt.getType();
+    }
+
+    /**
+     * @param nbt The ItemStack you trying to read
+     * @return The MMOItems ID of this stack, if it has one
+     * @see #getID(NBTItem)
+     */
+    @Nullable
+    public static String getID(@Nullable ItemStack nbt) {
+
+        // That's it
+        return getID(NBTItem.get(nbt));
+    }
+
+    /**
+     * @param nbt The NBTItem you trying to read
+     * @return The MMOItems ID of this nbt, if it has one
+     */
+    @Nullable
+    public static String getID(@Nullable NBTItem nbt) {
+
+        // Straight up no
+        if (nbt == null) {
+            return null;
+        }
+
+        // That's it
+        return nbt.getString("MMOITEMS_ITEM_ID");
+    }
+
+    /**
+     * Easily log something using the FriendlyFeedbackProvider, nice!
+     * <p></p>
+     * Use a null level to use the normal console sender.
+     *
+     * @author Gunging
+     */
+    public static void print(@Nullable Level level, @Nullable String message, @Nullable String prefix, @NotNull String... replaces) {
+        if (message == null) {
+            message = "< null >";
+        }
+        if (level != null) {
+            plugin.getLogger().log(level, FriendlyFeedbackProvider.quickForConsole(FFPMMOItems.get(), message, replaces));
+        } else {
+            FriendlyFeedbackMessage p = new FriendlyFeedbackMessage("", prefix);
+            FriendlyFeedbackMessage r = FriendlyFeedbackProvider.generateMessage(p, message, replaces);
+            getConsole().sendMessage(r.forConsole(FFPMMOItems.get()));
+        }
+    }
+
+    /**
+     * JULES DO NOT DELETE THIS AGAIN I KNOW ITS UNUSED PRECISELY BECAUSE I ALWAYS COMMENT
+     * ALL ITS USAGES BEFORE PUSHING ANY UPDATES, I USE IT FOR SPAMMY DEVELOPER MESSAGES
+     * <p>
+     * Note that {@link #print(Level, String, String, String...)} is used for actual warnings
+     * or such that the users may see, so dont delete that one either.
+     *
+     * @author Gunging
+     */
+    public static void log(@Nullable String message, @NotNull String... replaces) {
+        print(null, message, null, replaces);
+    }
+
+    /**
+     * @return The server's console sender.
+     * @author Gunging
+     */
+    @NotNull
+    public static ConsoleCommandSender getConsole() {
+        return plugin.getServer().getConsoleSender();
     }
 
     @Override
@@ -317,6 +437,28 @@ public class MMOItems extends JavaPlugin {
     }
 
     /**
+     * The RPGHandler interface lets MMOItems fetch and manipulate RPG data like
+     * player level, class, resources like mana and stamina for item or skill
+     * costs, item restrictions, etc.
+     *
+     * @param handler Your RPGHandler instance
+     */
+    public void setRPG(RPGHandler handler) {
+        Validate.notNull(handler, "RPGHandler cannot be null");
+
+        // Unregister events from current RPGPlugin instance
+        if (rpgPlugin != null && rpgPlugin instanceof Listener && isEnabled())
+            HandlerList.unregisterAll((Listener) rpgPlugin);
+
+        rpgPlugin = handler;
+        getLogger().log(Level.INFO, "Now using " + handler.getClass().getSimpleName() + " as RPG provider");
+
+        // Register new events
+        if (handler instanceof Listener && isEnabled())
+            Bukkit.getPluginManager().registerEvents((Listener) handler, this);
+    }
+
+    /**
      * Decide by which system will the RPG Requirements of the player will be checked.
      * <p>
      * For example, required level, is that vanilla XP levels, MMOCore levels, McMMO Leves or what?
@@ -340,28 +482,6 @@ public class MMOItems extends JavaPlugin {
 
         // Just use the default
         setRPG(new DefaultHook());
-    }
-
-    /**
-     * The RPGHandler interface lets MMOItems fetch and manipulate RPG data like
-     * player level, class, resources like mana and stamina for item or skill
-     * costs, item restrictions, etc.
-     *
-     * @param handler Your RPGHandler instance
-     */
-    public void setRPG(RPGHandler handler) {
-        Validate.notNull(handler, "RPGHandler cannot be null");
-
-        // Unregister events from current RPGPlugin instance
-        if (rpgPlugin != null && rpgPlugin instanceof Listener && isEnabled())
-            HandlerList.unregisterAll((Listener) rpgPlugin);
-
-        rpgPlugin = handler;
-        getLogger().log(Level.INFO, "Now using " + handler.getClass().getSimpleName() + " as RPG provider");
-
-        // Register new events
-        if (handler instanceof Listener && isEnabled())
-            Bukkit.getPluginManager().registerEvents((Listener) handler, this);
     }
 
     /**
@@ -487,6 +607,8 @@ public class MMOItems extends JavaPlugin {
         return upgradeManager;
     }
 
+    //region Easy-Access API
+
     @Deprecated
     public PlaceholderParser getPlaceholderParser() {
         return placeholderParser;
@@ -520,6 +642,8 @@ public class MMOItems extends JavaPlugin {
         return vaultSupport != null && vaultSupport.getEconomy() != null;
     }
 
+    //region Reading MMOItems from ItemStacks
+
     public VaultSupport getVault() {
         return vaultSupport;
     }
@@ -531,8 +655,6 @@ public class MMOItems extends JavaPlugin {
     public List<StringInputParser> getStringInputParsers() {
         return stringInputParsers;
     }
-
-    //region Easy-Access API
 
     /**
      * @return Generates an item given an item template. The item level will
@@ -607,6 +729,7 @@ public class MMOItems extends JavaPlugin {
         // Build if found
         return m.newBuilder().build();
     }
+    //endregion
 
     /**
      * @return Generates an item given an item template. The item level will be
@@ -657,135 +780,6 @@ public class MMOItems extends JavaPlugin {
 
         // Build if found
         return m.newBuilder().build();
-    }
-
-    //region Reading MMOItems from ItemStacks
-
-    /**
-     * @param stack The stack you trying to read
-     * @return The MMOItems type of this stack, if it has one
-     * @see #getType(NBTItem)
-     */
-    @Nullable
-    public static Type getType(@Nullable ItemStack stack) {
-
-        // Get from nbt
-        return getType(NBTItem.get(stack));
-    }
-
-    /**
-     * @param nbt The NBTItem you trying to read
-     * @return The MMOItems type of this nbt, if it has one
-     */
-    @Nullable
-    public static Type getType(@Nullable NBTItem nbt) {
-
-        // That's it
-        return plugin.getTypes().get(getTypeName(nbt));
-    }
-
-    /**
-     * @param stack The stack you trying to read
-     * @return The MMOItems type of this stack, if it has one
-     * @see #getTypeName(NBTItem)
-     */
-    @Nullable
-    public static String getTypeName(@Nullable ItemStack stack) {
-
-        // Get from nbt
-        return getTypeName(NBTItem.get(stack));
-    }
-
-    /**
-     * @param nbt The NBTItem you trying to read
-     * @return The MMOItems type of this nbt, if it has one
-     */
-    @Nullable
-    public static String getTypeName(@Nullable NBTItem nbt) {
-
-        // Straight up no
-        if (nbt == null) {
-            return null;
-        }
-
-        // Get from nbt
-        if (!nbt.hasType()) {
-            return null;
-        }
-
-        // That's it
-        return nbt.getType();
-    }
-
-    /**
-     * @param nbt The ItemStack you trying to read
-     * @return The MMOItems ID of this stack, if it has one
-     * @see #getID(NBTItem)
-     */
-    @Nullable
-    public static String getID(@Nullable ItemStack nbt) {
-
-        // That's it
-        return getID(NBTItem.get(nbt));
-    }
-
-    /**
-     * @param nbt The NBTItem you trying to read
-     * @return The MMOItems ID of this nbt, if it has one
-     */
-    @Nullable
-    public static String getID(@Nullable NBTItem nbt) {
-
-        // Straight up no
-        if (nbt == null) {
-            return null;
-        }
-
-        // That's it
-        return nbt.getString("MMOITEMS_ITEM_ID");
-    }
-    //endregion
-
-    /**
-     * Easily log something using the FriendlyFeedbackProvider, nice!
-     * <p></p>
-     * Use a null level to use the normal console sender.
-     *
-     * @author Gunging
-     */
-    public static void print(@Nullable Level level, @Nullable String message, @Nullable String prefix, @NotNull String... replaces) {
-        if (message == null) {
-            message = "< null >";
-        }
-        if (level != null) {
-            plugin.getLogger().log(level, FriendlyFeedbackProvider.quickForConsole(FFPMMOItems.get(), message, replaces));
-        } else {
-            FriendlyFeedbackMessage p = new FriendlyFeedbackMessage("", prefix);
-            FriendlyFeedbackMessage r = FriendlyFeedbackProvider.generateMessage(p, message, replaces);
-            getConsole().sendMessage(r.forConsole(FFPMMOItems.get()));
-        }
-    }
-
-    /**
-     * JULES DO NOT DELETE THIS AGAIN I KNOW ITS UNUSED PRECISELY BECAUSE I ALWAYS COMMENT
-     * ALL ITS USAGES BEFORE PUSHING ANY UPDATES, I USE IT FOR SPAMMY DEVELOPER MESSAGES
-     * <p>
-     * Note that {@link #print(Level, String, String, String...)} is used for actual warnings
-     * or such that the users may see, so dont delete that one either.
-     *
-     * @author Gunging
-     */
-    public static void log(@Nullable String message, @NotNull String... replaces) {
-        print(null, message, null, replaces);
-    }
-
-    /**
-     * @return The server's console sender.
-     * @author Gunging
-     */
-    @NotNull
-    public static ConsoleCommandSender getConsole() {
-        return plugin.getServer().getConsoleSender();
     }
     //endregion
 

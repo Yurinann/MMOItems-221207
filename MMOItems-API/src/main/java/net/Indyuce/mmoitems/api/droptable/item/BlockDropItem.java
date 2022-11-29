@@ -5,25 +5,25 @@ import net.Indyuce.mmoitems.api.player.PlayerData;
 import org.bukkit.inventory.ItemStack;
 
 public class BlockDropItem extends DropItem {
-	private final int blockId;
+    private final int blockId;
 
-	public BlockDropItem(int blockId, String info) {
-		super(info);
+    public BlockDropItem(int blockId, String info) {
+        super(info);
 
-		this.blockId = blockId;
-	}
+        this.blockId = blockId;
+    }
 
-	public int getBlockId() {
-		return blockId;
-	}
+    public int getBlockId() {
+        return blockId;
+    }
 
-	@Override
-	public ItemStack getItem(PlayerData player, int amount) {
-		return MMOItems.plugin.getCustomBlocks().getBlock(blockId).getItem();
-	}
+    @Override
+    public ItemStack getItem(PlayerData player, int amount) {
+        return MMOItems.plugin.getCustomBlocks().getBlock(blockId).getItem();
+    }
 
-	@Override
-	public String getKey() {
-		return "block." + getBlockId();
-	}
+    @Override
+    public String getKey() {
+        return "block." + getBlockId();
+    }
 }

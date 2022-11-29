@@ -59,6 +59,11 @@ public abstract class ItemStat<R extends RandomStatData<S>, S extends StatData> 
         this.nbtPath = "MMOITEMS_" + id;
     }
 
+    public static String translate(String path) {
+        String str = MMOItems.plugin.getLanguage().getStatFormat(path);
+        return str == null ? "<TranslationNotFound:" + path + ">" : str;
+    }
+
     /**
      * When random stat data is being read from a config file
      *
@@ -166,7 +171,7 @@ public abstract class ItemStat<R extends RandomStatData<S>, S extends StatData> 
     /**
      * @return The stat ID
      * @deprecated Use getId() instead. Type is no longer an util since they can
-     *         now be registered from external plugins
+     * now be registered from external plugins
      */
     @Deprecated
     @NotNull
@@ -184,8 +189,8 @@ public abstract class ItemStat<R extends RandomStatData<S>, S extends StatData> 
 
     /**
      * @return The NBT path used by the stat to save data in an item's NBTTags.
-     *         The format is 'MMOITEMS_' followed by the stat name in capital
-     *         letters only using _
+     * The format is 'MMOITEMS_' followed by the stat name in capital
+     * letters only using _
      */
     @NotNull
     public String getNBTPath() {
@@ -246,11 +251,6 @@ public abstract class ItemStat<R extends RandomStatData<S>, S extends StatData> 
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    public static String translate(String path) {
-        String str = MMOItems.plugin.getLanguage().getStatFormat(path);
-        return str == null ? "<TranslationNotFound:" + path + ">" : str;
     }
 
     /**

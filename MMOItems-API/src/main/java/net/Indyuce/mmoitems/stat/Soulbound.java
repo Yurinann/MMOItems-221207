@@ -34,93 +34,97 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class Soulbound extends ItemStat<RandomStatData<SoulboundData>, SoulboundData> implements InternalStat, ItemRestriction {
-	public Soulbound() {
-		super("SOULBOUND", VersionMaterial.ENDER_EYE.toMaterial(), "Soulbound", new String[0], new String[] { "all" });
-	}
+    public Soulbound() {
+        super("SOULBOUND", VersionMaterial.ENDER_EYE.toMaterial(), "Soulbound", new String[0], new String[]{"all"});
+    }
 
-	@Nullable
-	@Override
-	public RandomStatData<SoulboundData> whenInitialized(Object object) {
-		throw new NotImplementedException();
-	}
+    @Nullable
+    @Override
+    public RandomStatData<SoulboundData> whenInitialized(Object object) {
+        throw new NotImplementedException();
+    }
 
-	@Override
-	public void whenClicked(@NotNull EditionInventory inv, @NotNull InventoryClickEvent event) {
-		throw new NotImplementedException();
-	}
+    @Override
+    public void whenClicked(@NotNull EditionInventory inv, @NotNull InventoryClickEvent event) {
+        throw new NotImplementedException();
+    }
 
-	@Override
-	public void whenInput(@NotNull EditionInventory inv, @NotNull String message, Object... info) {
-		throw new NotImplementedException();
-	}
+    @Override
+    public void whenInput(@NotNull EditionInventory inv, @NotNull String message, Object... info) {
+        throw new NotImplementedException();
+    }
 
-	@Override
-	public void whenDisplayed(List<String> lore, Optional<RandomStatData<SoulboundData>> statData) {
-		throw new NotImplementedException();
-	}
+    @Override
+    public void whenDisplayed(List<String> lore, Optional<RandomStatData<SoulboundData>> statData) {
+        throw new NotImplementedException();
+    }
 
-	@Override
-	public void whenApplied(@NotNull ItemStackBuilder item, @NotNull SoulboundData data) {
-		item.addItemTag(getAppliedNBT(data));
+    @Override
+    public void whenApplied(@NotNull ItemStackBuilder item, @NotNull SoulboundData data) {
+        item.addItemTag(getAppliedNBT(data));
 
-		// Lore stuff
-		String formattedLoreTag = Message.SOULBOUND_ITEM_LORE.getUpdated().replace("#player#", ((SoulboundData) data).getName()).replace("#level#",
-				MMOUtils.intToRoman(data.getLevel()));
-		item.getLore().insert("soulbound", formattedLoreTag.split(Pattern.quote("//")));
-	}
+        // Lore stuff
+        String formattedLoreTag = Message.SOULBOUND_ITEM_LORE.getUpdated().replace("#player#", ((SoulboundData) data).getName()).replace("#level#",
+                MMOUtils.intToRoman(data.getLevel()));
+        item.getLore().insert("soulbound", formattedLoreTag.split(Pattern.quote("//")));
+    }
 
-	@NotNull
-	@Override
-	public ArrayList<ItemTag> getAppliedNBT(@NotNull SoulboundData data) {
-		ArrayList<ItemTag> a = new ArrayList<>();
-		a.add(new ItemTag(getNBTPath(), data.toJson().toString()));
-		return a;
-	}
+    @NotNull
+    @Override
+    public ArrayList<ItemTag> getAppliedNBT(@NotNull SoulboundData data) {
+        ArrayList<ItemTag> a = new ArrayList<>();
+        a.add(new ItemTag(getNBTPath(), data.toJson().toString()));
+        return a;
+    }
 
-	@Override
-	public void whenLoaded(@NotNull ReadMMOItem mmoitem) {
-		ArrayList<ItemTag> rTags = new ArrayList<>();
-		if (mmoitem.getNBT().hasTag(getNBTPath()))
-			rTags.add(ItemTag.getTagAtPath(getNBTPath(), mmoitem.getNBT(), SupportedNBTTagValues.STRING));
-		StatData data = getLoadedNBT(rTags);
-		if (data != null) { mmoitem.setData(this, data);}
-	}
+    @Override
+    public void whenLoaded(@NotNull ReadMMOItem mmoitem) {
+        ArrayList<ItemTag> rTags = new ArrayList<>();
+        if (mmoitem.getNBT().hasTag(getNBTPath()))
+            rTags.add(ItemTag.getTagAtPath(getNBTPath(), mmoitem.getNBT(), SupportedNBTTagValues.STRING));
+        StatData data = getLoadedNBT(rTags);
+        if (data != null) {
+            mmoitem.setData(this, data);
+        }
+    }
 
-	@Nullable
-	@Override
-	public SoulboundData getLoadedNBT(@NotNull ArrayList<ItemTag> storedTags) {
-		ItemTag tag = ItemTag.getTagAtPath(getNBTPath(), storedTags);
-		if (tag != null) {
-			try {
+    @Nullable
+    @Override
+    public SoulboundData getLoadedNBT(@NotNull ArrayList<ItemTag> storedTags) {
+        ItemTag tag = ItemTag.getTagAtPath(getNBTPath(), storedTags);
+        if (tag != null) {
+            try {
 
-				// Parse as Json
-				return new SoulboundData(new JsonParser().parse((String) tag.getValue()).getAsJsonObject());
+                // Parse as Json
+                return new SoulboundData(new JsonParser().parse((String) tag.getValue()).getAsJsonObject());
 
-			} catch (JsonSyntaxException|IllegalStateException exception) {
-				/*
-				 * OLD ITEM WHICH MUST BE UPDATED.
-				 */
-			}
-		}
-		return null;
-	}
+            } catch (JsonSyntaxException | IllegalStateException exception) {
+                /*
+                 * OLD ITEM WHICH MUST BE UPDATED.
+                 */
+            }
+        }
+        return null;
+    }
 
-	@NotNull
-	@Override
-	public SoulboundData getClearStatData() { return new SoulboundData(UUID.fromString("df930b7b-a84d-4f76-90ac-33be6a5b6c88"), "gunging", 0); }
+    @NotNull
+    @Override
+    public SoulboundData getClearStatData() {
+        return new SoulboundData(UUID.fromString("df930b7b-a84d-4f76-90ac-33be6a5b6c88"), "gunging", 0);
+    }
 
-	@Override
-	public boolean canUse(RPGPlayer player, NBTItem item, boolean message) {
-		if (item.hasTag(ItemStats.SOULBOUND.getNBTPath()) && !item.getString(ItemStats.SOULBOUND.getNBTPath()).contains(player.getPlayer().getUniqueId().toString()) && !player.getPlayer().hasPermission("mmoitems.bypass.soulbound")) {
-			if (message) {
-				int level = new JsonParser().parse(item.getString(ItemStats.SOULBOUND.getNBTPath())).getAsJsonObject().get("Level").getAsInt();
-				Message.SOULBOUND_RESTRICTION.format(ChatColor.RED).send(player.getPlayer());
-				player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1.5f);
-				player.getPlayer()
-						.damage(MMOItems.plugin.getLanguage().soulboundBaseDamage + level * MMOItems.plugin.getLanguage().soulboundPerLvlDamage);
-			}
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean canUse(RPGPlayer player, NBTItem item, boolean message) {
+        if (item.hasTag(ItemStats.SOULBOUND.getNBTPath()) && !item.getString(ItemStats.SOULBOUND.getNBTPath()).contains(player.getPlayer().getUniqueId().toString()) && !player.getPlayer().hasPermission("mmoitems.bypass.soulbound")) {
+            if (message) {
+                int level = new JsonParser().parse(item.getString(ItemStats.SOULBOUND.getNBTPath())).getAsJsonObject().get("Level").getAsInt();
+                Message.SOULBOUND_RESTRICTION.format(ChatColor.RED).send(player.getPlayer());
+                player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1.5f);
+                player.getPlayer()
+                        .damage(MMOItems.plugin.getLanguage().soulboundBaseDamage + level * MMOItems.plugin.getLanguage().soulboundPerLvlDamage);
+            }
+            return false;
+        }
+        return true;
+    }
 }

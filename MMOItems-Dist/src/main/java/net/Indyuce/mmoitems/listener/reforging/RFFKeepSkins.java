@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * Transfers the lore from the old MMOItem to the new one.
- *
+ * <p>
  * This operation is intended to allow refreshing the lore,
  * but keeping external things too.
  *
@@ -19,11 +19,15 @@ public class RFFKeepSkins implements Listener {
 
     @EventHandler
     public void onReforge(MMOItemReforgeFinishEvent event) {
-        if (!event.getOptions().shouldKeepSkins()) { return; }
+        if (!event.getOptions().shouldKeepSkins()) {
+            return;
+        }
         //RFG// MMOItems.log("§8Reforge §4EFG§7 Keeping Skins");
 
         // Got skin?
-        if (!event.getReforger().getNBTItem().getBoolean(ItemSkin.HAS_SKIN_TAG)) { return; }
+        if (!event.getReforger().getNBTItem().getBoolean(ItemSkin.HAS_SKIN_TAG)) {
+            return;
+        }
         //RFG// MMOItems.log("§8Reforge §4EFG§7 Item has skin");
 
         // Apply skin to result
@@ -35,6 +39,7 @@ public class RFFKeepSkins implements Listener {
         // Success?
         if (ret != null) {
             //RFG// MMOItems.log("§8Reforge §4EFG§7 Success");
-            event.setFinishedItem(ret); }
+            event.setFinishedItem(ret);
+        }
     }
 }

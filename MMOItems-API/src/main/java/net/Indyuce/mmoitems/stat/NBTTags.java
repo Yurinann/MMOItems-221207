@@ -22,197 +22,199 @@ import java.util.List;
 import java.util.Optional;
 
 public class NBTTags extends StringListStat {
-	public NBTTags() {
-		super("CUSTOM_NBT", Material.NAME_TAG, "NBT Tags", new String[] { "Custom NBT Tags." }, new String[] { "all" });
-	}
+    static String extraneousTag = "EXTMI_";
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public StringListData whenInitialized(Object object) {
-		Validate.isTrue(object instanceof List<?>, "Must specify a string list");
-		return new StringListData((List<String>) object);
-	}
+    public NBTTags() {
+        super("CUSTOM_NBT", Material.NAME_TAG, "NBT Tags", new String[]{"Custom NBT Tags."}, new String[]{"all"});
+    }
 
-	@Override
-	public void whenClicked(@NotNull EditionInventory inv, @NotNull InventoryClickEvent event) {
-		if (event.getAction() == InventoryAction.PICKUP_ALL)
-			new StatEdition(inv, ItemStats.NBT_TAGS).enable("Write in the chat the NBT tag you want to add.",
-					ChatColor.AQUA + "Format: {Tag Name} {Tag Value}");
+    @Override
+    @SuppressWarnings("unchecked")
+    public StringListData whenInitialized(Object object) {
+        Validate.isTrue(object instanceof List<?>, "Must specify a string list");
+        return new StringListData((List<String>) object);
+    }
 
-		if (event.getAction() == InventoryAction.PICKUP_HALF) {
-			if (inv.getEditedSection().contains("custom-nbt")) {
-				List<String> nbtTags = inv.getEditedSection().getStringList("custom-nbt");
-				if (nbtTags.size() < 1)
-					return;
+    @Override
+    public void whenClicked(@NotNull EditionInventory inv, @NotNull InventoryClickEvent event) {
+        if (event.getAction() == InventoryAction.PICKUP_ALL)
+            new StatEdition(inv, ItemStats.NBT_TAGS).enable("Write in the chat the NBT tag you want to add.",
+                    ChatColor.AQUA + "Format: {Tag Name} {Tag Value}");
 
-				String last = nbtTags.get(nbtTags.size() - 1);
-				nbtTags.remove(last);
-				inv.getEditedSection().set("custom-nbt", nbtTags);
-				inv.registerTemplateEdition();
-				inv.getPlayer().sendMessage(MMOItems.plugin.getPrefix() + "Successfully removed '" + last + "'.");
-			}
-		}
-	}
+        if (event.getAction() == InventoryAction.PICKUP_HALF) {
+            if (inv.getEditedSection().contains("custom-nbt")) {
+                List<String> nbtTags = inv.getEditedSection().getStringList("custom-nbt");
+                if (nbtTags.size() < 1)
+                    return;
 
-	@Override
-	public void whenInput(@NotNull EditionInventory inv, @NotNull String message, Object... info) {
-		Validate.isTrue(message.split(" ").length > 1, "Use this format: {Tag Name} {Tag Value}");
-		List<String> customNbt = inv.getEditedSection().contains("custom-nbt") ? inv.getEditedSection().getStringList("custom-nbt")
-				: new ArrayList<>();
-		customNbt.add(message);
+                String last = nbtTags.get(nbtTags.size() - 1);
+                nbtTags.remove(last);
+                inv.getEditedSection().set("custom-nbt", nbtTags);
+                inv.registerTemplateEdition();
+                inv.getPlayer().sendMessage(MMOItems.plugin.getPrefix() + "Successfully removed '" + last + "'.");
+            }
+        }
+    }
 
-		inv.getEditedSection().set("custom-nbt", customNbt);
-		inv.registerTemplateEdition();
-		inv.getPlayer().sendMessage(MMOItems.plugin.getPrefix() + "StringListStat successfully added.");
-	}
+    @Override
+    public void whenInput(@NotNull EditionInventory inv, @NotNull String message, Object... info) {
+        Validate.isTrue(message.split(" ").length > 1, "Use this format: {Tag Name} {Tag Value}");
+        List<String> customNbt = inv.getEditedSection().contains("custom-nbt") ? inv.getEditedSection().getStringList("custom-nbt")
+                : new ArrayList<>();
+        customNbt.add(message);
 
-	@Override
-	public void whenDisplayed(List<String> lore, Optional<StringListData> statData) {
-		if (statData.isPresent()) {
-			lore.add(ChatColor.GRAY + "Current Value:");
-			StringListData data = statData.get();
-			data.getList().forEach(str -> lore.add(ChatColor.GRAY + str));
+        inv.getEditedSection().set("custom-nbt", customNbt);
+        inv.registerTemplateEdition();
+        inv.getPlayer().sendMessage(MMOItems.plugin.getPrefix() + "StringListStat successfully added.");
+    }
 
-		} else
-			lore.add(ChatColor.GRAY + "Current Value: " + ChatColor.RED + "None");
+    @Override
+    public void whenDisplayed(List<String> lore, Optional<StringListData> statData) {
+        if (statData.isPresent()) {
+            lore.add(ChatColor.GRAY + "Current Value:");
+            StringListData data = statData.get();
+            data.getList().forEach(str -> lore.add(ChatColor.GRAY + str));
 
-		lore.add("");
-		lore.add(ChatColor.YELLOW + AltChar.listDash + " Click to add a tag.");
-		lore.add(ChatColor.YELLOW + AltChar.listDash + " Right click to remove the last tag.");
-	}
+        } else
+            lore.add(ChatColor.GRAY + "Current Value: " + ChatColor.RED + "None");
 
-	static String extraneousTag = "EXTMI_";
+        lore.add("");
+        lore.add(ChatColor.YELLOW + AltChar.listDash + " Click to add a tag.");
+        lore.add(ChatColor.YELLOW + AltChar.listDash + " Right click to remove the last tag.");
+    }
 
-	/**
-	 * Unlike other StringLists, this adds every content of the array as a different tag rather than as a JsonArray compound.
-	 */
-	@NotNull
-	@Override
-	public ArrayList<ItemTag> getAppliedNBT(@NotNull StringListData data) {
+    /**
+     * Unlike other StringLists, this adds every content of the array as a different tag rather than as a JsonArray compound.
+     */
+    @NotNull
+    @Override
+    public ArrayList<ItemTag> getAppliedNBT(@NotNull StringListData data) {
 
 
-		// Start out with a new JSON Array
-		JsonArray array = new JsonArray();
+        // Start out with a new JSON Array
+        JsonArray array = new JsonArray();
 
-		// Make the result list
-		ArrayList<ItemTag> ret = new ArrayList<>();
+        // Make the result list
+        ArrayList<ItemTag> ret = new ArrayList<>();
 
-		HashMap<String, String> extraneousAdd = new HashMap<>();
-		HashMap<String, ItemTag> tagsAdd = new HashMap<>();
+        HashMap<String, String> extraneousAdd = new HashMap<>();
+        HashMap<String, ItemTag> tagsAdd = new HashMap<>();
 
-		// For every list entry
-		for (String str : data.getList()) {
+        // For every list entry
+        for (String str : data.getList()) {
 
-			// Are we looking at an extraneous?
-			if (str.startsWith(extraneousTag)) {
+            // Are we looking at an extraneous?
+            if (str.startsWith(extraneousTag)) {
 
-				// No more considering
-				continue;
-			}
+                // No more considering
+                continue;
+            }
 
-			// Add to the array as-is
-			array.add(str);
+            // Add to the array as-is
+            array.add(str);
 
-			// Add as a tag form, splitting before the first space as the name, and right after as the value.
-			String tagName = str.substring(0, str.indexOf(' '));
-			String tagValue = str.substring(str.indexOf(' ') + 1);
+            // Add as a tag form, splitting before the first space as the name, and right after as the value.
+            String tagName = str.substring(0, str.indexOf(' '));
+            String tagValue = str.substring(str.indexOf(' ') + 1);
 
-			extraneousAdd.put(tagName, extraneousTag + str);
-			tagsAdd.put(tagName, new ItemTag(tagName, calculateObjectType(tagValue)));
-		}
+            extraneousAdd.put(tagName, extraneousTag + str);
+            tagsAdd.put(tagName, new ItemTag(tagName, calculateObjectType(tagValue)));
+        }
 
-		// For every list entry
-		for (String extrstr : ((StringListData) data).getList()) {
+        // For every list entry
+        for (String extrstr : ((StringListData) data).getList()) {
 
-			// Identify tag
-			if (!extrstr.startsWith(extraneousTag)) {
+            // Identify tag
+            if (!extrstr.startsWith(extraneousTag)) {
 
-				// Already considered
-				continue;
-			}
+                // Already considered
+                continue;
+            }
 
-			// Clip the extraneous tag
-			String str = extrstr.substring(extraneousTag.length());
+            // Clip the extraneous tag
+            String str = extrstr.substring(extraneousTag.length());
 
-			// Add as a tag form, splitting before the first space as the name, and right after as the value.
-			String tagName = str.substring(0, str.indexOf(' '));
-			String tagValue = str.substring(str.indexOf(' ') + 1);
+            // Add as a tag form, splitting before the first space as the name, and right after as the value.
+            String tagName = str.substring(0, str.indexOf(' '));
+            String tagValue = str.substring(str.indexOf(' ') + 1);
 
-			// Is it in the extraneous observe map?
-			if (extraneousAdd.containsKey(tagName)) {
+            // Is it in the extraneous observe map?
+            if (extraneousAdd.containsKey(tagName)) {
 
-				/*
-				 * There is data of it being in the map, and in the list.
-				 * Any value change has been overridden by the current, and
-				 * that that is the desired behaviour.
-				 *
-				 * However, I am afraid that is no longer the original value
-				 * that should be restored when the tag is deleted? If it was
-				 * ever registered in this map as EXTMI, that is the original
-				 * most value and it must be kept that way.
-				 */
-				extraneousAdd.put(tagName, extrstr);
+                /*
+                 * There is data of it being in the map, and in the list.
+                 * Any value change has been overridden by the current, and
+                 * that that is the desired behaviour.
+                 *
+                 * However, I am afraid that is no longer the original value
+                 * that should be restored when the tag is deleted? If it was
+                 * ever registered in this map as EXTMI, that is the original
+                 * most value and it must be kept that way.
+                 */
+                extraneousAdd.put(tagName, extrstr);
 
-			// This extraneous tag was not observed among non extraneous
-			} else {
+                // This extraneous tag was not observed among non extraneous
+            } else {
 
-				/*
-			     * That can only mean that this tag was removed from the
-			     * non extraneous, and as such, the desirable behaviour is
-			     * to remove it from the item entirely or revert to original
-			     * most value (which might be just null);
-				 */
-				if (tagValue.isEmpty()) {
+                /*
+                 * That can only mean that this tag was removed from the
+                 * non extraneous, and as such, the desirable behaviour is
+                 * to remove it from the item entirely or revert to original
+                 * most value (which might be just null);
+                 */
+                if (tagValue.isEmpty()) {
 
-					// Remove altogether
-					tagsAdd.remove(tagName);
+                    // Remove altogether
+                    tagsAdd.remove(tagName);
 
-				// Default tag value actually existed... I guess
-				} else {
+                    // Default tag value actually existed... I guess
+                } else {
 
-					// Edit value to defaultmost stored
-					tagsAdd.put(tagName, new ItemTag(tagName, calculateObjectType(tagValue)));
-				}
+                    // Edit value to defaultmost stored
+                    tagsAdd.put(tagName, new ItemTag(tagName, calculateObjectType(tagValue)));
+                }
 
-				// Not necessary to remember EXTMI tag anymore, now that it is the default
-				extraneousAdd.remove(tagName);
-			}
-		}
+                // Not necessary to remember EXTMI tag anymore, now that it is the default
+                extraneousAdd.remove(tagName);
+            }
+        }
 
-		// For every tag added by this stat
-		for (String tagName : tagsAdd.keySet()) {
+        // For every tag added by this stat
+        for (String tagName : tagsAdd.keySet()) {
 
-			// Solidify as included tag
-			ret.add(tagsAdd.get(tagName));
+            // Solidify as included tag
+            ret.add(tagsAdd.get(tagName));
 
-			// Include in JSON array the chad EXTMI value
-			array.add(extraneousAdd.get(tagName));
-		}
+            // Include in JSON array the chad EXTMI value
+            array.add(extraneousAdd.get(tagName));
+        }
 
-		// Add the Json Array
-		ret.add(new ItemTag(getNBTPath(), array.toString()));
+        // Add the Json Array
+        ret.add(new ItemTag(getNBTPath(), array.toString()));
 
-		// Ready.
-		return ret;
-	}
+        // Ready.
+        return ret;
+    }
 
-	public Object calculateObjectType(String input) {
-		if (input.equalsIgnoreCase("true"))
-			return true;
-		if (input.equalsIgnoreCase("false"))
-			return false;
-		try {
-			return Integer.parseInt(input);
-		} catch (NumberFormatException ignored) {}
-		try {
-			return Double.parseDouble(input);
-		} catch (NumberFormatException ignored) {}
-		if (input.contains("[") && input.contains("]")) {
-			List<String> entries = new ArrayList<>();
-			for (String s : input.replace("[", "").replace("]", "").split(","))
-				entries.add(s.replace("\"", ""));
-			return entries;
-		}
-		return input;
-	}
+    public Object calculateObjectType(String input) {
+        if (input.equalsIgnoreCase("true"))
+            return true;
+        if (input.equalsIgnoreCase("false"))
+            return false;
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException ignored) {
+        }
+        try {
+            return Double.parseDouble(input);
+        } catch (NumberFormatException ignored) {
+        }
+        if (input.contains("[") && input.contains("]")) {
+            List<String> entries = new ArrayList<>();
+            for (String s : input.replace("[", "").replace("]", "").split(","))
+                entries.add(s.replace("\"", ""));
+            return entries;
+        }
+        return input;
+    }
 }

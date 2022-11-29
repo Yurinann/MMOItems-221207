@@ -67,14 +67,14 @@ public abstract class RPGPlayer {
      */
     public abstract double getMana();
 
-    public abstract double getStamina();
-
     /**
      * Sets the mana of the player.
      * <p></p>
      * Sometimes an internal quantity, sometimes the hunger bar, etc...
      */
     public abstract void setMana(double value);
+
+    public abstract double getStamina();
 
     public abstract void setStamina(double value);
 

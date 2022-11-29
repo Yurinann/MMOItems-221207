@@ -12,41 +12,41 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class CreateCommandTreeNode extends CommandTreeNode {
-	public CreateCommandTreeNode(CommandTreeNode parent) {
-		super(parent, "create");
+    public CreateCommandTreeNode(CommandTreeNode parent) {
+        super(parent, "create");
 
-		addParameter(MMOItemsCommandTreeRoot.TYPE);
-		addParameter(new Parameter("<id>", (explorer, list) -> list.add("ITEM_ID")));
-	}
+        addParameter(MMOItemsCommandTreeRoot.TYPE);
+        addParameter(new Parameter("<id>", (explorer, list) -> list.add("ITEM_ID")));
+    }
 
-	@Override
-	public CommandResult execute(CommandSender sender, String[] args) {
-		if (args.length < 3)
-			return CommandResult.THROW_USAGE;
+    @Override
+    public CommandResult execute(CommandSender sender, String[] args) {
+        if (args.length < 3)
+            return CommandResult.THROW_USAGE;
 
-		if (!Type.isValid(args[1])) {
-			sender.sendMessage(
-					MMOItems.plugin.getPrefix() + ChatColor.RED + "There is no item type called " + args[1].toUpperCase().replace("-", "_") + ".");
-			sender.sendMessage(MMOItems.plugin.getPrefix() + ChatColor.RED + "Type " + ChatColor.GREEN + "/mi list type" + ChatColor.RED
-					+ " to see all the available item types.");
-			return CommandResult.FAILURE;
-		}
+        if (!Type.isValid(args[1])) {
+            sender.sendMessage(
+                    MMOItems.plugin.getPrefix() + ChatColor.RED + "There is no item type called " + args[1].toUpperCase().replace("-", "_") + ".");
+            sender.sendMessage(MMOItems.plugin.getPrefix() + ChatColor.RED + "Type " + ChatColor.GREEN + "/mi list type" + ChatColor.RED
+                    + " to see all the available item types.");
+            return CommandResult.FAILURE;
+        }
 
-		Type type = Type.get(args[1]);
-		String name = args[2].toUpperCase().replace("-", "_");
-		ConfigFile config = type.getConfigFile();
-		if (config.getConfig().contains(name)) {
-			sender.sendMessage(MMOItems.plugin.getPrefix() + ChatColor.RED + "There is already an item called " + name + ".");
-			return CommandResult.FAILURE;
-		}
+        Type type = Type.get(args[1]);
+        String name = args[2].toUpperCase().replace("-", "_");
+        ConfigFile config = type.getConfigFile();
+        if (config.getConfig().contains(name)) {
+            sender.sendMessage(MMOItems.plugin.getPrefix() + ChatColor.RED + "There is already an item called " + name + ".");
+            return CommandResult.FAILURE;
+        }
 
-		config.getConfig().set(name + ".base.material", type.getItem().getType().name());
-		config.save();
-		MMOItems.plugin.getTemplates().requestTemplateUpdate(type, name);
+        config.getConfig().set(name + ".base.material", type.getItem().getType().name());
+        config.save();
+        MMOItems.plugin.getTemplates().requestTemplateUpdate(type, name);
 
-		if (sender instanceof Player)
-			new ItemEdition((Player) sender, MMOItems.plugin.getTemplates().getTemplate(type, name)).open();
-		sender.sendMessage(MMOItems.plugin.getPrefix() + ChatColor.GREEN + "You successfully created " + name + "!");
-		return CommandResult.SUCCESS;
-	}
+        if (sender instanceof Player)
+            new ItemEdition((Player) sender, MMOItems.plugin.getTemplates().getTemplate(type, name)).open();
+        sender.sendMessage(MMOItems.plugin.getPrefix() + ChatColor.GREEN + "You successfully created " + name + "!");
+        return CommandResult.SUCCESS;
+    }
 }

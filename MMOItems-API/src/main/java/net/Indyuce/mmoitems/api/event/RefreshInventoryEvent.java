@@ -11,8 +11,30 @@ import java.util.List;
 
 public class RefreshInventoryEvent extends Event {
 
-    @NotNull final List<EquippedItem> itemsToEquip;
-    @NotNull public List<EquippedItem> getItemsToEquip() { return itemsToEquip; }
+    @NotNull
+    static final HandlerList handlers = new HandlerList();
+    @NotNull
+    final List<EquippedItem> itemsToEquip;
+    @NotNull
+    final Player player;
+    @NotNull
+    final PlayerData playerData;
+
+    public RefreshInventoryEvent(@NotNull List<EquippedItem> itemsToEquip, @NotNull Player player, @NotNull PlayerData playerData) {
+        this.itemsToEquip = itemsToEquip;
+        this.player = player;
+        this.playerData = playerData;
+    }
+
+    @NotNull
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
+    @NotNull
+    public List<EquippedItem> getItemsToEquip() {
+        return itemsToEquip;
+    }
 
     @NotNull
     public Player getPlayer() {
@@ -24,16 +46,8 @@ public class RefreshInventoryEvent extends Event {
         return playerData;
     }
 
-    @NotNull final Player player;
-    @NotNull final PlayerData playerData;
-
-    public RefreshInventoryEvent(@NotNull List<EquippedItem> itemsToEquip, @NotNull Player player, @NotNull PlayerData playerData) {
-        this.itemsToEquip = itemsToEquip;
-        this.player = player;
-        this.playerData = playerData;
+    @NotNull
+    public HandlerList getHandlers() {
+        return handlers;
     }
-
-    @NotNull static final HandlerList handlers = new HandlerList();
-    @NotNull public HandlerList getHandlers() { return handlers; }
-    @NotNull public static HandlerList getHandlerList() { return handlers; }
 }

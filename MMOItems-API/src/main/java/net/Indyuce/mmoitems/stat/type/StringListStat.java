@@ -42,8 +42,12 @@ public class StringListStat extends ItemStat<StringListData, StringListData> {
     public void whenApplied(@NotNull ItemStackBuilder item, @NotNull StringListData data) {
 
         // Empty stuff
-        if (!(data instanceof StringListData)) { return; }
-        if (data.getList().size() == 0) { return; }
+        if (!(data instanceof StringListData)) {
+            return;
+        }
+        if (data.getList().size() == 0) {
+            return;
+        }
 
         // Chop
         final String joined = String.join(", ", data.getList());
@@ -127,7 +131,7 @@ public class StringListStat extends ItemStat<StringListData, StringListData> {
         } */
 
         // Display in lore
-       // item.getLore().insert(getPath(), SilentNumbers.chop(finalStr, 50, col.toString()));
+        // item.getLore().insert(getPath(), SilentNumbers.chop(finalStr, 50, col.toString()));
         item.getLore().insert(getPath(), finalStr);
         item.addItemTag(getAppliedNBT(data));
     }
@@ -196,7 +200,9 @@ public class StringListStat extends ItemStat<StringListData, StringListData> {
         StatData data = getLoadedNBT(relevantTags);
 
         // Valid?
-        if (data != null) { mmoitem.setData(this, data); }
+        if (data != null) {
+            mmoitem.setData(this, data);
+        }
     }
 
     @Nullable
@@ -216,7 +222,7 @@ public class StringListStat extends ItemStat<StringListData, StringListData> {
                 // Create String List Data
                 return new StringListData(array);
 
-            } catch (JsonSyntaxException |IllegalStateException exception) {
+            } catch (JsonSyntaxException | IllegalStateException exception) {
                 /*
                  * OLD ITEM WHICH MUST BE UPDATED.
                  */

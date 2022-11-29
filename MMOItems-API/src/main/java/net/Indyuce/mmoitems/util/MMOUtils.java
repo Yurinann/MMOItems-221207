@@ -34,26 +34,6 @@ import java.util.*;
 @SuppressWarnings("unused")
 public class MMOUtils {
 
-    public MMOUtils() {
-        throw new IllegalArgumentException("This class cannot be instantiated.");
-    }
-
-    /**
-     * @return The skull texture URL from a given player head
-     */
-    public static String getSkullTextureURL(ItemStack item) {
-        try {
-            ItemMeta meta = item.getItemMeta();
-            Field profileField = meta.getClass().getDeclaredField("profile");
-            profileField.setAccessible(true);
-            Collection<Property> properties = ((GameProfile) profileField.get(item.getItemMeta())).getProperties().get("textures");
-            Property property = properties.toArray(new Property[0])[0];
-            return new String(Base64.decodeBase64(property.getValue())).replace("{textures:{SKIN:{url:\"", "").replace("\"}}}", "");
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
     /**
      * Source: https://gist.github.com/Mystiflow/c42f45bac9916c84e381155f72a96d84
      */
@@ -75,6 +55,28 @@ public class MMOUtils {
             .put(ChatColor.YELLOW, Color.fromRGB(255, 255, 85))
             .put(ChatColor.WHITE, Color.fromRGB(255, 255, 255))
             .build();
+    private static final String[] romanChars = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+    private static final int[] romanValues = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+
+    public MMOUtils() {
+        throw new IllegalArgumentException("This class cannot be instantiated.");
+    }
+
+    /**
+     * @return The skull texture URL from a given player head
+     */
+    public static String getSkullTextureURL(ItemStack item) {
+        try {
+            ItemMeta meta = item.getItemMeta();
+            Field profileField = meta.getClass().getDeclaredField("profile");
+            profileField.setAccessible(true);
+            Collection<Property> properties = ((GameProfile) profileField.get(item.getItemMeta())).getProperties().get("textures");
+            Property property = properties.toArray(new Property[0])[0];
+            return new String(Base64.decodeBase64(property.getValue())).replace("{textures:{SKIN:{url:\"", "").replace("\"}}}", "");
+        } catch (Exception e) {
+            return "";
+        }
+    }
 
     @NotNull
     public static Color toRGB(ChatColor color) {
@@ -249,7 +251,7 @@ public class MMOUtils {
      *
      * @param type Potion effect type
      * @return The duration that MMOItems should be using to give player
-     *         "permanent" potion effects, depending on the potion effect type
+     * "permanent" potion effects, depending on the potion effect type
      */
     public static int getEffectDuration(PotionEffectType type) {
         return type.equals(PotionEffectType.NIGHT_VISION) || type.equals(PotionEffectType.CONFUSION) ? 260 : type.equals(PotionEffectType.BLINDNESS) ? 140 : 80;
@@ -264,6 +266,8 @@ public class MMOUtils {
                 item.getItemMeta().getDisplayName() :
                 caseOnWords(item.getType().name().toLowerCase().replace("_", " "));
     }
+
+    //region Restoration
 
     /**
      * Super useful to display enum names like DIAMOND_SWORD in chat
@@ -288,13 +292,11 @@ public class MMOUtils {
      * @param item The item to check
      * @param lore Whether or not MI should check for an item lore
      * @return If the item is not null, has an itemMeta and has a display name.
-     *         If 'lore' is true, also checks if the itemMeta has a lore.
+     * If 'lore' is true, also checks if the itemMeta has a lore.
      */
     public static boolean isMetaItem(ItemStack item, boolean lore) {
         return item != null && item.getType() != Material.AIR && item.getItemMeta() != null && item.getItemMeta().getDisplayName() != null && (!lore || item.getItemMeta().getLore() != null);
     }
-
-    //region Restoration
 
     /**
      * @param player     Player to heal
@@ -338,6 +340,7 @@ public class MMOUtils {
     public static void feed(@NotNull Player player, int feed, boolean allowNegatives) {
         if (feed > 0 || allowNegatives) player.setFoodLevel(Math.max(Math.min(20, player.getFoodLevel() + feed), 0));
     }
+    //endregion
 
     /**
      * @param player Player to heal
@@ -360,10 +363,6 @@ public class MMOUtils {
         if (heal > 0 || allowNegatives)
             player.setHealth(Math.min(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), player.getHealth() + heal));
     }
-    //endregion
-
-    private static final String[] romanChars = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
-    private static final int[] romanValues = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
 
     /**
      * @param input Integer from 1 to 3999
@@ -422,10 +421,10 @@ public class MMOUtils {
     /**
      * @param loc Where we are looking for nearby entities
      * @return List of all entities surrounding a location. This method loops
-     *         through the 9 surrounding chunks and collect all entities from
-     *         them. This list can be cached and used multiple times in the same
-     *         tick for projectile based spells which need to run entity
-     *         checkups
+     * through the 9 surrounding chunks and collect all entities from
+     * them. This list can be cached and used multiple times in the same
+     * tick for projectile based spells which need to run entity
+     * checkups
      */
     public static List<Entity> getNearbyChunkEntities(Location loc) {
         List<Entity> entities = new ArrayList<>();

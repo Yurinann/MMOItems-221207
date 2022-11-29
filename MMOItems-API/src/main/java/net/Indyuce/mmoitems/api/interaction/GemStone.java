@@ -215,6 +215,27 @@ public class GemStone extends UseItem {
             return new ApplyResult(targetMMO, ResultType.SUCCESS);
     }
 
+    public enum ResultType {
+
+        /**
+         * The gem stone is not successfully applied
+         * onto the item and NEEDS to be destroyed
+         */
+        FAILURE,
+
+        /**
+         * The gem stone cannot be applied onto an item but the gem
+         * MUST NOT be destroyed. Used when there are no available
+         * gem sockets left or when the apply event is canceled.
+         */
+        NONE,
+
+        /**
+         * Gem stone is successfully applied and can be consumed
+         */
+        SUCCESS
+    }
+
     public static class ApplyResult {
         @NotNull
         private final ResultType type;
@@ -257,26 +278,5 @@ public class GemStone extends UseItem {
         public MMOItem getResultAsMMOItem() {
             return resultAsMMOItem;
         }
-    }
-
-    public enum ResultType {
-
-        /**
-         * The gem stone is not successfully applied
-         * onto the item and NEEDS to be destroyed
-         */
-        FAILURE,
-
-        /**
-         * The gem stone cannot be applied onto an item but the gem
-         * MUST NOT be destroyed. Used when there are no available
-         * gem sockets left or when the apply event is canceled.
-         */
-        NONE,
-
-        /**
-         * Gem stone is successfully applied and can be consumed
-         */
-        SUCCESS
     }
 }

@@ -1,6 +1,5 @@
 package net.Indyuce.mmoitems.listener.reforging;
 
-import io.lumine.mythic.lib.api.util.Ref;
 import net.Indyuce.mmoitems.ItemStats;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.event.MMOItemReforgeEvent;
@@ -15,11 +14,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.UUID;
-
 /**
  * Transfers enchantments from the old MMOItem to the new one.
- *
+ * <p>
  * There
  *
  * @author Gunging
@@ -28,7 +25,9 @@ public class RFGKeepEnchantments implements Listener {
 
     @EventHandler
     public void onReforge(MMOItemReforgeEvent event) {
-        if (!event.getOptions().shouldKeepEnchantments()) { return; }
+        if (!event.getOptions().shouldKeepEnchantments()) {
+            return;
+        }
         //RFG// MMOItems.log("§8Reforge §4EFG§7 Keeping Enchants");
 
         // Enchant list data
@@ -38,7 +37,8 @@ public class RFGKeepEnchantments implements Listener {
         if (!operable.hasData(ItemStats.ENCHANTS)) {
 
             //RFG//MMOItems.log("  \u00a7b* \u00a77No Data, created blanc");
-            operable.setData(ItemStats.ENCHANTS, new EnchantListData()); }
+            operable.setData(ItemStats.ENCHANTS, new EnchantListData());
+        }
 
         //RFG//else { MMOItems.log("  \u00a7b* \u00a77Found Data"); }
 
@@ -73,7 +73,9 @@ public class RFGKeepEnchantments implements Listener {
 
 
     void log(@NotNull EnchantListData enchList, @NotNull String title) {
-        MMOItems.print(null, "  \u00a73> \u00a77" + title +":", null);
-        for (Enchantment e : enchList.getEnchants()) { MMOItems.print(null, "  \u00a7b * \u00a77" + e.getName() + " \u00a7f" + enchList.getLevel(e), null); }
+        MMOItems.print(null, "  \u00a73> \u00a77" + title + ":", null);
+        for (Enchantment e : enchList.getEnchants()) {
+            MMOItems.print(null, "  \u00a7b * \u00a77" + e.getName() + " \u00a7f" + enchList.getLevel(e), null);
+        }
     }
 }

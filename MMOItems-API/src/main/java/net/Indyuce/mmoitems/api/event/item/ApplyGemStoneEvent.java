@@ -32,6 +32,10 @@ public class ApplyGemStoneEvent extends PlayerDataEvent {
         this.result = result;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     public VolatileMMOItem getGemStone() {
         return gemStone;
     }
@@ -50,10 +54,6 @@ public class ApplyGemStoneEvent extends PlayerDataEvent {
     }
 
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

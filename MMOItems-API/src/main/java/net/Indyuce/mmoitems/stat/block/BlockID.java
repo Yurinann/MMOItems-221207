@@ -11,15 +11,17 @@ import org.jetbrains.annotations.NotNull;
 public class BlockID extends DoubleStat {
 
     public BlockID() {
-        super("BLOCK_ID", Material.STONE, "Block ID", new String[] { "This value determines which", "custom block will get placed." }, new String[] { "block" });
+        super("BLOCK_ID", Material.STONE, "Block ID", new String[]{"This value determines which", "custom block will get placed."}, new String[]{"block"});
     }
 
     @Override
     public void whenApplied(@NotNull ItemStackBuilder item, @NotNull DoubleData data) {
         super.whenApplied(item, data);
-        item.addItemTag(new ItemTag("CustomModelData", (int) data.getValue() +1000));
+        item.addItemTag(new ItemTag("CustomModelData", (int) data.getValue() + 1000));
     }
 
     @Override
-    public void whenPreviewed(@NotNull ItemStackBuilder item, @NotNull DoubleData currentData, @NotNull NumericStatFormula templateData) throws IllegalArgumentException { whenApplied(item, currentData); }
+    public void whenPreviewed(@NotNull ItemStackBuilder item, @NotNull DoubleData currentData, @NotNull NumericStatFormula templateData) throws IllegalArgumentException {
+        whenApplied(item, currentData);
+    }
 }

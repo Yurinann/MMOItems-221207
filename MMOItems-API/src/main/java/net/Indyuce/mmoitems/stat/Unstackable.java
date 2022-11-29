@@ -10,16 +10,16 @@ import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 
 public class Unstackable extends BooleanStat {
-	public Unstackable() {
-		super("UNSTACKABLE", Material.CHEST_MINECART, "Unstackable",
-				new String[] { "This will make the item unable", "to be stacked with itself." }, new String[] { "all" });
-	}
+    public Unstackable() {
+        super("UNSTACKABLE", Material.CHEST_MINECART, "Unstackable",
+                new String[]{"This will make the item unable", "to be stacked with itself."}, new String[]{"all"});
+    }
 
-	@Override
-	public void whenApplied(@NotNull ItemStackBuilder item, @NotNull BooleanData data) {
-		if (data.isEnabled()) {
-			item.addItemTag(new ItemTag(getNBTPath(), true));
-			item.addItemTag(new ItemTag(getNBTPath() + "_UUID", UUID.randomUUID().toString()));
-		}
-	}
+    @Override
+    public void whenApplied(@NotNull ItemStackBuilder item, @NotNull BooleanData data) {
+        if (data.isEnabled()) {
+            item.addItemTag(new ItemTag(getNBTPath(), true));
+            item.addItemTag(new ItemTag(getNBTPath() + "_UUID", UUID.randomUUID().toString()));
+        }
+    }
 }

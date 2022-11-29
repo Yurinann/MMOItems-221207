@@ -21,55 +21,61 @@ import java.util.List;
 import java.util.Optional;
 
 public class StoredTags extends ItemStat<RandomStatData<StoredTagsData>, StoredTagsData> implements InternalStat, GemStoneStat {
-	public StoredTags() {
-		super("STORED_TAGS", VersionMaterial.OAK_SIGN.toMaterial(), "Stored Tags",
-				new String[] { "You found a secret dev easter egg", "introduced during the 2020 epidemic!" }, new String[] { "all" });
-	}
+    public StoredTags() {
+        super("STORED_TAGS", VersionMaterial.OAK_SIGN.toMaterial(), "Stored Tags",
+                new String[]{"You found a secret dev easter egg", "introduced during the 2020 epidemic!"}, new String[]{"all"});
+    }
 
-	@Nullable
-	@Override
-	public RandomStatData<StoredTagsData> whenInitialized(Object object) {
-		throw new NotImplementedException();
-	}
+    @Nullable
+    @Override
+    public RandomStatData<StoredTagsData> whenInitialized(Object object) {
+        throw new NotImplementedException();
+    }
 
-	@Override
-	public void whenClicked(@NotNull EditionInventory inv, @NotNull InventoryClickEvent event) {
-		throw new NotImplementedException();
-	}
+    @Override
+    public void whenClicked(@NotNull EditionInventory inv, @NotNull InventoryClickEvent event) {
+        throw new NotImplementedException();
+    }
 
-	@Override
-	public void whenInput(@NotNull EditionInventory inv, @NotNull String message, Object... info) {
-		throw new NotImplementedException();
-	}
+    @Override
+    public void whenInput(@NotNull EditionInventory inv, @NotNull String message, Object... info) {
+        throw new NotImplementedException();
+    }
 
-	@Override
-	public void whenDisplayed(List<String> lore, Optional<RandomStatData<StoredTagsData>> statData) {
-		throw new NotImplementedException();
-	}
+    @Override
+    public void whenDisplayed(List<String> lore, Optional<RandomStatData<StoredTagsData>> statData) {
+        throw new NotImplementedException();
+    }
 
-	@Override
-	public void whenApplied(@NotNull ItemStackBuilder item, @NotNull StoredTagsData data) {
+    @Override
+    public void whenApplied(@NotNull ItemStackBuilder item, @NotNull StoredTagsData data) {
 
-		// Just that
-		item.addItemTag(getAppliedNBT(data));
-	}
+        // Just that
+        item.addItemTag(getAppliedNBT(data));
+    }
 
-	@NotNull
-	@Override
-	public ArrayList<ItemTag> getAppliedNBT(@NotNull StoredTagsData data) {
+    @NotNull
+    @Override
+    public ArrayList<ItemTag> getAppliedNBT(@NotNull StoredTagsData data) {
 
-		// Collect all tags here
-		return new ArrayList<>(data.getTags());
-	}
+        // Collect all tags here
+        return new ArrayList<>(data.getTags());
+    }
 
-	@Override
-	public void whenLoaded(@NotNull ReadMMOItem mmoitem) { mmoitem.setData(ItemStats.STORED_TAGS, new StoredTagsData(mmoitem.getNBT())); }
+    @Override
+    public void whenLoaded(@NotNull ReadMMOItem mmoitem) {
+        mmoitem.setData(ItemStats.STORED_TAGS, new StoredTagsData(mmoitem.getNBT()));
+    }
 
-	@Nullable
-	@Override
-	public StoredTagsData getLoadedNBT(@NotNull ArrayList<ItemTag> storedTags) { return new StoredTagsData(storedTags); }
+    @Nullable
+    @Override
+    public StoredTagsData getLoadedNBT(@NotNull ArrayList<ItemTag> storedTags) {
+        return new StoredTagsData(storedTags);
+    }
 
-	@NotNull
-	@Override
-	public StoredTagsData getClearStatData() { return new StoredTagsData(new ArrayList<>()); }
+    @NotNull
+    @Override
+    public StoredTagsData getClearStatData() {
+        return new StoredTagsData(new ArrayList<>());
+    }
 }

@@ -1,5 +1,6 @@
 package net.Indyuce.mmoitems.stat;
 
+import io.lumine.mythic.lib.api.item.ItemTag;
 import io.lumine.mythic.lib.api.item.SupportedNBTTagValues;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.item.build.ItemStackBuilder;
@@ -9,7 +10,6 @@ import net.Indyuce.mmoitems.stat.data.DoubleData;
 import net.Indyuce.mmoitems.stat.data.random.RandomStatData;
 import net.Indyuce.mmoitems.stat.data.type.StatData;
 import net.Indyuce.mmoitems.stat.type.InternalStat;
-import io.lumine.mythic.lib.api.item.ItemTag;
 import net.Indyuce.mmoitems.stat.type.ItemStat;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -22,9 +22,9 @@ import java.util.Optional;
 
 public class InternalRevisionID extends ItemStat<RandomStatData<StatData>, StatData> implements InternalStat {
     public InternalRevisionID() {
-        super("INTERNAL_REVISION_ID", Material.ITEM_FRAME, "Internal Revision ID", new String[] { "The Internal Revision ID is used to determine",
+        super("INTERNAL_REVISION_ID", Material.ITEM_FRAME, "Internal Revision ID", new String[]{"The Internal Revision ID is used to determine",
                         "if an item is outdated or not. You", "should increase this whenever", "you make changes to your item!"},
-                new String[] { "all" });
+                new String[]{"all"});
     }
 
     @Nullable

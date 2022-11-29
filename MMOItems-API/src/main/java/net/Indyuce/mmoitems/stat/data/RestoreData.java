@@ -18,20 +18,20 @@ public class RestoreData implements StatData, Mergeable {
         return health;
     }
 
-    public double getFood() {
-        return food;
-    }
-
-    public double getSaturation() {
-        return saturation;
-    }
-
     public void setHealth(double value) {
         health = value;
     }
 
+    public double getFood() {
+        return food;
+    }
+
     public void setFood(double value) {
         food = value;
+    }
+
+    public double getSaturation() {
+        return saturation;
     }
 
     public void setSaturation(double value) {

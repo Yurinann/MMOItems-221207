@@ -14,10 +14,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class ItemSet {
-    private final Map<Integer, SetBonuses> bonuses = new HashMap<>();
-    private final List<String> loreTag;
-    private final String name, id;
-
     /**
      * Arbitrary constant that only determines the maximum amount of items in a
      * set e.g if set to 11 you can't create buffs that apply when a player
@@ -25,6 +21,9 @@ public class ItemSet {
      * CUSTOM INVENTORY plugins but it does not have to be tremendously high
      */
     private static final int itemLimit = 10;
+    private final Map<Integer, SetBonuses> bonuses = new HashMap<>();
+    private final List<String> loreTag;
+    private final String name, id;
 
     public ItemSet(ConfigurationSection config) {
         this.id = config.getName().toUpperCase().replace("-", "_");
@@ -107,6 +106,19 @@ public class ItemSet {
         return loreTag;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ItemSet itemSet = (ItemSet) o;
+        return id.equals(itemSet.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
     public static class SetBonuses {
         private final Map<ItemStat<?, ?>, Double> stats = new HashMap<>();
         private final Map<PotionEffectType, PotionEffect> permEffects = new HashMap<>();
@@ -174,18 +186,5 @@ public class ItemSet {
 
             permissions.addAll(bonuses.getPermissions());
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ItemSet itemSet = (ItemSet) o;
-        return id.equals(itemSet.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }

@@ -28,72 +28,25 @@ import java.util.ArrayList;
 
 public class RMGRR_MegaShaped implements RecipeRegistry {
     @NotNull
-    @Override public String getRecipeConfigPath() { return "megashaped"; }
-    @NotNull @Override public String getRecipeTypeName() { return "Mega Shaped"; }
-
-    @NotNull final ItemStack displayListItem = RecipeMakerGUI.rename(new ItemStack(Material.JUKEBOX), FFPMMOItems.get().getExampleFormat() + "Mega Shaped Recipe");
-    @NotNull @Override public ItemStack getDisplayListItem() { return displayListItem; }
-
-    @Override public void openForPlayer(@NotNull EditionInventory inv, @NotNull String recipeName, Object... otherParams) {
-        new RMG_MegaShaped(inv.getPlayer(), inv.getEdited(), recipeName, this).open(inv.getPreviousPage());
-    }
-
-    @NotNull
-    @Override
-    public MythicRecipeBlueprint sendToMythicLib(@NotNull MMOItemTemplate template, @NotNull ConfigurationSection recipeTypeSection, @NotNull String recipeName, @NotNull Ref<NamespacedKey> namespace, @NotNull FriendlyFeedbackProvider ffp) throws IllegalArgumentException {
-
-        // Read some values
-        ConfigurationSection recipeSection = RecipeMakerGUI.moveInput(recipeTypeSection, recipeName);
-
-        NamespacedKey nk = namespace.getValue();
-        if (nk == null) { throw new IllegalArgumentException(FriendlyFeedbackProvider.quickForConsole(FFPMMOItems.get(), "Illegal (Null) Namespace")); }
-
-        // Identify the input
-        ShapedRecipe input = megaShapedRecipeFromList(nk.getKey(), new ArrayList<>(recipeSection.getStringList(RecipeMakerGUI.INPUT_INGREDIENTS)), ffp);
-        if (input == null) { throw new IllegalArgumentException(FriendlyFeedbackProvider.quickForConsole(FFPMMOItems.get(), "Shaped recipe containing only AIR, $fignored$b.")); }
-
-        // Read the options and output
-        ShapedRecipe output = megaShapedRecipeFromList(nk.getKey(), new ArrayList<>(recipeSection.getStringList(RecipeMakerGUI.OUTPUT_INGREDIENTS)), ffp);
-        int outputAmount = recipeSection.getInt(RBA_AmountOutput.AMOUNT_INGREDIENTS, 1);
-
-        // Build Output
-        ShapedRecipe outputItem = ShapedRecipe.single(nk.getKey(),  new ProvidedUIFilter(MMOItemUIFilter.get(), template.getType().getId(), template.getId(), Math.max(outputAmount, 1)));
-        MythicRecipeOutput outputRecipe = new MRORecipe(outputItem, output);
-
-        // That's our blueprint :)
-        MythicRecipeBlueprint ret = new MythicRecipeBlueprint(input, outputRecipe, nk);
-
-        // Enable it
-        ret.deploy(MythicRecipeStation.WORKBENCH, null);
-
-        // Hide book if specified
-        namespace.setValue(null);
-
-        // That's it
-        return ret;
-    }
+    final ItemStack displayListItem = RecipeMakerGUI.rename(new ItemStack(Material.JUKEBOX), FFPMMOItems.get().getExampleFormat() + "Mega Shaped Recipe");
 
     /**
      * Shorthand for reading list of strings that are intended to be shaped recipes: <br><br>
      * <code>
-     *     v AIR 0|v STICK 0|v AIR 0|v STICK 0|v AIR 0|v AIR 0      <br>
-     *     v AIR 0|v STICK 0|v AIR 0|v STICK 0|v AIR 0|v AIR 0      <br>
-     *     v AIR 0|v STICK 0|v AIR 0|v STICK 0|v AIR 0|v AIR 0      <br>
-     *     v AIR 0|v STICK 0|v AIR 0|v STICK 0|v AIR 0|v AIR 0      <br>
-     *     v AIR 0|v STICK 0|v AIR 0|v STICK 0|v AIR 0|v AIR 0      <br>
-     *     v AIR 0|v STICK 0|v AIR 0|v STICK 0|v AIR 0|v AIR 0
+     * v AIR 0|v STICK 0|v AIR 0|v STICK 0|v AIR 0|v AIR 0      <br>
+     * v AIR 0|v STICK 0|v AIR 0|v STICK 0|v AIR 0|v AIR 0      <br>
+     * v AIR 0|v STICK 0|v AIR 0|v STICK 0|v AIR 0|v AIR 0      <br>
+     * v AIR 0|v STICK 0|v AIR 0|v STICK 0|v AIR 0|v AIR 0      <br>
+     * v AIR 0|v STICK 0|v AIR 0|v STICK 0|v AIR 0|v AIR 0      <br>
+     * v AIR 0|v STICK 0|v AIR 0|v STICK 0|v AIR 0|v AIR 0
      * </code>
      *
      * @param namespace Some name to give to this thing, it can be anything really.
-     *
-     * @param recipe The list of strings, probably directly from your YML Config
-     *
-     * @param ffp Provider of failure text
-     *
+     * @param recipe    The list of strings, probably directly from your YML Config
+     * @param ffp       Provider of failure text
      * @return The most optimized version of this recipe, ready to be put into a Blueprint.
-     *         <br> <br>
-     *         Will be <code>null</code> if it would have been only AIR.
-     *
+     * <br> <br>
+     * Will be <code>null</code> if it would have been only AIR.
      * @throws IllegalArgumentException If any ingredient is illegal (wrong syntax or something).
      */
     @Nullable
@@ -139,7 +92,9 @@ public class RMGRR_MegaShaped implements RecipeRegistry {
             }
 
             // Size not 3? BRUH
-            if (positions.length != 6) { throw new IllegalArgumentException("Invalid mega crafting table row $u" + updatedRow + "$b ($fNot exactly 6 ingredients wide$b)."); }
+            if (positions.length != 6) {
+                throw new IllegalArgumentException("Invalid mega crafting table row $u" + updatedRow + "$b ($fNot exactly 6 ingredients wide$b).");
+            }
 
             // Identify
             ProvidedUIFilter left = RecipeMakerGUI.readIngredientFrom(positions[0], ffp);
@@ -148,12 +103,24 @@ public class RMGRR_MegaShaped implements RecipeRegistry {
             ProvidedUIFilter midRight = RecipeMakerGUI.readIngredientFrom(positions[3], ffp);
             ProvidedUIFilter right = RecipeMakerGUI.readIngredientFrom(positions[4], ffp);
             ProvidedUIFilter extra = RecipeMakerGUI.readIngredientFrom(positions[5], ffp);
-            if (!left.isAir()) { nonAirFound = true; }
-            if (!midLeft.isAir()) { nonAirFound = true; }
-            if (!center.isAir()) { nonAirFound = true; }
-            if (!midRight.isAir()) { nonAirFound = true; }
-            if (!right.isAir()) { nonAirFound = true; }
-            if (!extra.isAir()) { nonAirFound = true; }
+            if (!left.isAir()) {
+                nonAirFound = true;
+            }
+            if (!midLeft.isAir()) {
+                nonAirFound = true;
+            }
+            if (!center.isAir()) {
+                nonAirFound = true;
+            }
+            if (!midRight.isAir()) {
+                nonAirFound = true;
+            }
+            if (!right.isAir()) {
+                nonAirFound = true;
+            }
+            if (!extra.isAir()) {
+                nonAirFound = true;
+            }
 
             /*
              * To detect if a recipe can be crafted in the survival inventory (and remove extra AIR),
@@ -185,10 +152,74 @@ public class RMGRR_MegaShaped implements RecipeRegistry {
             // Prepare for next row
             rowNumber++;
         }
-        if (!nonAirFound) { return null; }
+        if (!nonAirFound) {
+            return null;
+        }
 
         // Make ingredients
         return ShapedRecipe.unsharpen((new ShapedRecipe(namespace, poofs)));
+    }
+
+    @NotNull
+    @Override
+    public String getRecipeConfigPath() {
+        return "megashaped";
+    }
+
+    @NotNull
+    @Override
+    public String getRecipeTypeName() {
+        return "Mega Shaped";
+    }
+
+    @NotNull
+    @Override
+    public ItemStack getDisplayListItem() {
+        return displayListItem;
+    }
+
+    @Override
+    public void openForPlayer(@NotNull EditionInventory inv, @NotNull String recipeName, Object... otherParams) {
+        new RMG_MegaShaped(inv.getPlayer(), inv.getEdited(), recipeName, this).open(inv.getPreviousPage());
+    }
+
+    @NotNull
+    @Override
+    public MythicRecipeBlueprint sendToMythicLib(@NotNull MMOItemTemplate template, @NotNull ConfigurationSection recipeTypeSection, @NotNull String recipeName, @NotNull Ref<NamespacedKey> namespace, @NotNull FriendlyFeedbackProvider ffp) throws IllegalArgumentException {
+
+        // Read some values
+        ConfigurationSection recipeSection = RecipeMakerGUI.moveInput(recipeTypeSection, recipeName);
+
+        NamespacedKey nk = namespace.getValue();
+        if (nk == null) {
+            throw new IllegalArgumentException(FriendlyFeedbackProvider.quickForConsole(FFPMMOItems.get(), "Illegal (Null) Namespace"));
+        }
+
+        // Identify the input
+        ShapedRecipe input = megaShapedRecipeFromList(nk.getKey(), new ArrayList<>(recipeSection.getStringList(RecipeMakerGUI.INPUT_INGREDIENTS)), ffp);
+        if (input == null) {
+            throw new IllegalArgumentException(FriendlyFeedbackProvider.quickForConsole(FFPMMOItems.get(), "Shaped recipe containing only AIR, $fignored$b."));
+        }
+
+        // Read the options and output
+        ShapedRecipe output = megaShapedRecipeFromList(nk.getKey(), new ArrayList<>(recipeSection.getStringList(RecipeMakerGUI.OUTPUT_INGREDIENTS)), ffp);
+        int outputAmount = recipeSection.getInt(RBA_AmountOutput.AMOUNT_INGREDIENTS, 1);
+
+        // Build Output
+        ShapedRecipe outputItem = ShapedRecipe.single(nk.getKey(), new ProvidedUIFilter(MMOItemUIFilter.get(), template.getType().getId(), template.getId(), Math.max(outputAmount, 1)));
+        MythicRecipeOutput outputRecipe = new MRORecipe(outputItem, output);
+
+        // That's our blueprint :)
+        MythicRecipeBlueprint ret = new MythicRecipeBlueprint(input, outputRecipe, nk);
+
+        // Enable it
+        ret.deploy(MythicRecipeStation.WORKBENCH, null);
+
+        // Hide book if specified
+        namespace.setValue(null);
+
+        // That's it
+        return ret;
     }
 
 }

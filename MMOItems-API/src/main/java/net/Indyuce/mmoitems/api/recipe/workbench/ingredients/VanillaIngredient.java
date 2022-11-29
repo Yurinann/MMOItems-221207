@@ -6,26 +6,26 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.RecipeChoice;
 
 public class VanillaIngredient extends WorkbenchIngredient {
-	private final Material material;
+    private final Material material;
 
-	public VanillaIngredient(Material material, int amount) {
-		super(amount);
+    public VanillaIngredient(Material material, int amount) {
+        super(amount);
 
-		this.material = material;
-	}
+        this.material = material;
+    }
 
-	@Override
-	public boolean corresponds(ItemStack stack) {
-		return !NBTItem.get(stack).hasType() && stack.getType() == material;
-	}
+    @Override
+    public boolean corresponds(ItemStack stack) {
+        return !NBTItem.get(stack).hasType() && stack.getType() == material;
+    }
 
-	@Override
-	public ItemStack generateItem() {
-		return new ItemStack(material);
-	}
+    @Override
+    public ItemStack generateItem() {
+        return new ItemStack(material);
+    }
 
-	@Override
-	public RecipeChoice toBukkit() {
-		return new RecipeChoice.MaterialChoice(material);
-	}
+    @Override
+    public RecipeChoice toBukkit() {
+        return new RecipeChoice.MaterialChoice(material);
+    }
 }

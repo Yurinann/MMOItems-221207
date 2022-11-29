@@ -22,29 +22,29 @@ import java.util.List;
  */
 public class RPGInventoryHook implements PlayerInventory, Listener {
 
-	/*
-	 * RPGInventory is outdated. MI still supports it but it shall NEVER be
-	 * considered a priority to keep MI compatible OR performance efficient with
-	 * RPGInventory
-	 */
-	public RPGInventoryHook() {
-		Bukkit.getPluginManager().registerEvents(this, MMOItems.plugin);
-	}
+    /*
+     * RPGInventory is outdated. MI still supports it but it shall NEVER be
+     * considered a priority to keep MI compatible OR performance efficient with
+     * RPGInventory
+     */
+    public RPGInventoryHook() {
+        Bukkit.getPluginManager().registerEvents(this, MMOItems.plugin);
+    }
 
-	@Override
-	public List<EquippedItem> getInventory(Player player) {
-		List<EquippedItem> list = new ArrayList<>();
+    @Override
+    public List<EquippedItem> getInventory(Player player) {
+        List<EquippedItem> list = new ArrayList<>();
 
-		for (ItemStack passive : InventoryAPI.getPassiveItems(player))
-			if (passive != null)
-				list.add(new EquippedItem(passive, EquipmentSlot.ACCESSORY));
+        for (ItemStack passive : InventoryAPI.getPassiveItems(player))
+            if (passive != null)
+                list.add(new EquippedItem(passive, EquipmentSlot.ACCESSORY));
 
-		return list;
-	}
+        return list;
+    }
 
-	@EventHandler
-	public void a(InventoryCloseEvent event) {
-		if (InventoryAPI.isRPGInventory(event.getInventory()))
-			PlayerData.get((Player) event.getPlayer()).updateInventory();
-	}
+    @EventHandler
+    public void a(InventoryCloseEvent event) {
+        if (InventoryAPI.isRPGInventory(event.getInventory()))
+            PlayerData.get((Player) event.getPlayer()).updateInventory();
+    }
 }

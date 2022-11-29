@@ -11,79 +11,79 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 public class ConfigFile {
-	private final Plugin plugin;
-	private final String path, name;
-	private final boolean exists;
+    private final Plugin plugin;
+    private final String path, name;
+    private final boolean exists;
 
-	private final FileConfiguration config;
+    private final FileConfiguration config;
 
-	public ConfigFile(String name) {
-		this(MMOItems.plugin, "", name);
-	}
+    public ConfigFile(String name) {
+        this(MMOItems.plugin, "", name);
+    }
 
-	public ConfigFile(Plugin plugin, String name) {
-		this(plugin, "", name);
-	}
+    public ConfigFile(Plugin plugin, String name) {
+        this(plugin, "", name);
+    }
 
-	public ConfigFile(String path, String name) {
-		this(MMOItems.plugin, path, name);
-	}
+    public ConfigFile(String path, String name) {
+        this(MMOItems.plugin, path, name);
+    }
 
-	public ConfigFile(Plugin plugin, String path, String name) {
-		this.plugin = plugin;
-		this.path = path;
-		this.name = name;
+    public ConfigFile(Plugin plugin, String path, String name) {
+        this.plugin = plugin;
+        this.path = path;
+        this.name = name;
 
-		File file = new File(plugin.getDataFolder() + path, name + ".yml");
-		exists = file.exists();
-		config = YamlConfiguration.loadConfiguration(file);
-	}
+        File file = new File(plugin.getDataFolder() + path, name + ".yml");
+        exists = file.exists();
+        config = YamlConfiguration.loadConfiguration(file);
+    }
 
-	public FileConfiguration getConfig() {
-		return config;
-	}
+    public FileConfiguration getConfig() {
+        return config;
+    }
 
-	public boolean exists() {
-		return exists;
-	}
+    public boolean exists() {
+        return exists;
+    }
 
-	public void save() {
-		try {
-			config.save(new File(plugin.getDataFolder() + path, name + ".yml"));
-		} catch (IOException exception) {
-			MMOItems.plugin.getLogger().log(Level.SEVERE, "Could not save " + name + ".yml: " + exception.getMessage());
-		}
-	}
+    public void save() {
+        try {
+            config.save(new File(plugin.getDataFolder() + path, name + ".yml"));
+        } catch (IOException exception) {
+            MMOItems.plugin.getLogger().log(Level.SEVERE, "Could not save " + name + ".yml: " + exception.getMessage());
+        }
+    }
 
-	@SuppressWarnings("ResultOfMethodCallIgnored")
-	public void setup() {
-		try {
-			if (!new File(plugin.getDataFolder() + path).exists())
-				new File(plugin.getDataFolder() + path).mkdir();
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public void setup() {
+        try {
+            if (!new File(plugin.getDataFolder() + path).exists())
+                new File(plugin.getDataFolder() + path).mkdir();
 
-			if (!new File(plugin.getDataFolder() + path, name + ".yml").exists()) {
-				new File(plugin.getDataFolder() + path, name + ".yml").createNewFile();
-			}
-		} catch (IOException exception) {
-			MMOItems.plugin.getLogger().log(Level.SEVERE, "Could not generate " + name + ".yml: " + exception.getMessage());
-		}
-	}
+            if (!new File(plugin.getDataFolder() + path, name + ".yml").exists()) {
+                new File(plugin.getDataFolder() + path, name + ".yml").createNewFile();
+            }
+        } catch (IOException exception) {
+            MMOItems.plugin.getLogger().log(Level.SEVERE, "Could not generate " + name + ".yml: " + exception.getMessage());
+        }
+    }
 
-	public void registerTemplateEdition(ItemReference ref) {
+    public void registerTemplateEdition(ItemReference ref) {
 
-		/*
-		 * saves the changes before asking for a template update
-		 */
-		save();
+        /*
+         * saves the changes before asking for a template update
+         */
+        save();
 
-		/*
-		 * goes for a template update once the change has been saved. this
-		 * simply unloads the currently saved template and reloads it
-		 */
-		MMOItems.plugin.getTemplates().requestTemplateUpdate(ref.getType(), ref.getId());
+        /*
+         * goes for a template update once the change has been saved. this
+         * simply unloads the currently saved template and reloads it
+         */
+        MMOItems.plugin.getTemplates().requestTemplateUpdate(ref.getType(), ref.getId());
 
 		/* update the database UUID for the dynamic item updater
 		if (MMOItems.plugin.getUpdater().hasData(ref))
 			MMOItems.plugin.getUpdater().getData(ref).setUniqueId(UUID.randomUUID());*/
-	}
+    }
 }

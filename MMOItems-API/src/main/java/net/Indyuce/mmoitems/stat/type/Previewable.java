@@ -19,10 +19,9 @@ public interface Previewable<R extends RandomStatData<S>, S extends StatData> {
      * Literally a copy of {@link ItemStat#whenApplied(ItemStackBuilder, StatData)}
      * but that puts the 'preview lore' in instead of the actual stat lore.
      *
-     * @param item Item being built
-     * @param currentData Current Data of the item
+     * @param item         Item being built
+     * @param currentData  Current Data of the item
      * @param templateData Random Data of the item
-     *
      * @throws IllegalArgumentException If something go wrong
      */
     void whenPreviewed(@NotNull ItemStackBuilder item, @NotNull S currentData, @NotNull R templateData) throws IllegalArgumentException;

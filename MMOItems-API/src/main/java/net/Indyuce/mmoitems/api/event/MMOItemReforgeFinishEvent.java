@@ -15,42 +15,29 @@ import org.jetbrains.annotations.Nullable;
 
 public class MMOItemReforgeFinishEvent extends Event implements Cancellable {
 
+    //region Event Standard
+    private static final HandlerList handlers = new HandlerList();
     /**
      * The reforger class with most of the information.
      */
     @NotNull
     final MMOItemReforger reforger;
     /**
-     * @return The reforger class with most of the information.
+     * The options for this reforging taking place.
      */
-    @NotNull public MMOItemReforger getReforger() { return reforger; }
-
+    @NotNull
+    final ReforgeOptions options;
     /**
      * The options for this reforging taking place.
      */
-    @NotNull final ReforgeOptions options;
-    /**
-     * @return The options for this reforging taking place.
-     */
-    @NotNull public ReforgeOptions getOptions() { return options; }
-
-    /**
-     * The options for this reforging taking place.
-     */
-    @NotNull ItemStack finishedItem;
-    /**
-     * @return The options for this reforging taking place.
-     */
-    @NotNull public ItemStack getFinishedItem() { return finishedItem; }
-    /**
-     * @param item The options for this reforging taking place.
-     */
-    public void setFinishedItem(@NotNull ItemStack item) { finishedItem = item; }
+    @NotNull
+    ItemStack finishedItem;
+    //region Cancellable Standard
+    boolean cancelled;
 
     /**
      * @param reforger Reforger with the item stuff and all that
-     *
-     * @param options Options by which to reforge yes
+     * @param options  Options by which to reforge yes
      */
     public MMOItemReforgeFinishEvent(@NotNull ItemStack finishedItem, @NotNull MMOItemReforger reforger, @NotNull ReforgeOptions options) {
         this.finishedItem = finishedItem;
@@ -58,16 +45,53 @@ public class MMOItemReforgeFinishEvent extends Event implements Cancellable {
         this.options = options;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
+    /**
+     * @return The reforger class with most of the information.
+     */
+    @NotNull
+    public MMOItemReforger getReforger() {
+        return reforger;
+    }
+
     //region API Shortcuts
 
     /**
+     * @return The options for this reforging taking place.
+     */
+    @NotNull
+    public ReforgeOptions getOptions() {
+        return options;
+    }
+
+    /**
+     * @return The options for this reforging taking place.
+     */
+    @NotNull
+    public ItemStack getFinishedItem() {
+        return finishedItem;
+    }
+
+    /**
+     * @param item The options for this reforging taking place.
+     */
+    public void setFinishedItem(@NotNull ItemStack item) {
+        finishedItem = item;
+    }
+
+    /**
      * @return The player that has this ItemStack in their inventory,
-     *         if updated that way (items may be reforged from other
-     *         sources).
+     * if updated that way (items may be reforged from other
+     * sources).
      */
     @Nullable
     public Player getPlayer() {
-        if (getReforger().getPlayer() == null) { return null; }
+        if (getReforger().getPlayer() == null) {
+            return null;
+        }
 
         // That's that
         return getReforger().getPlayer().getPlayer();
@@ -76,48 +100,63 @@ public class MMOItemReforgeFinishEvent extends Event implements Cancellable {
     /**
      * @return MMOItems Type we are working with
      */
-    @NotNull public Type getType() { return getReforger().getTemplate().getType(); }
+    @NotNull
+    public Type getType() {
+        return getReforger().getTemplate().getType();
+    }
 
     /**
      * @return MMOItems Type we are working with
      */
-    @NotNull public String getTypeName() { return getReforger().getTemplate().getType().getId(); }
+    @NotNull
+    public String getTypeName() {
+        return getReforger().getTemplate().getType().getId();
+    }
+    //endregion
 
     /**
      * @return MMOItems ID we are working with
      */
-    @NotNull public String getID() { return getReforger().getTemplate().getId(); }
+    @NotNull
+    public String getID() {
+        return getReforger().getTemplate().getId();
+    }
 
     /**
      * @return Old MMOItem, getting revised.
-     *
      * @see #getNewMMOItem()
      */
-    @NotNull public LiveMMOItem getOldMMOItem() { return getReforger().getOldMMOItem(); }
+    @NotNull
+    public LiveMMOItem getOldMMOItem() {
+        return getReforger().getOldMMOItem();
+    }
 
     /**
      * @return Fresh, polished, updated, revised version of {@link #getOldMMOItem()}.
-     *         <br><br>
-     *         This one has been edited in the previous {@link MMOItemReforgeEvent}
-     *         and editing further will have probably no effect.
-     *
+     * <br><br>
+     * This one has been edited in the previous {@link MMOItemReforgeEvent}
+     * and editing further will have probably no effect.
      * @see #getOldMMOItem()
      */
-    @NotNull public MMOItem getNewMMOItem() { return getReforger().getFreshMMOItem(); }
+    @NotNull
+    public MMOItem getNewMMOItem() {
+        return getReforger().getFreshMMOItem();
+    }
     //endregion
 
-    //region Event Standard
-    private static final HandlerList handlers = new HandlerList();
-    @NotNull @Override public HandlerList getHandlers() { return handlers; }
-    public static HandlerList getHandlerList() { return handlers; }
-    //endregion
+    @NotNull
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 
-    //region Cancellable Standard
-    boolean cancelled;
-    @Override public boolean isCancelled() {
+    @Override
+    public boolean isCancelled() {
         return cancelled;
     }
-    @Override public void setCancelled(boolean cancel) {
+
+    @Override
+    public void setCancelled(boolean cancel) {
         cancelled = cancel;
     }
     //endregion

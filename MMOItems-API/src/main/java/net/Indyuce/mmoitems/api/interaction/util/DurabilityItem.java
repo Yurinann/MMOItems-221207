@@ -39,14 +39,12 @@ import java.util.Random;
  * @author indyuce
  */
 public class DurabilityItem {
+    private static final Random RANDOM = new Random();
     private final NBTItem nbtItem;
     private final int maxDurability, unbreakingLevel, initialDurability;
     private final boolean barHidden;
     private final Player player;
-
     private int durability;
-
-    private static final Random RANDOM = new Random();
 
     /**
      * Use to handle durability changes for MMOItems
@@ -104,7 +102,7 @@ public class DurabilityItem {
 
     /**
      * @return If both this is a VALID custom durability item and if the item is broken.
-     *         This will return <code>false</code> if it is not a valid item
+     * This will return <code>false</code> if it is not a valid item
      */
     public boolean isBroken() {
         return maxDurability > 0 && durability <= 0;
@@ -120,7 +118,7 @@ public class DurabilityItem {
 
     /**
      * @return If the item actually supports custom durability. It is completely
-     *         disabled when the player is in creative mode just like vanilla durability.
+     * disabled when the player is in creative mode just like vanilla durability.
      */
     public boolean isValid() {
         return maxDurability > 0 && player.getGameMode() != GameMode.CREATIVE;
@@ -182,8 +180,8 @@ public class DurabilityItem {
      * 3) item downgrade
      *
      * @return Newest version of the damaged item.
-     *         <code>null</code> if the item breaks. That method CANNOT
-     *         return a null value if the item has no decreased its durability.
+     * <code>null</code> if the item breaks. That method CANNOT
+     * return a null value if the item has no decreased its durability.
      */
     @Nullable
     public ItemStack toItem() {

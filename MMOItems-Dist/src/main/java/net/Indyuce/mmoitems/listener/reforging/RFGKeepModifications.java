@@ -1,6 +1,5 @@
 package net.Indyuce.mmoitems.listener.reforging;
 
-import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.event.MMOItemReforgeEvent;
 import net.Indyuce.mmoitems.stat.data.type.Mergeable;
 import net.Indyuce.mmoitems.stat.data.type.StatData;
@@ -19,7 +18,9 @@ public class RFGKeepModifications implements Listener {
 
     @EventHandler
     public void onReforge(MMOItemReforgeEvent event) {
-        if (!event.getOptions().shouldKeepMods()) { return; }
+        if (!event.getOptions().shouldKeepMods()) {
+            return;
+        }
         //RFG// MMOItems.log("§8Reforge §4EFG§7 Keeping Modifications");
 
         // Get rid of all Modifiers in the new item
@@ -42,7 +43,9 @@ public class RFGKeepModifications implements Listener {
                 StatData modData = oldHist.getModifiersBonus(mod);
 
                 // Snooze
-                if (modData == null) { continue; }
+                if (modData == null) {
+                    continue;
+                }
 
                 // Apply it
                 newHist.registerModifierBonus(mod, ((Mergeable) modData).cloneData());

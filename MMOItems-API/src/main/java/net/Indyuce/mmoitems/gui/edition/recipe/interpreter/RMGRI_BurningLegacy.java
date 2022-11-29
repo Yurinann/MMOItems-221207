@@ -12,31 +12,18 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author Gunging
  */
-public class RMGRI_BurningLegacy implements RMG_RecipeInterpreter{
+public class RMGRI_BurningLegacy implements RMG_RecipeInterpreter {
 
+    public static final String ITEM = "item";
+    public static final String TIME = "time";
+    public static final String EXPERIENCE = "experience";
+    @NotNull
+    final ConfigurationSection section;
     /**
      * Interestingly enough, they onl require one input.
      */
-    @NotNull ProvidedUIFilter input;
-    /**
-     * @return The stuff that must be smelted / cooked
-     */
-    @NotNull public ProvidedUIFilter getInput() { return input; }
-    /**
-     * Setting it to null will make it into AIR tho but ok.
-     * This method does not update it in the Config Files.
-     *
-     * @param input The stuff that must be smelted
-     */
-    public void setInput(@Nullable ProvidedUIFilter input) { this.input = input == null ? RecipeMakerGUI.AIR : input; }
-
-    @NotNull final ConfigurationSection section;
-    /**
-     * @return The recipe name section of this recipe. <br>
-     *         <br>
-     *         Basically <b><code>[ID].base.crafting.shaped.[name]</code></b> section
-     */
-    @NotNull public ConfigurationSection getSection() { return section; }
+    @NotNull
+    ProvidedUIFilter input;
 
     /**
      * Generate an interpreter from this configuration section.
@@ -51,13 +38,45 @@ public class RMGRI_BurningLegacy implements RMG_RecipeInterpreter{
         // Furnaces support only input
         //noinspection ConstantConditions
         input = ProvidedUIFilter.getFromString(RecipeMakerGUI.poofFromLegacy(recipeNameSection.getString(ITEM)), null);
-        if (input == null) { input = RecipeMakerGUI.AIR.clone(); }
+        if (input == null) {
+            input = RecipeMakerGUI.AIR.clone();
+        }
+    }
+
+    /**
+     * @return The stuff that must be smelted / cooked
+     */
+    @NotNull
+    public ProvidedUIFilter getInput() {
+        return input;
+    }
+
+    /**
+     * Setting it to null will make it into AIR tho but ok.
+     * This method does not update it in the Config Files.
+     *
+     * @param input The stuff that must be smelted
+     */
+    public void setInput(@Nullable ProvidedUIFilter input) {
+        this.input = input == null ? RecipeMakerGUI.AIR : input;
+    }
+
+    /**
+     * @return The recipe name section of this recipe. <br>
+     * <br>
+     * Basically <b><code>[ID].base.crafting.shaped.[name]</code></b> section
+     */
+    @NotNull
+    public ConfigurationSection getSection() {
+        return section;
     }
 
     @Override
     public void editInput(@NotNull ProvidedUIFilter input, int slot) {
 
-        if (slot != 0) { return; }
+        if (slot != 0) {
+            return;
+        }
 
         // Just edit bro
         setInput(input);
@@ -66,17 +85,31 @@ public class RMGRI_BurningLegacy implements RMG_RecipeInterpreter{
         section.set(ITEM, input.toString());
     }
 
-    @Override public void editOutput(@NotNull ProvidedUIFilter input, int slot) { }
+    @Override
+    public void editOutput(@NotNull ProvidedUIFilter input, int slot) {
+    }
 
-    @Override public void deleteInput(int slot) { editInput(RecipeMakerGUI.AIR.clone(), slot); }
+    @Override
+    public void deleteInput(int slot) {
+        editInput(RecipeMakerGUI.AIR.clone(), slot);
+    }
 
-    @Override public void deleteOutput(int slot) { }
+    @Override
+    public void deleteOutput(int slot) {
+    }
 
-    @Nullable @Override public ProvidedUIFilter getInput(int slot) { if (slot == 0) { return input; } return null; }
+    @Nullable
+    @Override
+    public ProvidedUIFilter getInput(int slot) {
+        if (slot == 0) {
+            return input;
+        }
+        return null;
+    }
 
-    @Nullable @Override public ProvidedUIFilter getOutput(int slot) { return null; }
-
-    public static final String ITEM = "item";
-    public static final String TIME = "time";
-    public static final String EXPERIENCE = "experience";
+    @Nullable
+    @Override
+    public ProvidedUIFilter getOutput(int slot) {
+        return null;
+    }
 }

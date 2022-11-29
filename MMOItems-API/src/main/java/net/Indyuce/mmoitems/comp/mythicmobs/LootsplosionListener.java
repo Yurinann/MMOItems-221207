@@ -38,6 +38,12 @@ public class LootsplosionListener implements Listener {
             new LootsplosionHandler(event);
     }
 
+    private Vector randomVector() {
+        double offset = MMOItems.plugin.getConfig().getDouble("lootsplosion.offset"),
+                height = MMOItems.plugin.getConfig().getDouble("lootsplosion.height");
+        return new Vector(Math.cos(random.nextDouble() * Math.PI * 2) * offset, height, Math.sin(random.nextDouble() * Math.PI * 2) * offset);
+    }
+
     public class LootsplosionHandler implements Listener {
         private final List<ItemStack> drops;
 
@@ -80,12 +86,6 @@ public class LootsplosionListener implements Listener {
                     }
                 });
         }
-    }
-
-    private Vector randomVector() {
-        double offset = MMOItems.plugin.getConfig().getDouble("lootsplosion.offset"),
-                height = MMOItems.plugin.getConfig().getDouble("lootsplosion.height");
-        return new Vector(Math.cos(random.nextDouble() * Math.PI * 2) * offset, height, Math.sin(random.nextDouble() * Math.PI * 2) * offset);
     }
 
     public class LootColor extends BukkitRunnable {

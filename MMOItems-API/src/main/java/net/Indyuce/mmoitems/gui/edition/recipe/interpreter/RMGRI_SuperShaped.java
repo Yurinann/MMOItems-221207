@@ -13,14 +13,14 @@ import java.util.List;
 /**
  * This class is in charge of converting Shaped Recipes to and fro YML format,
  * as well as editing it in a YML configuration and such. <br> <br>
- *
+ * <p>
  * YML Save Format: <br> <code>
- *
- *    - A|B|C|D|E <br>
- *    - F|G|H|I|J <br>
- *    - K|L|M|N|O <br>
- *    - P|Q|R|S|T <br>
- *    - U|V|W|X|Y
+ * <p>
+ * - A|B|C|D|E <br>
+ * - F|G|H|I|J <br>
+ * - K|L|M|N|O <br>
+ * - P|Q|R|S|T <br>
+ * - U|V|W|X|Y
  * </code>
  *
  * @author Gunging
@@ -28,14 +28,126 @@ import java.util.List;
 public class RMGRI_SuperShaped implements RMG_RecipeInterpreter {
 
 
+    public static final String emptyRow = "v AIR 0|v AIR 0|v AIR 0|v AIR 0|v AIR 0";
+    @NotNull
+    final ProvidedUIFilter[][] inputRecipe;
+    @NotNull
+    final ProvidedUIFilter[][] outputRecipe;
+    @NotNull
+    final ConfigurationSection section;
+
+    /**
+     * Generate an interpreter from this <i>updated</i> configuration section.
+     * <br><br>
+     * By 'updated' I mean that, for now, we <b>should call {@link RecipeMakerGUI#moveInput()}
+     * on this configuration before passing it here</b>, to move the input list from being the recipe name
+     * section itself to the 'input' section within.
+     *
+     * @param recipeNameSection <b><code>[ID].base.crafting.shaped.[name]</code></b> section
+     */
+    public RMGRI_SuperShaped(@NotNull ConfigurationSection recipeNameSection) {
+
+        // Save
+        section = recipeNameSection;
+
+        // Build Input list
+        inputRecipe = buildIngredientsFromList(section.getStringList(RecipeMakerGUI.INPUT_INGREDIENTS));
+        outputRecipe = buildIngredientsFromList(section.getStringList(RecipeMakerGUI.OUTPUT_INGREDIENTS));
+    }
+
+    /**
+     * No matter what input, the output will always be three Provided UIFilters
+     * separated by bars, as expected in the current system, filling with AIR
+     * where necessary.
+     *
+     * @param curr Current string
+     * @return A row in correct format
+     */
+    @NotNull
+    public static String updateRow(@Nullable String curr) {
+        if (curr == null || curr.isEmpty()) {
+            return emptyRow;
+        }
+
+        // Bars used? I guess we can check that its written correctly
+        if (curr.contains("|")) {
+
+            // Split by bars
+            String[] curSplit = curr.split("\\|");
+
+            // Correct length?
+            if (curSplit.length == 5) {
+
+                // Assumed to be updated.
+                return curr;
+
+            } else {
+
+                // Make sure it is of size three
+                StringBuilder ret = new StringBuilder();
+
+                // Must append three
+                for (int r = 0; r < 5; r++) {
+
+                    // Append a bar after the first
+                    if (r != 0) {
+                        ret.append("|");
+                    }
+
+                    // Array has it?
+                    if (r < curSplit.length) {
+                        ret.append(RecipeMakerGUI.poofFromLegacy(curSplit[r]));
+                    } else {
+                        ret.append("v AIR 0");
+                    }
+                }
+
+                // Build and return
+                return ret.toString();
+            }
+
+            // Not bars, but spaces, might be old format
+        } else if (curr.contains(" ")) {
+
+            // Make string builder
+            StringBuilder ret = new StringBuilder();
+            String[] curSplit = curr.split(" ");
+
+            // Must append three
+            for (int r = 0; r < 5; r++) {
+
+                // Append a bar after the first
+                if (r != 0) {
+                    ret.append("|");
+                }
+
+                // Array has it?
+                if (r < curSplit.length) {
+                    ret.append(RecipeMakerGUI.poofFromLegacy(curSplit[r]));
+                } else {
+                    ret.append("v AIR 0");
+                }
+            }
+
+            // Build and return
+            return ret.toString();
+
+            // No spaces nor bars, this will just be the first ingredient of the row I guess
+        } else {
+
+            // Just that i guess
+            return RecipeMakerGUI.poofFromLegacy(curr) + "|v AIR 0|v AIR 0|v AIR 0|v AIR 0";
+        }
+    }
+
     /**
      * Builds a valid 5x5 matrix of input/output recipe.
      *
      * @param config List as it is saved in the config.
-     *
      * @return Transcribed into array of arrays.
      */
-    @NotNull ProvidedUIFilter[][] buildIngredientsFromList(@NotNull List<String> config) {
+    @NotNull
+    ProvidedUIFilter[][] buildIngredientsFromList(@NotNull List<String> config) {
 
         // Start with a base
         ProvidedUIFilter[][] ret = new ProvidedUIFilter[5][5];
@@ -62,35 +174,39 @@ public class RMGRI_SuperShaped implements RMG_RecipeInterpreter {
 
                 // Parse
                 ProvidedUIFilter parsed = ProvidedUIFilter.getFromString(poof, null);
-                if (parsed == null) { parsed = RecipeMakerGUI.AIR.clone(); }
+                if (parsed == null) {
+                    parsed = RecipeMakerGUI.AIR.clone();
+                }
 
                 // Add
-                ret[r][p] = parsed; } }
+                ret[r][p] = parsed;
+            }
+        }
 
         // And that's your result
         return ret;
     }
+
     /**
      * Turns something like <br> <code>
-     *
-     *     [ A, B, C, D, E ], <br>
-     *     [ F, G, H, I, J ], <br>
-     *     [ K, L, M, N, O ], <br>
-     *     [ P, Q, R, S, T ], <br>
-     *     [ U, V, W, X, Y ]  <br>
+     * <p>
+     * [ A, B, C, D, E ], <br>
+     * [ F, G, H, I, J ], <br>
+     * [ K, L, M, N, O ], <br>
+     * [ P, Q, R, S, T ], <br>
+     * [ U, V, W, X, Y ]  <br>
      *
      * </code> <br>
      * into <br> <code>
-     *
-     *    - A|B|C|D|E <br>
-     *    - F|G|H|I|J <br>
-     *    - K|L|M|N|O <br>
-     *    - P|Q|R|S|T <br>
-     *    - U|V|W|X|Y
+     * <p>
+     * - A|B|C|D|E <br>
+     * - F|G|H|I|J <br>
+     * - K|L|M|N|O <br>
+     * - P|Q|R|S|T <br>
+     * - U|V|W|X|Y
      * </code>
      *
      * @param ingredients Array of arrays of UIFilters
-     *
      * @return A list of strings to save in a YML Config
      */
     @NotNull
@@ -110,10 +226,14 @@ public class RMGRI_SuperShaped implements RMG_RecipeInterpreter {
             // Build
             for (ProvidedUIFilter poof : poofs) {
                 ProvidedUIFilter providedUIFilter = poof;
-                if (providedUIFilter == null) { providedUIFilter = RecipeMakerGUI.AIR.clone(); }
+                if (providedUIFilter == null) {
+                    providedUIFilter = RecipeMakerGUI.AIR.clone();
+                }
 
                 // Add bar
-                if (sb.length() != 0) { sb.append("|"); }
+                if (sb.length() != 0) {
+                    sb.append("|");
+                }
 
                 // Add poof
                 sb.append(providedUIFilter);
@@ -125,7 +245,6 @@ public class RMGRI_SuperShaped implements RMG_RecipeInterpreter {
         return ret;
     }
 
-    @NotNull final ProvidedUIFilter[][] inputRecipe;
     /**
      * Sets the ingredient in the rows matrix.
      *
@@ -133,16 +252,21 @@ public class RMGRI_SuperShaped implements RMG_RecipeInterpreter {
      * @param poof Ingredient to register
      */
     public void setInput(int slot, @NotNull ProvidedUIFilter poof) {
-        if (slot < 0 || slot > 24) { return; }
+        if (slot < 0 || slot > 24) {
+            return;
+        }
         inputRecipe[SilentNumbers.floor(slot / 5.0)][slot - (5 * SilentNumbers.floor(slot / 5.0))] = poof;
     }
+
     @Nullable
-    @Override public ProvidedUIFilter getInput(int slot) {
-        if (slot < 0 || slot > 24) { return null; }
+    @Override
+    public ProvidedUIFilter getInput(int slot) {
+        if (slot < 0 || slot > 24) {
+            return null;
+        }
         return inputRecipe[SilentNumbers.floor(slot / 5.0)][slot - (5 * SilentNumbers.floor(slot / 5.0))];
     }
 
-    @NotNull final ProvidedUIFilter[][] outputRecipe;
     /**
      * Sets the ingredient in the rows matrix.
      *
@@ -150,40 +274,29 @@ public class RMGRI_SuperShaped implements RMG_RecipeInterpreter {
      * @param poof Ingredient to register
      */
     public void setOutput(int slot, @NotNull ProvidedUIFilter poof) {
-        if (slot < 0 || slot > 24) { return; }
+        if (slot < 0 || slot > 24) {
+            return;
+        }
         outputRecipe[SilentNumbers.floor(slot / 5.0)][slot - (5 * SilentNumbers.floor(slot / 5.0))] = poof;
     }
+
     @Nullable
-    @Override public ProvidedUIFilter getOutput(int slot) {
-        if (slot < 0 || slot > 24) { return null; }
+    @Override
+    public ProvidedUIFilter getOutput(int slot) {
+        if (slot < 0 || slot > 24) {
+            return null;
+        }
         return outputRecipe[SilentNumbers.floor(slot / 5.0)][slot - (5 * SilentNumbers.floor(slot / 5.0))];
     }
 
-    @NotNull final ConfigurationSection section;
     /**
      * @return The recipe name section of this recipe. <br>
-     *         <br>
-     *         Basically <b><code>[ID].base.crafting.shaped.[name]</code></b> section
+     * <br>
+     * Basically <b><code>[ID].base.crafting.shaped.[name]</code></b> section
      */
-    @NotNull public ConfigurationSection getSection() { return section; }
-
-    /**
-     * Generate an interpreter from this <i>updated</i> configuration section.
-     * <br><br>
-     * By 'updated' I mean that, for now, we <b>should call {@link RecipeMakerGUI#moveInput()}
-     * on this configuration before passing it here</b>, to move the input list from being the recipe name
-     * section itself to the 'input' section within.
-     *
-     * @param recipeNameSection <b><code>[ID].base.crafting.shaped.[name]</code></b> section
-     */
-    public RMGRI_SuperShaped(@NotNull ConfigurationSection recipeNameSection) {
-
-        // Save
-        section = recipeNameSection;
-
-        // Build Input list
-        inputRecipe = buildIngredientsFromList(section.getStringList(RecipeMakerGUI.INPUT_INGREDIENTS));
-        outputRecipe = buildIngredientsFromList(section.getStringList(RecipeMakerGUI.OUTPUT_INGREDIENTS));
+    @NotNull
+    public ConfigurationSection getSection() {
+        return section;
     }
 
     @Override
@@ -206,81 +319,16 @@ public class RMGRI_SuperShaped implements RMG_RecipeInterpreter {
         section.set(RecipeMakerGUI.OUTPUT_INGREDIENTS, toYML(outputRecipe));
     }
 
-    @Override public void deleteInput(int slot) { editInput(RecipeMakerGUI.AIR.clone(), slot); }
-
-    @Override public void deleteOutput(int slot) { editOutput(RecipeMakerGUI.AIR.clone(), slot); }
-
     //region Updater, to update old recipes
-    /**
-     * No matter what input, the output will always be three Provided UIFilters
-     * separated by bars, as expected in the current system, filling with AIR
-     * where necessary.
-     *
-     * @param curr Current string
-     *
-     * @return A row in correct format
-     */
-    @NotNull public static String updateRow(@Nullable String curr) {
-        if (curr == null || curr.isEmpty()) { return emptyRow;}
 
-        // Bars used? I guess we can check that its written correctly
-        if (curr.contains("|")) {
-
-            // Split by bars
-            String[] curSplit = curr.split("\\|");
-
-            // Correct length?
-            if (curSplit.length == 5) {
-
-                // Assumed to be updated.
-                return curr;
-
-            } else {
-
-                // Make sure it is of size three
-                StringBuilder ret = new StringBuilder();
-
-                // Must append three
-                for (int r = 0; r < 5; r++) {
-
-                    // Append a bar after the first
-                    if (r != 0) { ret.append("|"); }
-
-                    // Array has it?
-                    if (r < curSplit.length) { ret.append(RecipeMakerGUI.poofFromLegacy(curSplit[r])); } else { ret.append("v AIR 0"); }
-                }
-
-                // Build and return
-                return ret.toString();
-            }
-
-            // Not bars, but spaces, might be old format
-        } else if (curr.contains(" ")) {
-
-            // Make string builder
-            StringBuilder ret = new StringBuilder();
-            String[] curSplit = curr.split(" ");
-
-            // Must append three
-            for (int r = 0; r < 5; r++) {
-
-                // Append a bar after the first
-                if (r != 0) { ret.append("|"); }
-
-                // Array has it?
-                if (r < curSplit.length) { ret.append(RecipeMakerGUI.poofFromLegacy(curSplit[r])); } else { ret.append("v AIR 0"); }
-            }
-
-            // Build and return
-            return ret.toString();
-
-        // No spaces nor bars, this will just be the first ingredient of the row I guess
-        } else {
-
-            // Just that i guess
-            return RecipeMakerGUI.poofFromLegacy(curr) + "|v AIR 0|v AIR 0|v AIR 0|v AIR 0";
-        }
+    @Override
+    public void deleteInput(int slot) {
+        editInput(RecipeMakerGUI.AIR.clone(), slot);
     }
-    public static final String emptyRow = "v AIR 0|v AIR 0|v AIR 0|v AIR 0|v AIR 0";
+
+    @Override
+    public void deleteOutput(int slot) {
+        editOutput(RecipeMakerGUI.AIR.clone(), slot);
+    }
     //endregion
 }

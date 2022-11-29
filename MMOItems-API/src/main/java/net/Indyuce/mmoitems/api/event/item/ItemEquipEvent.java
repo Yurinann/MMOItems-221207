@@ -8,25 +8,25 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
 public class ItemEquipEvent extends PlayerDataEvent implements Cancellable {
-	private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
 
-	private final ItemStack item;
+    private final ItemStack item;
 
-	public ItemEquipEvent(Player player, ItemStack item) {
-		super(PlayerData.get(player));
+    public ItemEquipEvent(Player player, ItemStack item) {
+        super(PlayerData.get(player));
 
-		this.item = item;
-	}
+        this.item = item;
+    }
 
-	public ItemStack getItem() {
-		return item;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    public ItemStack getItem() {
+        return item;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 }

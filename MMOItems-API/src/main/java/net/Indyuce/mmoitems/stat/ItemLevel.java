@@ -20,83 +20,87 @@ import java.util.List;
 import java.util.Optional;
 
 public class ItemLevel extends ItemStat<NumericStatFormula, DoubleData> implements InternalStat {
-	public ItemLevel() {
-		super("ITEM_LEVEL", VersionMaterial.EXPERIENCE_BOTTLE.toMaterial(), "Item Level", new String[] { "The item level" }, new String[] { "all" });
-	}
+    public ItemLevel() {
+        super("ITEM_LEVEL", VersionMaterial.EXPERIENCE_BOTTLE.toMaterial(), "Item Level", new String[]{"The item level"}, new String[]{"all"});
+    }
 
-	@Override
-	public void whenApplied(@NotNull ItemStackBuilder item, @NotNull DoubleData data) { item.addItemTag(getAppliedNBT(data)); }
+    @Override
+    public void whenApplied(@NotNull ItemStackBuilder item, @NotNull DoubleData data) {
+        item.addItemTag(getAppliedNBT(data));
+    }
 
-	@Nullable
-	@Override
-	public NumericStatFormula whenInitialized(Object object) {
-		// not supported
-		return null;
-	}
+    @Nullable
+    @Override
+    public NumericStatFormula whenInitialized(Object object) {
+        // not supported
+        return null;
+    }
 
-	@Override
-	public void whenClicked(@NotNull EditionInventory inv, @NotNull InventoryClickEvent event) {
-		// not supported
-	}
+    @Override
+    public void whenClicked(@NotNull EditionInventory inv, @NotNull InventoryClickEvent event) {
+        // not supported
+    }
 
-	@Override
-	public void whenInput(@NotNull EditionInventory inv, @NotNull String message, Object... info) {
-		// not supported
-	}
+    @Override
+    public void whenInput(@NotNull EditionInventory inv, @NotNull String message, Object... info) {
+        // not supported
+    }
 
-	@Override
-	public void whenDisplayed(List<String> lore, Optional<NumericStatFormula> statData) {
-		// not supported
-	}
+    @Override
+    public void whenDisplayed(List<String> lore, Optional<NumericStatFormula> statData) {
+        // not supported
+    }
 
-	@NotNull
-	@Override
-	public ArrayList<ItemTag> getAppliedNBT(@NotNull DoubleData data) {
+    @NotNull
+    @Override
+    public ArrayList<ItemTag> getAppliedNBT(@NotNull DoubleData data) {
 
-		// Array
-		ArrayList<ItemTag> ret = new ArrayList<>();
+        // Array
+        ArrayList<ItemTag> ret = new ArrayList<>();
 
-		// Add
-		ret.add(new ItemTag(getNBTPath(), data.getValue()));
+        // Add
+        ret.add(new ItemTag(getNBTPath(), data.getValue()));
 
-		return ret;
-	}
+        return ret;
+    }
 
-	@Override
-	public void whenLoaded(@NotNull ReadMMOItem mmoitem) {
+    @Override
+    public void whenLoaded(@NotNull ReadMMOItem mmoitem) {
 
-		// Find relevant tags
-		ArrayList<ItemTag> relevantTags = new ArrayList<>();
-		if (mmoitem.getNBT().hasTag(getNBTPath()))
-			relevantTags.add(ItemTag.getTagAtPath(getNBTPath(), mmoitem.getNBT(), SupportedNBTTagValues.DOUBLE));
+        // Find relevant tags
+        ArrayList<ItemTag> relevantTags = new ArrayList<>();
+        if (mmoitem.getNBT().hasTag(getNBTPath()))
+            relevantTags.add(ItemTag.getTagAtPath(getNBTPath(), mmoitem.getNBT(), SupportedNBTTagValues.DOUBLE));
 
-		// Build StatData
-		StatData data = getLoadedNBT(relevantTags);
+        // Build StatData
+        StatData data = getLoadedNBT(relevantTags);
 
-		if (data != null) { mmoitem.setData(this, data); }
-	}
+        if (data != null) {
+            mmoitem.setData(this, data);
+        }
+    }
 
-	@Nullable
-	@Override
-	public DoubleData getLoadedNBT(@NotNull ArrayList<ItemTag> storedTags) {
+    @Nullable
+    @Override
+    public DoubleData getLoadedNBT(@NotNull ArrayList<ItemTag> storedTags) {
 
-		// Get tag
-		ItemTag lTag = ItemTag.getTagAtPath(getNBTPath(), storedTags);
+        // Get tag
+        ItemTag lTag = ItemTag.getTagAtPath(getNBTPath(), storedTags);
 
-		// Found?
-		if (lTag != null) {
+        // Found?
+        if (lTag != null) {
 
-			// Thats it
-			return new DoubleData((double) lTag.getValue());
-		}
+            // Thats it
+            return new DoubleData((double) lTag.getValue());
+        }
 
-		// Nope
-		return null;
-	}
+        // Nope
+        return null;
+    }
 
-	@NotNull
-	@Override
-	public DoubleData getClearStatData() {
-		return new DoubleData(0D);
-	}
+    @NotNull
+    @Override
+    public DoubleData getClearStatData() {
+        return new DoubleData(0D);
+    }
 }

@@ -12,24 +12,41 @@ import java.util.ArrayList;
  * Data that stores what an item is originally named like and prefixes or whatever.
  */
 public class NameData extends StringData implements Mergeable<StringData> {
+    @NotNull
+    ArrayList<String> prefixes = new ArrayList<>();
+    @NotNull
+    ArrayList<String> suffixes = new ArrayList<>();
+
     public NameData(@NotNull String str) {
         super(str);
     }
 
     public void readPrefixes(@Nullable ItemTag tag) {
-        if (tag == null) { return; }
+        if (tag == null) {
+            return;
+        }
 
         for (String str : ItemTag.getStringListFromTag(tag)) {
-            if (str == null) { continue; }
+            if (str == null) {
+                continue;
+            }
 
             addPrefix(str);
         }
     }
 
-    @NotNull public String getMainName() { return getString(); }
+    @NotNull
+    public String getMainName() {
+        return getString();
+    }
 
-    public boolean hasPrefixes() { return prefixes.size() > 0; }
-    public boolean hasSuffixes() { return suffixes.size() > 0; }
+    public boolean hasPrefixes() {
+        return prefixes.size() > 0;
+    }
+
+    public boolean hasSuffixes() {
+        return suffixes.size() > 0;
+    }
 
     /**
      * @return The full, built name.
@@ -37,9 +54,22 @@ public class NameData extends StringData implements Mergeable<StringData> {
     @NotNull
     public String bake() {
         StringBuilder sb = new StringBuilder();
-        for (String prefix : getPrefixes()) { if (sb.length() > 0) { sb.append(" "); } sb.append(prefix); }
-        if (sb.length() > 0) { sb.append(" "); } sb.append(getMainName());
-        for (String suffix : getSuffixes()) { if (sb.length() > 0) { sb.append(" "); } sb.append(suffix); }
+        for (String prefix : getPrefixes()) {
+            if (sb.length() > 0) {
+                sb.append(" ");
+            }
+            sb.append(prefix);
+        }
+        if (sb.length() > 0) {
+            sb.append(" ");
+        }
+        sb.append(getMainName());
+        for (String suffix : getSuffixes()) {
+            if (sb.length() > 0) {
+                sb.append(" ");
+            }
+            sb.append(suffix);
+        }
 
         // Built
         return sb.toString();
@@ -52,7 +82,12 @@ public class NameData extends StringData implements Mergeable<StringData> {
     public String bakePrefix() {
 
         StringBuilder sb = new StringBuilder();
-        for (String prefix : getPrefixes()) { if (sb.length() > 0) { sb.append(" "); } sb.append(prefix); }
+        for (String prefix : getPrefixes()) {
+            if (sb.length() > 0) {
+                sb.append(" ");
+            }
+            sb.append(prefix);
+        }
 
         // Built
         return sb.toString();
@@ -65,7 +100,12 @@ public class NameData extends StringData implements Mergeable<StringData> {
     public String bakeSuffix() {
 
         StringBuilder sb = new StringBuilder();
-        for (String suffix : getSuffixes()) { if (sb.length() > 0) { sb.append(" "); } sb.append(suffix); }
+        for (String suffix : getSuffixes()) {
+            if (sb.length() > 0) {
+                sb.append(" ");
+            }
+            sb.append(suffix);
+        }
 
         // Built
         return sb.toString();
@@ -76,35 +116,57 @@ public class NameData extends StringData implements Mergeable<StringData> {
         return bake();
     }
 
-    @NotNull public ItemTag compressPrefixes(@NotNull String path) {
+    @NotNull
+    public ItemTag compressPrefixes(@NotNull String path) {
 
         return ItemTag.fromStringList(path, getPrefixes());
     }
 
-    @NotNull public ItemTag compressSuffixes(@NotNull String path) {
+    @NotNull
+    public ItemTag compressSuffixes(@NotNull String path) {
 
         return ItemTag.fromStringList(path, getSuffixes());
     }
 
     public void readSuffixes(@Nullable ItemTag tag) {
-        if (tag == null) { return; }
+        if (tag == null) {
+            return;
+        }
 
         for (String str : ItemTag.getStringListFromTag(tag)) {
-            if (str == null) { continue; }
+            if (str == null) {
+                continue;
+            }
 
             addSuffix(str);
         }
     }
 
-    @NotNull ArrayList<String> prefixes = new ArrayList<>();
-    public void addPrefix(@NotNull String str) { prefixes.add(str); }
-    public void clearPrefixes() { prefixes.clear(); }
-    @NotNull public ArrayList<String> getPrefixes() { return prefixes; }
+    public void addPrefix(@NotNull String str) {
+        prefixes.add(str);
+    }
 
-    @NotNull ArrayList<String> suffixes = new ArrayList<>();
-    public void addSuffix(@NotNull String str) { suffixes.add(str); }
-    public void clearSuffixes() { suffixes.clear(); }
-    @NotNull public ArrayList<String> getSuffixes() { return suffixes; }
+    public void clearPrefixes() {
+        prefixes.clear();
+    }
+
+    @NotNull
+    public ArrayList<String> getPrefixes() {
+        return prefixes;
+    }
+
+    public void addSuffix(@NotNull String str) {
+        suffixes.add(str);
+    }
+
+    public void clearSuffixes() {
+        suffixes.clear();
+    }
+
+    @NotNull
+    public ArrayList<String> getSuffixes() {
+        return suffixes;
+    }
 
     @Override
     public void merge(StringData data) {
@@ -113,16 +175,24 @@ public class NameData extends StringData implements Mergeable<StringData> {
         if (data instanceof NameData) {
 
             // Replace name if not empty
-            if (!((NameData) data).getMainName().isEmpty()) { setString(((NameData) data).getMainName()); }
+            if (!((NameData) data).getMainName().isEmpty()) {
+                setString(((NameData) data).getMainName());
+            }
 
             // Assimilate
-            for (String p : ((NameData) data).getPrefixes()) { addPrefix(p);}
-            for (String p : ((NameData) data).getSuffixes()) { addSuffix(p);}
+            for (String p : ((NameData) data).getPrefixes()) {
+                addPrefix(p);
+            }
+            for (String p : ((NameData) data).getSuffixes()) {
+                addSuffix(p);
+            }
 
         } else if (data instanceof StringData) {
 
             // Replace name if not empty
-            if (data.toString().isEmpty()) { return; }
+            if (data.toString().isEmpty()) {
+                return;
+            }
             setString(data.toString());
         }
     }
@@ -132,8 +202,12 @@ public class NameData extends StringData implements Mergeable<StringData> {
     public StringData cloneData() {
 
         NameData c = new NameData(getMainName());
-        for (String p : getPrefixes()) { c.addPrefix(p);}
-        for (String p : getSuffixes()) { c.addSuffix(p);}
+        for (String p : getPrefixes()) {
+            c.addPrefix(p);
+        }
+        for (String p : getSuffixes()) {
+            c.addSuffix(p);
+        }
 
         return c;
     }

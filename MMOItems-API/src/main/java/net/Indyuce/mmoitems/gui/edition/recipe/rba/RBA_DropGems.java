@@ -16,18 +16,30 @@ import org.jetbrains.annotations.NotNull;
  */
 public class RBA_DropGems extends RBA_BooleanButton {
 
+    public static final String SMITH_GEMS = "drop-gems";
+    @NotNull
+    final ItemStack booleanButton = RecipeMakerGUI.addLore(ItemFactory.of(Material.EMERALD).name("\u00a7aDrop Gemstones").lore(SilentNumbers.chop(
+            "Usually, gemstones that dont fit the new item are lost. Enable this to make them drop (and be recovered) instead."
+            , 65, "\u00a77")).build(), SilentNumbers.toArrayList(""));
+
     /**
      * A button of an Edition Inventory. Nice!
      *
      * @param inv The edition inventory this is a button of
      */
-    public RBA_DropGems(@NotNull RecipeMakerGUI inv) { super(inv); }
+    public RBA_DropGems(@NotNull RecipeMakerGUI inv) {
+        super(inv);
+    }
 
-    public static final String SMITH_GEMS = "drop-gems";
-    @NotNull @Override public String getBooleanConfigPath() { return SMITH_GEMS; }
+    @NotNull
+    @Override
+    public String getBooleanConfigPath() {
+        return SMITH_GEMS;
+    }
 
-    @NotNull final ItemStack booleanButton = RecipeMakerGUI.addLore(ItemFactory.of(Material.EMERALD).name("\u00a7aDrop Gemstones").lore(SilentNumbers.chop(
-            "Usually, gemstones that dont fit the new item are lost. Enable this to make them drop (and be recovered) instead."
-            , 65, "\u00a77")).build(), SilentNumbers.toArrayList(""));
-    @NotNull @Override public ItemStack getBooleanButton() { return booleanButton; }
+    @NotNull
+    @Override
+    public ItemStack getBooleanButton() {
+        return booleanButton;
+    }
 }

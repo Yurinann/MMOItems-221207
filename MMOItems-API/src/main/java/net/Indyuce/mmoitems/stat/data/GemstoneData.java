@@ -30,54 +30,6 @@ public class GemstoneData {
     @Nullable
     private Integer levelPut;
 
-    public GemstoneData cloneGem() {
-
-        GemstoneData ret = new GemstoneData(getName(), getMMOItemType(), getMMOItemID(), getSocketColor(), getHistoricUUID());
-        for (AbilityData d : abilities)
-            ret.addAbility(d);
-        for (PotionEffectData d : effects)
-            ret.addPermanentEffect(d);
-        for (ItemStat d : stats.keySet())
-            ret.setStat(d, stats.get(d));
-        ret.setLevel(getLevel());
-
-        return ret;
-    }
-
-    /**
-     * Gemstone equals method is for practical purposes and only checks that
-     * this other thing is both a GemstoneData and has the same UUID.
-     *
-     * @param obj Object to compare with
-     * @return <code>true</code> if they have the same {@link #getHistoricUUID()}
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof GemstoneData)) {
-            return false;
-        }
-
-        return ((GemstoneData) obj).getHistoricUUID().equals(getHistoricUUID());
-    }
-
-    @Nullable
-    public String getMMOItemType() {
-        return mmoitemType;
-    }
-
-    @Nullable
-    public String getMMOItemID() {
-        return mmoitemID;
-    }
-
-    /**
-     * If known, the socket colour this gem was put into
-     */
-    @Nullable
-    public String getSocketColor() {
-        return socketColor;
-    }
-
     /**
      * This constructor is not really performance friendly. It should only be
      * used when applying gem stones to keep max performance.
@@ -194,35 +146,6 @@ public class GemstoneData {
     }
 
     /**
-     * This is at which level (of the item) the gemstone was placed onto the item.
-     * <p>A null level means this gem does not scale.</p>
-     * <p></p>
-     * For scaling purposes of stat {@link GemUpgradeScaling}
-     */
-    public void setLevel(@Nullable Integer l) {
-        //LVL//MMOItems.log("\u00a73 -\u00a7b-\u00a73-\u00a77 Set Level: \u00a7b" + l);
-        levelPut = l;
-    }
-
-    /**
-     * This is at which level (of the item) the gemstone was placed onto the item.
-     * <p>A null level means this gem does not scale.</p>
-     * <p></p>
-     * For scaling purposes of stat {@link GemUpgradeScaling}
-     */
-    @Nullable
-    public Integer getLevel() {
-        return levelPut;
-    }
-
-    /**
-     * Does this gem scale with item upgrades?
-     */
-    public boolean isScaling() {
-        return levelPut != null;
-    }
-
-    /**
      * This is a completely empty builder.
      * <p></p>
      * You may add whatever you want with <code>addAbility()</code>,<code>addPermamentEffect</code>, or most widely usedly, <code>setStat()</code>.
@@ -252,6 +175,83 @@ public class GemstoneData {
         mmoitemType = type;
         socketColor = color;
         historicUUID = uiid;
+    }
+
+    public GemstoneData cloneGem() {
+
+        GemstoneData ret = new GemstoneData(getName(), getMMOItemType(), getMMOItemID(), getSocketColor(), getHistoricUUID());
+        for (AbilityData d : abilities)
+            ret.addAbility(d);
+        for (PotionEffectData d : effects)
+            ret.addPermanentEffect(d);
+        for (ItemStat d : stats.keySet())
+            ret.setStat(d, stats.get(d));
+        ret.setLevel(getLevel());
+
+        return ret;
+    }
+
+    /**
+     * Gemstone equals method is for practical purposes and only checks that
+     * this other thing is both a GemstoneData and has the same UUID.
+     *
+     * @param obj Object to compare with
+     * @return <code>true</code> if they have the same {@link #getHistoricUUID()}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof GemstoneData)) {
+            return false;
+        }
+
+        return ((GemstoneData) obj).getHistoricUUID().equals(getHistoricUUID());
+    }
+
+    @Nullable
+    public String getMMOItemType() {
+        return mmoitemType;
+    }
+
+    @Nullable
+    public String getMMOItemID() {
+        return mmoitemID;
+    }
+
+    /**
+     * If known, the socket colour this gem was put into
+     */
+    @Nullable
+    public String getSocketColor() {
+        return socketColor;
+    }
+
+    /**
+     * This is at which level (of the item) the gemstone was placed onto the item.
+     * <p>A null level means this gem does not scale.</p>
+     * <p></p>
+     * For scaling purposes of stat {@link GemUpgradeScaling}
+     */
+    @Nullable
+    public Integer getLevel() {
+        return levelPut;
+    }
+
+    /**
+     * This is at which level (of the item) the gemstone was placed onto the item.
+     * <p>A null level means this gem does not scale.</p>
+     * <p></p>
+     * For scaling purposes of stat {@link GemUpgradeScaling}
+     */
+    public void setLevel(@Nullable Integer l) {
+        //LVL//MMOItems.log("\u00a73 -\u00a7b-\u00a73-\u00a77 Set Level: \u00a7b" + l);
+        levelPut = l;
+    }
+
+    /**
+     * Does this gem scale with item upgrades?
+     */
+    public boolean isScaling() {
+        return levelPut != null;
     }
 
     /**

@@ -16,66 +16,71 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 
 public class CustomModelData extends DoubleStat implements GemStoneStat {
-	public CustomModelData() {
-		super("CUSTOM_MODEL_DATA", Material.PAINTING, "Custom Model Data", new String[] { "Your 1.14+ model data." }, new String[] { "!block", "all" });
-	}
+    public CustomModelData() {
+        super("CUSTOM_MODEL_DATA", Material.PAINTING, "Custom Model Data", new String[]{"Your 1.14+ model data."}, new String[]{"!block", "all"});
+    }
 
-	@Override
-	public void whenApplied(@NotNull ItemStackBuilder item, @NotNull DoubleData data) {
+    @Override
+    public void whenApplied(@NotNull ItemStackBuilder item, @NotNull DoubleData data) {
 
-		// Edit meta
-		item.getMeta().setCustomModelData((int) data.getValue());
+        // Edit meta
+        item.getMeta().setCustomModelData((int) data.getValue());
 
-		// Apply Custom Model Data
-		item.addItemTag(getAppliedNBT(data));
-	}
+        // Apply Custom Model Data
+        item.addItemTag(getAppliedNBT(data));
+    }
 
-	@Override
-	public void whenPreviewed(@NotNull ItemStackBuilder item, @NotNull DoubleData currentData, @NotNull NumericStatFormula templateData) throws IllegalArgumentException { whenApplied(item, currentData); }
+    @Override
+    public void whenPreviewed(@NotNull ItemStackBuilder item, @NotNull DoubleData currentData, @NotNull NumericStatFormula templateData) throws IllegalArgumentException {
+        whenApplied(item, currentData);
+    }
 
-	@NotNull
-	@Override public ArrayList<ItemTag> getAppliedNBT(@NotNull DoubleData data) {
+    @NotNull
+    @Override
+    public ArrayList<ItemTag> getAppliedNBT(@NotNull DoubleData data) {
 
-		// Make new ArrayList
-		ArrayList<ItemTag> ret = new ArrayList<>();
+        // Make new ArrayList
+        ArrayList<ItemTag> ret = new ArrayList<>();
 
-		// Add Integer
-		ret.add(new ItemTag(getNBTPath(), (int) data.getValue()));
+        // Add Integer
+        ret.add(new ItemTag(getNBTPath(), (int) data.getValue()));
 
-		// Return thay
-		return ret;
-	}
+        // Return thay
+        return ret;
+    }
 
-	@Override
-	public void whenLoaded(@NotNull ReadMMOItem mmoitem) {
+    @Override
+    public void whenLoaded(@NotNull ReadMMOItem mmoitem) {
 
-		// Get Relevant tags
-		ArrayList<ItemTag> relevantTags = new ArrayList<>();
-		if (mmoitem.getNBT().hasTag(getNBTPath()))
-			relevantTags.add(ItemTag.getTagAtPath(getNBTPath(), mmoitem.getNBT(), SupportedNBTTagValues.INTEGER));
+        // Get Relevant tags
+        ArrayList<ItemTag> relevantTags = new ArrayList<>();
+        if (mmoitem.getNBT().hasTag(getNBTPath()))
+            relevantTags.add(ItemTag.getTagAtPath(getNBTPath(), mmoitem.getNBT(), SupportedNBTTagValues.INTEGER));
 
-		// Attempt to build data
-		StatData data = getLoadedNBT(relevantTags);
+        // Attempt to build data
+        StatData data = getLoadedNBT(relevantTags);
 
-		// Success?
-		if (data != null) { mmoitem.setData(this, data);}
-	}
+        // Success?
+        if (data != null) {
+            mmoitem.setData(this, data);
+        }
+    }
 
-	@Nullable
-	@Override
-	public DoubleData getLoadedNBT(@NotNull ArrayList<ItemTag> storedTags) {
+    @Nullable
+    @Override
+    public DoubleData getLoadedNBT(@NotNull ArrayList<ItemTag> storedTags) {
 
-		// Find Tag
-		ItemTag cmd = ItemTag.getTagAtPath(getNBTPath(), storedTags);
+        // Find Tag
+        ItemTag cmd = ItemTag.getTagAtPath(getNBTPath(), storedTags);
 
-		// Found?
-		if (cmd != null) {
+        // Found?
+        if (cmd != null) {
 
-			// Well thats it
-			return new DoubleData((Integer) cmd.getValue());
-		}
+            // Well thats it
+            return new DoubleData((Integer) cmd.getValue());
+        }
 
-		return null;
+        return null;
 
-	}
+    }
 }

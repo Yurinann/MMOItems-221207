@@ -19,12 +19,13 @@ public interface RecipeRegistry {
 
     /**
      * @return In item YML configurations, recipes are saved under
-     *         <code>[ID].crafting.[recipe]</code>, where this string
-     *         is the value of [recipe].
-     *         <br>
-     *         Ex. <code>STEEL_SWORD.crafting.shaped</code>
+     * <code>[ID].crafting.[recipe]</code>, where this string
+     * is the value of [recipe].
+     * <br>
+     * Ex. <code>STEEL_SWORD.crafting.shaped</code>
      */
-    @NotNull String getRecipeConfigPath();
+    @NotNull
+    String getRecipeConfigPath();
 
     /**
      * When making an inventory, the chest name reads '{@code Recipe Editor - ######}' <br>
@@ -40,16 +41,17 @@ public interface RecipeRegistry {
 
     /**
      * @return The item that means this type of recipes.
-     *         For example a workbench for shaped recipes,
-     *         or a furnace for smelting.
+     * For example a workbench for shaped recipes,
+     * or a furnace for smelting.
      */
-    @NotNull ItemStack getDisplayListItem();
+    @NotNull
+    ItemStack getDisplayListItem();
 
     /**
      * Opens the correct recipe to the player.
      *
-     * @param inv Edition Inventory by which the player is opening this
-     * @param recipeName Name of the recipe
+     * @param inv         Edition Inventory by which the player is opening this
+     * @param recipeName  Name of the recipe
      * @param otherParams Whatever else required by the constructor of the {@link net.Indyuce.mmoitems.gui.edition.recipe.gui.RecipeMakerGUI}
      */
     void openForPlayer(@NotNull EditionInventory inv, @NotNull String recipeName, Object... otherParams);
@@ -58,24 +60,20 @@ public interface RecipeRegistry {
      * This is the part that sends the recipe to mythiclib and what not.
      *
      * @param recipeTypeSection The configuration section [ID].base.crafting.[TYPE]
-     *
+     *                          <p>
      *                          You kind of have access to all other loaded recipes of this type,
      *                          not only the one being loaded, but please just load the one passed
      *                          as 'recipeName' parameter.
-     *
-     * @param recipeName Name of <u>the</u> recipe that is being loaded.
-     *
-     * @param namespace Namespace under which you should save this recipe.
-     *
-     *                  It will initially have the Namespaced Key you should use, but
-     *                  when you pass it to MythicLib, MythicLib will make it null if
-     *                  the recipe fails to register onto the crafting book, which is
-     *                  the expected behaviour.
-     *
+     * @param recipeName        Name of <u>the</u> recipe that is being loaded.
+     * @param namespace         Namespace under which you should save this recipe.
+     *                          <p>
+     *                          It will initially have the Namespaced Key you should use, but
+     *                          when you pass it to MythicLib, MythicLib will make it null if
+     *                          the recipe fails to register onto the crafting book, which is
+     *                          the expected behaviour.
      * @return The Activated Recipe Blueprint (so that it can be unloaded when reloading recipes)
-     *
      * @throws IllegalArgumentException If anything goes wrong. THIS MEANS THE RECIPE WAS NOT ENABLED.
-     *
      */
-    @NotNull MythicRecipeBlueprint sendToMythicLib(@NotNull MMOItemTemplate template, @NotNull ConfigurationSection recipeTypeSection, @NotNull String recipeName, @NotNull Ref<NamespacedKey> namespace, @NotNull FriendlyFeedbackProvider ffp) throws IllegalArgumentException;
+    @NotNull
+    MythicRecipeBlueprint sendToMythicLib(@NotNull MMOItemTemplate template, @NotNull ConfigurationSection recipeTypeSection, @NotNull String recipeName, @NotNull Ref<NamespacedKey> namespace, @NotNull FriendlyFeedbackProvider ffp) throws IllegalArgumentException;
 }

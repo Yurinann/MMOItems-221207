@@ -52,14 +52,14 @@ public class SkillsProHook implements RPGHandler, Listener {
         }
 
         @Override
-        public double getStamina() {
-            return getPlayer().getFoodLevel();
-        }
-
-        @Override
         public void setMana(double value) {
             SkilledPlayer info = SkillsPro.get().getPlayerDataManager().getData(getPlayerData().getUniqueId());
             info.setEnergy(value);
+        }
+
+        @Override
+        public double getStamina() {
+            return getPlayer().getFoodLevel();
         }
 
         @Override

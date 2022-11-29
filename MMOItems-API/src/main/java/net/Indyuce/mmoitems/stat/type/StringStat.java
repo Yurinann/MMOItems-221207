@@ -94,7 +94,7 @@ public class StringStat extends ItemStat<StringData, StringData> {
         }
     }
 
-	@Nullable
+    @Nullable
     @Override
     public StringData getLoadedNBT(@NotNull ArrayList<ItemTag> storedTags) {
 

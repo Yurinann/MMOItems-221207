@@ -39,6 +39,10 @@ public class RepairItemEvent extends PlayerDataEvent {
         this.repairedPercent = repaired;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     public VolatileMMOItem getConsumable() {
         return consumable;
     }
@@ -51,19 +55,15 @@ public class RepairItemEvent extends PlayerDataEvent {
         return repaired;
     }
 
-    public double getRepairedPercent() {
-        return repairedPercent;
-    }
-
     public void setRepaired(int repaired) {
         this.repaired = repaired;
     }
 
-    public HandlerList getHandlers() {
-        return handlers;
+    public double getRepairedPercent() {
+        return repairedPercent;
     }
 
-    public static HandlerList getHandlerList() {
+    public HandlerList getHandlers() {
         return handlers;
     }
 }

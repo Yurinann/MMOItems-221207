@@ -17,129 +17,128 @@ import net.Indyuce.mmoitems.api.player.PlayerData;
 import java.util.Random;
 
 public class MMOItemTemplateTag extends SimpleTag {
-	private final Type type;
-	private final String id;
+    private static final Random random = new Random();
+    public static ObjectTagProcessor<MMOItemTemplateTag> tagProcessor = new ObjectTagProcessor<>();
+    private final Type type;
+    private final String id;
 
-	private static final Random random = new Random();
+    public MMOItemTemplateTag(Type type, String id) {
+        this.type = type;
+        this.id = id;
+    }
 
-	public MMOItemTemplateTag(Type type, String id) {
-		this.type = type;
-		this.id = id;
-	}
+    public static void registerTags() {
 
-	public MMOItemTemplate getTemplate() {
-		return MMOItems.plugin.getTemplates().getTemplate(type, id);
-	}
+        // Display template type name
+        tagProcessor.registerTag("item_type", ((attribute, object) -> new ElementTag(object.type.getName())));
 
-	@Override
-	public boolean isUnique() {
-		return true;
-	}
+        // Display template id
+        tagProcessor.registerTag("item_id", ((attribute, object) -> new ElementTag(object.id)));
 
-	@Override
-	public String getObjectType() {
-		return "MMOItemTemplate";
-	}
+        /*
+         * Used to generate an item with custom tier and level.
+         *
+         * Usage:
+         * <mmoitemTemplateTag.generate[player=playerTagHere;level=10;matchlevel=true;tier=TIER_NAME]
+         * All arguments are optional. Level overrides the match-level option.
+         *
+         * Return:
+         * MMOItemTag of the generated item.
+         */
+        tagProcessor.registerTag("generate", (attribute, object) -> {
+            if (!attribute.hasContext(1))
+                return new ItemTag(object.getTemplate().newBuilder().build().newBuilder().build());
 
-	@Override
-	public String identify() {
-		return "mmoitem_template@" + type.getId() + "." + id;
-	}
+            MapTag map = attribute.contextAsType(1, MapTag.class);
+            if (map == null) {
+                attribute.echoError("Invalid MapTag input");
+                return null;
+            }
 
-	@Override
-	public String identifySimple() {
-		return identify();
-	}
+            ObjectTag playerTag = map.getObject("player");
+            if (playerTag != null && !(playerTag instanceof PlayerTag)) {
+                attribute.echoError("Bad player input type");
+                return null;
+            }
 
-	public static ObjectTagProcessor<MMOItemTemplateTag> tagProcessor = new ObjectTagProcessor<>();
+            // Specified level
+            ObjectTag levelTag = map.getObject("level");
+            int level = -1;
+            if (levelTag != null) try {
+                level = Integer.parseInt(levelTag.toString());
+            } catch (IllegalArgumentException exception) {
+                attribute.echoError("Bad level input: " + levelTag + " is not a valid integer");
+                return null;
+            }
 
-	@Override
-	public ObjectTag getObjectAttribute(Attribute attribute) {
-		return tagProcessor.getObjectAttribute(this, attribute);
-	}
+            // Match level
+            ObjectTag matchLevelTag = map.getObject("match-level");
+            boolean matchLevel = matchLevelTag != null && Boolean.parseBoolean(matchLevelTag.toString());
 
-	public static void registerTags() {
+            // Item tier param
+            ObjectTag tierTag = map.getObject("tier");
+            ItemTier tier = null;
+            if (tierTag != null) try {
+                tier = MMOItems.plugin.getTiers().getOrThrow(tierTag.toString().toUpperCase().replace("-", "_"));
+            } catch (IllegalArgumentException exception) {
+                attribute.echoError(exception.getMessage());
+            }
 
-		// Display template type name
-		tagProcessor.registerTag("item_type", ((attribute, object) -> new ElementTag(object.type.getName())));
+            // Find item level
+            int itemLevel = level >= 0 ? level : (matchLevel && playerTag != null ? MMOItems.plugin.getTemplates()
+                    .rollLevel(PlayerData.get(((PlayerTag) playerTag).getPlayerEntity()).getRPG().getLevel()) : 1 + random.nextInt(100));
 
-		// Display template id
-		tagProcessor.registerTag("item_id", ((attribute, object) -> new ElementTag(object.id)));
+            // Find item tier
+            ItemTier itemTier = tier != null ? tier : MMOItems.plugin.getTemplates().rollTier();
 
-		/*
-		 * Used to generate an item with custom tier and level.
-		 *
-		 * Usage:
-		 * <mmoitemTemplateTag.generate[player=playerTagHere;level=10;matchlevel=true;tier=TIER_NAME]
-		 * All arguments are optional. Level overrides the match-level option.
-		 *
-		 * Return:
-		 * MMOItemTag of the generated item.
-		 */
-		tagProcessor.registerTag("generate", (attribute, object) -> {
-			if (!attribute.hasContext(1)) return new ItemTag(object.getTemplate().newBuilder().build().newBuilder().build());
+            // Build item
+            return new ItemTag(object.getTemplate().newBuilder(itemLevel, itemTier).build().newBuilder().build());
+        });
+    }
 
-			MapTag map = attribute.contextAsType(1, MapTag.class);
-			if (map == null) {
-				attribute.echoError("Invalid MapTag input");
-				return null;
-			}
+    public static MMOItemTemplateTag valueOf(String string, TagContext context) {
+        if (string == null) return null;
 
-			ObjectTag playerTag = map.getObject("player");
-			if (playerTag != null && !(playerTag instanceof PlayerTag)) {
-				attribute.echoError("Bad player input type");
-				return null;
-			}
+        try {
+            String[] split = string.substring("mmoitem_template@".length()).split("\\.");
+            String typeId = split[0];
+            String itemId = split[1];
 
-			// Specified level
-			ObjectTag levelTag = map.getObject("level");
-			int level = -1;
-			if (levelTag != null) try {
-				level = Integer.parseInt(levelTag.toString());
-			} catch (IllegalArgumentException exception) {
-				attribute.echoError("Bad level input: " + levelTag + " is not a valid integer");
-				return null;
-			}
+            Type type = MMOItems.plugin.getTypes().getOrThrow(typeId);
+            MMOItems.plugin.getTemplates().getTemplateOrThrow(type, itemId);
 
-			// Match level
-			ObjectTag matchLevelTag = map.getObject("match-level");
-			boolean matchLevel = matchLevelTag != null && Boolean.parseBoolean(matchLevelTag.toString());
+            return new MMOItemTemplateTag(type, itemId);
+        } catch (Exception exception) {
+            return null;
+        }
+    }
 
-			// Item tier param
-			ObjectTag tierTag = map.getObject("tier");
-			ItemTier tier = null;
-			if (tierTag != null) try {
-				tier = MMOItems.plugin.getTiers().getOrThrow(tierTag.toString().toUpperCase().replace("-", "_"));
-			} catch (IllegalArgumentException exception) {
-				attribute.echoError(exception.getMessage());
-			}
+    public MMOItemTemplate getTemplate() {
+        return MMOItems.plugin.getTemplates().getTemplate(type, id);
+    }
 
-			// Find item level
-			int itemLevel = level >= 0 ? level : (matchLevel && playerTag != null ? MMOItems.plugin.getTemplates()
-					.rollLevel(PlayerData.get(((PlayerTag) playerTag).getPlayerEntity()).getRPG().getLevel()) : 1 + random.nextInt(100));
+    @Override
+    public boolean isUnique() {
+        return true;
+    }
 
-			// Find item tier
-			ItemTier itemTier = tier != null ? tier : MMOItems.plugin.getTemplates().rollTier();
+    @Override
+    public String getObjectType() {
+        return "MMOItemTemplate";
+    }
 
-			// Build item
-			return new ItemTag(object.getTemplate().newBuilder(itemLevel, itemTier).build().newBuilder().build());
-		});
-	}
+    @Override
+    public String identify() {
+        return "mmoitem_template@" + type.getId() + "." + id;
+    }
 
-	public static MMOItemTemplateTag valueOf(String string, TagContext context) {
-		if (string == null) return null;
+    @Override
+    public String identifySimple() {
+        return identify();
+    }
 
-		try {
-			String[] split = string.substring("mmoitem_template@".length()).split("\\.");
-			String typeId = split[0];
-			String itemId = split[1];
-
-			Type type = MMOItems.plugin.getTypes().getOrThrow(typeId);
-			MMOItems.plugin.getTemplates().getTemplateOrThrow(type, itemId);
-
-			return new MMOItemTemplateTag(type, itemId);
-		} catch (Exception exception) {
-			return null;
-		}
-	}
+    @Override
+    public ObjectTag getObjectAttribute(Attribute attribute) {
+        return tagProcessor.getObjectAttribute(this, attribute);
+    }
 }

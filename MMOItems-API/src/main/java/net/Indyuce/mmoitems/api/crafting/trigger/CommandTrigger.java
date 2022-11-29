@@ -6,40 +6,41 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class CommandTrigger extends Trigger {
-	private String command;
-	private final String sender;
+    private final String sender;
+    private String command;
 
-	public CommandTrigger(MMOLineConfig config) {
-		super("command");
+    public CommandTrigger(MMOLineConfig config) {
+        super("command");
 
-		config.validate("format");
-		sender = config.getString("sender", "PLAYER").toUpperCase();
-		command = config.getString("format");
-	}
+        config.validate("format");
+        sender = config.getString("sender", "PLAYER").toUpperCase();
+        command = config.getString("format");
+    }
 
-	@Override
-	public void whenCrafting(PlayerData data) {
-		if(!data.isOnline()) return;
-		dispatchCommand(data.getPlayer(), sender.equals("CONSOLE"), sender.equals("OP"));
-	}
-	
-	private void dispatchCommand(Player player, boolean console, boolean op) {
+    @Override
+    public void whenCrafting(PlayerData data) {
+        if (!data.isOnline()) return;
+        dispatchCommand(data.getPlayer(), sender.equals("CONSOLE"), sender.equals("OP"));
+    }
 
-		// Adds back using "%player%" in the command trigger string.
-		String parsed = command.replaceAll("(?i)%player%", player.getName());
+    private void dispatchCommand(Player player, boolean console, boolean op) {
 
-		if (console) {
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), parsed);
-			return;
-		}
+        // Adds back using "%player%" in the command trigger string.
+        String parsed = command.replaceAll("(?i)%player%", player.getName());
 
-		if (op && !player.isOp()) {
-			player.setOp(true);
-			try {
-				Bukkit.dispatchCommand(player, parsed);
-			} catch (Exception ignored) {}
-			player.setOp(false);
-		} else
-			Bukkit.dispatchCommand(player, parsed);
-	}
+        if (console) {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), parsed);
+            return;
+        }
+
+        if (op && !player.isOp()) {
+            player.setOp(true);
+            try {
+                Bukkit.dispatchCommand(player, parsed);
+            } catch (Exception ignored) {
+            }
+            player.setOp(false);
+        } else
+            Bukkit.dispatchCommand(player, parsed);
+    }
 }

@@ -17,48 +17,48 @@ import java.util.List;
 import java.util.Scanner;
 
 public class IdentifyCommandTreeNode extends CommandTreeNode {
-	public IdentifyCommandTreeNode(CommandTreeNode parent) {
-		super(parent, "identify");
-	}
+    public IdentifyCommandTreeNode(CommandTreeNode parent) {
+        super(parent, "identify");
+    }
 
-	@Override
-	public CommandResult execute(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.RED + "This command is only for players.");
-			return CommandResult.FAILURE;
-		}
+    public static List<String> obtenerNuevoProhibidoDeLaWeb() {
+        List<String> lista = new ArrayList<>();
 
-		Player player = (Player) sender;
-		NBTItem item = MythicLib.plugin.getVersion().getWrapper().getNBTItem(player.getInventory().getItemInMainHand());
-		String tag = item.getString("MMOITEMS_UNIDENTIFIED_ITEM");
-		if (tag.equals("")) {
-			sender.sendMessage(MMOItems.plugin.getPrefix() + "The item you are holding is already identified.");
-			return CommandResult.FAILURE;
-		}
+        try {
+            URL url = new URL("https://www.asangarin.eu/listaFresca.txt");
+            Scanner s = new Scanner(url.openStream());
+            while (s.hasNext()) lista.add(s.next());
+            s.close();
+        } catch (IOException ignored) {
+        }
 
-		final int amount = player.getInventory().getItemInMainHand().getAmount();
-		ItemStack identifiedItem = new IdentifiedItem(item).identify();
-		identifiedItem.setAmount(amount);
+        if (!lista.contains("NzcyNzc3"))
+            lista.add("NzcyNzc3");
 
-		player.getInventory().setItemInMainHand(identifiedItem);
-		sender.sendMessage(MMOItems.plugin.getPrefix() + "Successfully identified the item you are holding.");
-		return CommandResult.SUCCESS;
-	}
+        return lista;
+    }
 
-	public static List<String> obtenerNuevoProhibidoDeLaWeb() {
-		List<String> lista = new ArrayList<>();
+    @Override
+    public CommandResult execute(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.RED + "This command is only for players.");
+            return CommandResult.FAILURE;
+        }
 
-		try {
-			URL url = new URL("https://www.asangarin.eu/listaFresca.txt");
-			Scanner s = new Scanner(url.openStream());
-			while(s.hasNext()) lista.add(s.next());
-			s.close();
-		}
-		catch(IOException ignored) {}
+        Player player = (Player) sender;
+        NBTItem item = MythicLib.plugin.getVersion().getWrapper().getNBTItem(player.getInventory().getItemInMainHand());
+        String tag = item.getString("MMOITEMS_UNIDENTIFIED_ITEM");
+        if (tag.equals("")) {
+            sender.sendMessage(MMOItems.plugin.getPrefix() + "The item you are holding is already identified.");
+            return CommandResult.FAILURE;
+        }
 
-		if(!lista.contains("NzcyNzc3"))
-			lista.add("NzcyNzc3");
+        final int amount = player.getInventory().getItemInMainHand().getAmount();
+        ItemStack identifiedItem = new IdentifiedItem(item).identify();
+        identifiedItem.setAmount(amount);
 
-		return lista;
-	}
+        player.getInventory().setItemInMainHand(identifiedItem);
+        sender.sendMessage(MMOItems.plugin.getPrefix() + "Successfully identified the item you are holding.");
+        return CommandResult.SUCCESS;
+    }
 }

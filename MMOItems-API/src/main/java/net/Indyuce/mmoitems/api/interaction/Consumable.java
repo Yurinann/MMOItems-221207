@@ -117,7 +117,7 @@ public class Consumable extends UseItem {
 
     /**
      * @return If an item should be eaten not when right clicked, but after
-     *         the eating animation. This does check if the item is actually edible
+     * the eating animation. This does check if the item is actually edible
      */
     public boolean hasVanillaEating() {
         return (getItem().getType().isEdible() || getItem().getType() == Material.POTION || getItem().getType() == Material.MILK_BUCKET)

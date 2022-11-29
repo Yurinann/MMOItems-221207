@@ -48,17 +48,24 @@ public class Amphibian extends ChooseStat implements ItemRestriction, GemStoneSt
     }
 
     @NotNull
-    @Override public StringData getClearStatData() { return new StringData(NORMAL); }
+    @Override
+    public StringData getClearStatData() {
+        return new StringData(NORMAL);
+    }
 
     @Override
     public boolean canUse(RPGPlayer player, NBTItem item, boolean message) {
 
         // bruh
-        if (!item.hasTag(getNBTPath())) { return true; }
+        if (!item.hasTag(getNBTPath())) {
+            return true;
+        }
 
         // Find the relevant tags
         ArrayList<ItemTag> relevantTags = new ArrayList<>();
-        if (item.hasTag(getNBTPath())) { relevantTags.add(ItemTag.getTagAtPath(getNBTPath(), item, SupportedNBTTagValues.STRING)); }
+        if (item.hasTag(getNBTPath())) {
+            relevantTags.add(ItemTag.getTagAtPath(getNBTPath(), item, SupportedNBTTagValues.STRING));
+        }
 
         // Generate data
         StringData data = (StringData) getLoadedNBT(relevantTags);
@@ -78,7 +85,9 @@ public class Amphibian extends ChooseStat implements ItemRestriction, GemStoneSt
                         //BKK//MMOItems. Log(" \u00a77>\u00a77>\u00a73>\u00a77 Examining \u00a7f" + b.getType().toString());
                         if (b.isLiquid()) {
                             //BKK//MMOItems. Log(" \u00a7a>\u00a73>\u00a7a> \u00a7cFail");
-                        return false; } }
+                            return false;
+                        }
+                    }
                     //BKK//MMOItems. Log(" \u00a7a>\u00a73>\u00a7a> \u00a7aSucceed");
                     return true;
                 case WET:
@@ -86,7 +95,9 @@ public class Amphibian extends ChooseStat implements ItemRestriction, GemStoneSt
                         //BKK//MMOItems. Log(" \u00a77>\u00a77>\u00a73>\u00a77 Examining \u00a7f" + b.getType().toString());
                         if (b.getType().equals(Material.WATER)) {
                             //BKK//MMOItems. Log(" \u00a7a>\u00a73>\u00a7a> \u00a7aSucceed");
-                            return true; } }
+                            return true;
+                        }
+                    }
                     //BKK//MMOItems. Log(" \u00a7a>\u00a73>\u00a7a> \u00a7cFail");
                     return false;
                 case DAMP:
@@ -94,7 +105,9 @@ public class Amphibian extends ChooseStat implements ItemRestriction, GemStoneSt
                         //BKK//MMOItems. Log(" \u00a77>\u00a77>\u00a73>\u00a77 Examining \u00a7f" + b.getType().toString());
                         if (!b.getType().equals(Material.WATER)) {
                             //BKK//MMOItems. Log(" \u00a7a>\u00a73>\u00a7a> \u00a7cFail");
-                            return false; } }
+                            return false;
+                        }
+                    }
                     //BKK//MMOItems. Log(" \u00a7a>\u00a73>\u00a7a> \u00a7aSucceed");
                     return true;
                 case LAVA:
@@ -102,7 +115,9 @@ public class Amphibian extends ChooseStat implements ItemRestriction, GemStoneSt
                         //BKK//MMOItems. Log(" \u00a77>\u00a77>\u00a73>\u00a77 Examining \u00a7f" + b.getType().toString());
                         if (b.getType().equals(Material.LAVA)) {
                             //BKK//MMOItems. Log(" \u00a7a>\u00a73>\u00a7a> \u00a7aSucceed");
-                            return true; } }
+                            return true;
+                        }
+                    }
                     //BKK//MMOItems. Log(" \u00a7a>\u00a73>\u00a7a> \u00a7cFail");
                     return false;
                 case MOLTEN:
@@ -110,7 +125,9 @@ public class Amphibian extends ChooseStat implements ItemRestriction, GemStoneSt
                         //BKK//MMOItems. Log(" \u00a77>\u00a77>\u00a73>\u00a77 Examining \u00a7f" + b.getType().toString());
                         if (!b.getType().equals(Material.LAVA)) {
                             //BKK//MMOItems. Log(" \u00a7a>\u00a73>\u00a7a> \u00a7cFail");
-                            return false; } }
+                            return false;
+                        }
+                    }
                     //BKK//MMOItems. Log(" \u00a7a>\u00a73>\u00a7a> \u00a7aSucceed");
                     return true;
                 case LIQUID:
@@ -118,7 +135,9 @@ public class Amphibian extends ChooseStat implements ItemRestriction, GemStoneSt
                         //BKK//MMOItems. Log(" \u00a77>\u00a77>\u00a73>\u00a77 Examining \u00a7f" + b.getType().toString());
                         if (b.isLiquid()) {
                             //BKK//MMOItems. Log(" \u00a7a>\u00a73>\u00a7a> \u00a7aSucceed");
-                        return true; } }
+                            return true;
+                        }
+                    }
                     //BKK//MMOItems. Log(" \u00a7a>\u00a73>\u00a7a> \u00a7cFail");
                     return false;
                 case SUBMERGED:
@@ -126,7 +145,9 @@ public class Amphibian extends ChooseStat implements ItemRestriction, GemStoneSt
                         //BKK//MMOItems. Log(" \u00a77>\u00a77>\u00a73>\u00a77 Examining \u00a7f" + b.getType().toString());
                         if (!b.isLiquid()) {
                             //BKK//MMOItems. Log(" \u00a7a>\u00a73>\u00a7a> \u00a7cFail");
-                        return false; } }
+                            return false;
+                        }
+                    }
                     //BKK//MMOItems. Log(" \u00a7a>\u00a73>\u00a7a> \u00a7aSucceed");
                     return true;
             }
@@ -135,7 +156,9 @@ public class Amphibian extends ChooseStat implements ItemRestriction, GemStoneSt
     }
 
     @Override
-    public boolean isDynamic() { return true; }
+    public boolean isDynamic() {
+        return true;
+    }
 
     // Yes
     ArrayList<Block> blocksTouchedByPlayer(@NotNull Player p) {
@@ -152,9 +175,9 @@ public class Amphibian extends ChooseStat implements ItemRestriction, GemStoneSt
                 for (double dz = box.getMinZ(); dz <= box.getMaxZ(); dz += Math.min(1, Math.max(box.getWidthZ() - (dz - box.getMinZ()), 0.001))) {
 
                     // Exclusion
-                    int dxI =SilentNumbers.floor(dx);
-                    int dyI =SilentNumbers.floor(dy);
-                    int dzI =SilentNumbers.floor(dz);
+                    int dxI = SilentNumbers.floor(dx);
+                    int dyI = SilentNumbers.floor(dy);
+                    int dzI = SilentNumbers.floor(dz);
 
                     //BKK//MMOItems. Log("  \u00a77at \u00a76" + dxI + " " + dyI + " " + dzI + "\u00a78 (" + dx + " " + dy + " " + dz + ")");
 

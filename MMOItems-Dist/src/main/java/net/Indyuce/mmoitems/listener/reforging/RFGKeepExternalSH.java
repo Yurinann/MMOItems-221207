@@ -1,7 +1,6 @@
 package net.Indyuce.mmoitems.listener.reforging;
 
 import net.Indyuce.mmoitems.ItemStats;
-import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.event.MMOItemReforgeEvent;
 import net.Indyuce.mmoitems.stat.data.type.StatData;
 import net.Indyuce.mmoitems.stat.type.StatHistory;
@@ -18,14 +17,18 @@ public class RFGKeepExternalSH implements Listener {
 
     @EventHandler
     public void onReforge(MMOItemReforgeEvent event) {
-        if (!event.getOptions().shouldKeepExternalSH()) { return; }
+        if (!event.getOptions().shouldKeepExternalSH()) {
+            return;
+        }
         //RFG// MMOItems.log("§8Reforge §4EFG§7 Keeping EXSH");
 
         // Through all the old histories
         for (StatHistory oldHist : event.getOldMMOItem().getStatHistories()) {
 
             // Skip enchantments tho
-            if (oldHist.getItemStat() == ItemStats.ENCHANTS) { continue; }
+            if (oldHist.getItemStat() == ItemStats.ENCHANTS) {
+                continue;
+            }
 
             // Get newer
             StatHistory newHist = StatHistory.from(event.getNewMMOItem(), oldHist.getItemStat());

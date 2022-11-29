@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class AccessorySet extends StringStat implements GemStoneStat {
     public AccessorySet() {
-        super("ACCESSORY_SET", VersionMaterial.OAK_SIGN.toMaterial(), "Accessory Set (MMOInventory)", new String[] { "Used with MMOInventory's unique", "restriction to only allow one", "accessory to be equipped per set." }, new String[] { "!block", "all" });
+        super("ACCESSORY_SET", VersionMaterial.OAK_SIGN.toMaterial(), "Accessory Set (MMOInventory)", new String[]{"Used with MMOInventory's unique", "restriction to only allow one", "accessory to be equipped per set."}, new String[]{"!block", "all"});
     }
 
     @Override

@@ -42,6 +42,88 @@ import java.util.ArrayList;
  */
 public class MMOItemReforger {
 
+    //region Config Values
+    public static int autoSoulbindLevel = 1;
+    public static int defaultItemLevel = -32767;
+    public static boolean keepTiersWhenReroll = true;
+    public static boolean gemstonesRevIDWhenUnsocket = false;
+    /**
+     * The original ItemStack itself, not even a clone.
+     */
+    @NotNull
+    final ItemStack stack;
+    /**
+     * The original NBTItem information.
+     */
+    @NotNull
+    final NBTItem nbtItem;
+    /**
+     * The meta of {@link #getStack()} but without
+     * that pesky {@link Nullable} annotation.
+     */
+    @NotNull
+    final ItemMeta meta;
+    /**
+     * Sometimes, reforging will take away things from the item that
+     * we don't want to be destroyed forever, these items will drop
+     * back to the player at the end of the operation.
+     * <br><br>
+     * One example are gemstones, when the updated object has less
+     * gemstone capacity or different color slots, it would be sad
+     * if the current gemstones ceased to exist. Instead, when the
+     * event runs, the gemstone updater stores the gem items here
+     * so that the player gets them back at the completion of this.
+     */
+    @NotNull
+    final ArrayList<ItemStack> reforgingOutput = new ArrayList<>();
+    /**
+     * The original ItemStack itself, not even a clone.
+     */
+    @Nullable
+    ItemStack result;
+    /**
+     * The player to reroll modifiers based on their level
+     */
+    @Nullable
+    RPGPlayer player;
+    /**
+     * If the item should update, this wont be null anymore.
+     * <p>
+     * Guaranteed not-null when updating.
+     */
+    @Nullable
+    LiveMMOItem oldMMOItem;
+    /**
+     * If it is possible to update this ItemStack via this class.
+     */
+    @Nullable
+    Boolean canUpdate;
+    /**
+     * If it is recommended to update because the RevID value in the ItemStack is outdated.
+     */
+    @Nullable
+    Boolean shouldUpdate;
+    /**
+     * The item level modifying the values of RandomStatData
+     * upon creating a new MMOItem from the template.
+     */
+    int generationItemLevel;
+    /**
+     * The loaded template of the MMOItem in question.
+     * <p>
+     * Guaranteed not-null when updating.
+     */
+    @Nullable
+    private MMOItemTemplate template;
+    /**
+     * The Updated version of the MMOItem, with
+     * its revised stats.
+     * <p>
+     * Guaranteed not-null when updating.
+     */
+    @Nullable
+    private MMOItem freshMMOItem;
+
     /**
      * Create this reforger to handle all operations regarding RevID
      * increases on any ItemStack, including: 									<br>
@@ -105,11 +187,12 @@ public class MMOItemReforger {
         meta = stack.getItemMeta();
     }
 
-    /**
-     * The original ItemStack itself, not even a clone.
-     */
-    @NotNull
-    final ItemStack stack;
+    public static void reload() {
+        autoSoulbindLevel = MMOItems.plugin.getConfig().getInt("soulbound.auto-bind.level", 1);
+        defaultItemLevel = MMOItems.plugin.getConfig().getInt("item-revision.default-item-level", -32767);
+        keepTiersWhenReroll = MMOItems.plugin.getConfig().getBoolean("item-revision.keep-tiers");
+        gemstonesRevIDWhenUnsocket = MMOItems.plugin.getConfig().getBoolean("item-revision.regenerate-gems-when-unsocketed", false);
+    }
 
     /**
      * @return The original ItemStack, not even a clone.
@@ -118,12 +201,6 @@ public class MMOItemReforger {
     public ItemStack getStack() {
         return stack;
     }
-
-    /**
-     * The original ItemStack itself, not even a clone.
-     */
-    @Nullable
-    ItemStack result;
 
     /**
      * @return The original ItemStack, not even a clone.
@@ -141,25 +218,12 @@ public class MMOItemReforger {
     }
 
     /**
-     * The original NBTItem information.
-     */
-    @NotNull
-    final NBTItem nbtItem;
-
-    /**
      * @return The original NBTItem information.
      */
     @NotNull
     public NBTItem getNBTItem() {
         return nbtItem;
     }
-
-    /**
-     * The meta of {@link #getStack()} but without
-     * that pesky {@link Nullable} annotation.
-     */
-    @NotNull
-    final ItemMeta meta;
 
     /**
      * @return The meta of {@link #getStack()} but without that
@@ -169,12 +233,6 @@ public class MMOItemReforger {
     public ItemMeta getMeta() {
         return meta;
     }
-
-    /**
-     * The player to reroll modifiers based on their level
-     */
-    @Nullable
-    RPGPlayer player;
 
     /**
      * @return player The player to reroll modifiers based on their level
@@ -205,14 +263,6 @@ public class MMOItemReforger {
     }
 
     /**
-     * If the item should update, this wont be null anymore.
-     * <p>
-     * Guaranteed not-null when updating.
-     */
-    @Nullable
-    LiveMMOItem oldMMOItem;
-
-    /**
      * @return The MMOItem being updated. For safety, it should be cloned,
      * in case any plugin decides to make changes in it... though
      * this should be entirely for <b>reading purposes only</b>.
@@ -224,14 +274,6 @@ public class MMOItemReforger {
     }
 
     /**
-     * The loaded template of the MMOItem in question.
-     * <p>
-     * Guaranteed not-null when updating.
-     */
-    @Nullable
-    private MMOItemTemplate template;
-
-    /**
      * @return The loaded template of the MMOItem in question.
      */
     @SuppressWarnings({"NullableProblems", "ConstantConditions"})
@@ -239,15 +281,6 @@ public class MMOItemReforger {
     public MMOItemTemplate getTemplate() {
         return template;
     }
-
-    /**
-     * The Updated version of the MMOItem, with
-     * its revised stats.
-     * <p>
-     * Guaranteed not-null when updating.
-     */
-    @Nullable
-    private MMOItem freshMMOItem;
 
     /**
      * @return The Updated version of the MMOItem, with
@@ -266,12 +299,6 @@ public class MMOItemReforger {
     public void setFreshMMOItem(@NotNull MMOItem mmo) {
         freshMMOItem = mmo;
     }
-
-    /**
-     * If it is possible to update this ItemStack via this class.
-     */
-    @Nullable
-    Boolean canUpdate;
 
     /**
      * The value is stored so the operations don't have to run again on
@@ -297,12 +324,6 @@ public class MMOItemReforger {
         // Success
         return canUpdate = true;
     }
-
-    /**
-     * If it is recommended to update because the RevID value in the ItemStack is outdated.
-     */
-    @Nullable
-    Boolean shouldUpdate;
 
     /**
      * The value is stored so the operations don't have to run again on
@@ -361,20 +382,6 @@ public class MMOItemReforger {
      * if the current gemstones ceased to exist. Instead, when the
      * event runs, the gemstone updater stores the gem items here
      * so that the player gets them back at the completion of this.
-     */
-    @NotNull
-    final ArrayList<ItemStack> reforgingOutput = new ArrayList<>();
-
-    /**
-     * Sometimes, reforging will take away things from the item that
-     * we don't want to be destroyed forever, these items will drop
-     * back to the player at the end of the operation.
-     * <br><br>
-     * One example are gemstones, when the updated object has less
-     * gemstone capacity or different color slots, it would be sad
-     * if the current gemstones ceased to exist. Instead, when the
-     * event runs, the gemstone updater stores the gem items here
-     * so that the player gets them back at the completion of this.
      *
      * @param item Add an item to this process.
      */
@@ -417,12 +424,6 @@ public class MMOItemReforger {
     public ArrayList<ItemStack> getReforgingOutput() {
         return reforgingOutput;
     }
-
-    /**
-     * The item level modifying the values of RandomStatData
-     * upon creating a new MMOItem from the template.
-     */
-    int generationItemLevel;
 
     /**
      * @return The item level modifying the values of RandomStatData
@@ -543,19 +544,6 @@ public class MMOItemReforger {
 
         // That's the result
         return !mmoFIN.isCancelled();
-    }
-
-    //region Config Values
-    public static int autoSoulbindLevel = 1;
-    public static int defaultItemLevel = -32767;
-    public static boolean keepTiersWhenReroll = true;
-    public static boolean gemstonesRevIDWhenUnsocket = false;
-
-    public static void reload() {
-        autoSoulbindLevel = MMOItems.plugin.getConfig().getInt("soulbound.auto-bind.level", 1);
-        defaultItemLevel = MMOItems.plugin.getConfig().getInt("item-revision.default-item-level", -32767);
-        keepTiersWhenReroll = MMOItems.plugin.getConfig().getBoolean("item-revision.keep-tiers");
-        gemstonesRevIDWhenUnsocket = MMOItems.plugin.getConfig().getBoolean("item-revision.regenerate-gems-when-unsocketed", false);
     }
     //endregion
 

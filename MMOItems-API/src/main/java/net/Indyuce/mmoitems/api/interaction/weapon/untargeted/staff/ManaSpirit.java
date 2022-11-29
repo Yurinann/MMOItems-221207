@@ -26,8 +26,8 @@ public class ManaSpirit implements StaffAttackHandler {
         new BukkitRunnable() {
             final Vector vec = caster.getPlayer().getEyeLocation().getDirection().multiply(.4);
             final Location loc = caster.getPlayer().getEyeLocation();
-            int ti = 0;
             final double r = .2;
+            int ti = 0;
 
             public void run() {
                 if (ti++ > range)

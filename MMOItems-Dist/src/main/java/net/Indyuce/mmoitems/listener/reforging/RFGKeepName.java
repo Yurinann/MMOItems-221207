@@ -1,7 +1,6 @@
 package net.Indyuce.mmoitems.listener.reforging;
 
 import net.Indyuce.mmoitems.ItemStats;
-import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.event.MMOItemReforgeEvent;
 import net.Indyuce.mmoitems.stat.type.NameData;
 import net.Indyuce.mmoitems.stat.type.StatHistory;
@@ -10,7 +9,7 @@ import org.bukkit.event.Listener;
 
 /**
  * Transfers the name from the old MMOItem to the new one.
- *
+ * <p>
  * This operation is intended to keep only the 'main name'
  * of the item (no modifier prefixes nor any of that)
  *
@@ -21,7 +20,9 @@ public class RFGKeepName implements Listener {
     @EventHandler
     @SuppressWarnings("OverlyStrongTypeCast")
     public void onReforge(MMOItemReforgeEvent event) {
-        if (!event.getOptions().shouldKeepName()) { return; }
+        if (!event.getOptions().shouldKeepName()) {
+            return;
+        }
         //RFG// MMOItems.log("§8Reforge §4EFG§7 Keeping Name");
 
         // Yes
@@ -36,13 +37,13 @@ public class RFGKeepName implements Listener {
             // Make new one with main name
             transfer = new NameData(data.getMainName());
 
-        // Well, got name?
+            // Well, got name?
         } else if (event.getReforger().getMeta().hasDisplayName()) {
 
             // That shall be the name of it
             transfer = new NameData(event.getReforger().getMeta().getDisplayName());
 
-        // The item has no name
+            // The item has no name
         } else {
 
             // No name no service

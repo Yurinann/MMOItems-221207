@@ -1,11 +1,9 @@
 package net.Indyuce.mmoitems.listener.reforging;
 
 import net.Indyuce.mmoitems.ItemStats;
-import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.ReforgeOptions;
 import net.Indyuce.mmoitems.api.event.MMOItemReforgeEvent;
 import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
-import net.Indyuce.mmoitems.api.item.template.MMOItemTemplate;
 import net.Indyuce.mmoitems.stat.data.GemSocketsData;
 import net.Indyuce.mmoitems.stat.data.GemstoneData;
 import net.Indyuce.mmoitems.stat.data.type.Mergeable;
@@ -28,14 +26,18 @@ public class RFGKeepGems implements Listener {
 
     @EventHandler
     public void onReforge(MMOItemReforgeEvent event) {
-        if (!event.getOptions().shouldKeepGemStones()) { return; }
+        if (!event.getOptions().shouldKeepGemStones()) {
+            return;
+        }
         //RFG// MMOItems.log("§8Reforge §4EFG§7 Keeping Gems");
 
         // Get those gems
         GemSocketsData gems = (GemSocketsData) event.getOldMMOItem().getData(ItemStats.GEM_SOCKETS);
 
         // No gems? why are we here
-        if (gems == null) { return; }
+        if (gems == null) {
+            return;
+        }
 
         // Get those gems
         GemSocketsData current = (GemSocketsData) event.getNewMMOItem().getData(ItemStats.GEM_SOCKETS);
@@ -71,11 +73,17 @@ public class RFGKeepGems implements Listener {
 
                     // Get colour, uncolored if Unknown
                     String colour = data.getSocketColor();
-                    if (colour == null) { colour = GemSocketsData.getUncoloredGemSlot(); }
+                    if (colour == null) {
+                        colour = GemSocketsData.getUncoloredGemSlot();
+                    }
                     String remembrance = null;
 
                     // Does the gem data have an available socket?
-                    for (String slot : availableSockets) { if (slot.equals(GemSocketsData.getUncoloredGemSlot()) || colour.equals(slot)) { remembrance = slot; } }
+                    for (String slot : availableSockets) {
+                        if (slot.equals(GemSocketsData.getUncoloredGemSlot()) || colour.equals(slot)) {
+                            remembrance = slot;
+                        }
+                    }
 
                     // Existed?
                     if (remembrance != null) {
@@ -105,7 +113,9 @@ public class RFGKeepGems implements Listener {
                                     // Get the gem data
                                     StatData sData = oldHist.getGemstoneData(oldHistGem);
 
-                                    if (!(sData instanceof Mergeable)) { continue; }
+                                    if (!(sData instanceof Mergeable)) {
+                                        continue;
+                                    }
 
                                     // Put it there
                                     StatHistory newHist = StatHistory.from(event.getNewMMOItem(), oldHist.getItemStat());
@@ -116,18 +126,24 @@ public class RFGKeepGems implements Listener {
                             }
                         }
 
-                    // No space/valid socket hmm
+                        // No space/valid socket hmm
                     } else {
                         //RFG//MMOItems.log("\u00a7c *\u00a7e*\u00a77 Gemstone lost - \u00a7cno color \u00a78" + data.getHistoricUUID());
 
                         // Include as lost gem
-                        lostGems.add(data); }
+                        lostGems.add(data);
+                    }
                 }
             }
 
             // Create with select socket slots and gems
             GemSocketsData primeGems = new GemSocketsData(availableSockets);
-            for (GemstoneData gem : putGems) { if (gem == null) { continue; } primeGems.add(gem); }
+            for (GemstoneData gem : putGems) {
+                if (gem == null) {
+                    continue;
+                }
+                primeGems.add(gem);
+            }
             //RFG//MMOItems.log("  \u00a7a* \u00a77Operation Result\u00a7a " + primeGems.toString());
 
             // That's the original data
@@ -136,12 +152,13 @@ public class RFGKeepGems implements Listener {
             //RFG//MMOItems.log("  \u00a7a* \u00a77History Final\u00a7a --------");
             //RFG//gemStory.log();
 
-        // Could not fit any gems: No gem sockets!
+            // Could not fit any gems: No gem sockets!
         } else {
             //RFG//MMOItems.log("\u00a7c *\u00a7e*\u00a77 All gemstones were lost -  \u00a7cno data");
 
             // ALl were lost
-            lostGems.addAll(gems.getGemstones()); }
+            lostGems.addAll(gems.getGemstones());
+        }
 
         // Config option enabled? Build the lost gem MMOItems!
         if (ReforgeOptions.dropRestoredGems) {
@@ -149,10 +166,13 @@ public class RFGKeepGems implements Listener {
 
                 // Get MMOItem
                 MMOItem restoredGem = event.getOldMMOItem().extractGemstone(lost);
-                if (restoredGem == null) { continue; }
+                if (restoredGem == null) {
+                    continue;
+                }
 
                 // Success? Add that gem there
                 event.getReforger().addReforgingOutput(restoredGem.newBuilder().build());
-            } }
+            }
+        }
     }
 }

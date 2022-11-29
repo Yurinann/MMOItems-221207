@@ -23,60 +23,60 @@ import java.util.Optional;
 
 public class RandomItemDropItem extends ItemGenerationDropItem {
 
-	// generation options
-	private final boolean matchClass;
-	private final String profess;
-	private final Type type;
-	private final ItemTier tier;
+    // generation options
+    private final boolean matchClass;
+    private final String profess;
+    private final Type type;
+    private final ItemTier tier;
 
-	public RandomItemDropItem(MMOLineConfig config) {
-		super(config);
+    public RandomItemDropItem(MMOLineConfig config) {
+        super(config);
 
-		matchClass = config.getBoolean("match-class", false);
-		profess = config.getString("class", "");
+        matchClass = config.getBoolean("match-class", false);
+        profess = config.getString("class", "");
 
-		if (config.contains("type")) {
-			String format = config.getString("type").toUpperCase().replace("-", "_").replace(" ", "_");
-			Validate.isTrue(MMOItems.plugin.getTypes().has(format), "Could not find item type with ID '" + format + "'");
-			type = MMOItems.plugin.getTypes().get(format);
-		} else
-			type = null;
+        if (config.contains("type")) {
+            String format = config.getString("type").toUpperCase().replace("-", "_").replace(" ", "_");
+            Validate.isTrue(MMOItems.plugin.getTypes().has(format), "Could not find item type with ID '" + format + "'");
+            type = MMOItems.plugin.getTypes().get(format);
+        } else
+            type = null;
 
-		if (config.contains("tierset")) {
-			String format = UtilityMethods.enumName(config.getString("tierset"));
-			Validate.isTrue(MMOItems.plugin.getTiers().has(format), "Could not find item tier");
-			tier = MMOItems.plugin.getTiers().get(format);
-		} else
-			tier = null;
-	}
+        if (config.contains("tierset")) {
+            String format = UtilityMethods.enumName(config.getString("tierset"));
+            Validate.isTrue(MMOItems.plugin.getTiers().has(format), "Could not find item tier");
+            tier = MMOItems.plugin.getTiers().get(format);
+        } else
+            tier = null;
+    }
 
-	@Override
-	public void collect(LootBuilder builder) {
-		RPGPlayer rpgPlayer = PlayerData.get(builder.getEntity().getUniqueId()).getRPG();
+    @Override
+    public void collect(LootBuilder builder) {
+        RPGPlayer rpgPlayer = PlayerData.get(builder.getEntity().getUniqueId()).getRPG();
 
-		TemplateExplorer explorer = new TemplateExplorer();
-		if (matchClass)
-			explorer.applyFilter(new ClassFilter(rpgPlayer));
-		else if (!profess.isEmpty())
-			explorer.applyFilter(new ClassFilter(profess));
+        TemplateExplorer explorer = new TemplateExplorer();
+        if (matchClass)
+            explorer.applyFilter(new ClassFilter(rpgPlayer));
+        else if (!profess.isEmpty())
+            explorer.applyFilter(new ClassFilter(profess));
 
-		if (type != null)
-			explorer.applyFilter(new TypeFilter(type));
+        if (type != null)
+            explorer.applyFilter(new TypeFilter(type));
 
-		if (tier != null)
-			explorer.applyFilter(new TierFilter(tier.getId()));
+        if (tier != null)
+            explorer.applyFilter(new TierFilter(tier.getId()));
 
-		Optional<MMOItemTemplate> optional = explorer.rollLoot();
-		if (!optional.isPresent())
-			return;
+        Optional<MMOItemTemplate> optional = explorer.rollLoot();
+        if (!optional.isPresent())
+            return;
 
-		MMOItem rolled = rollMMOItem(optional.get(), rpgPlayer);
+        MMOItem rolled = rollMMOItem(optional.get(), rpgPlayer);
 
-		if (rollSoulbound())
-			rolled.setData(ItemStats.SOULBOUND, new SoulboundData(rpgPlayer.getPlayer(), 1));
+        if (rollSoulbound())
+            rolled.setData(ItemStats.SOULBOUND, new SoulboundData(rpgPlayer.getPlayer(), 1));
 
-		ItemStack stack = rollUnidentification(rolled);
-		stack.setAmount(rollAmount());
-		builder.addLoot(stack);
-	}
+        ItemStack stack = rollUnidentification(rolled);
+        stack.setAmount(rollAmount());
+        builder.addLoot(stack);
+    }
 }

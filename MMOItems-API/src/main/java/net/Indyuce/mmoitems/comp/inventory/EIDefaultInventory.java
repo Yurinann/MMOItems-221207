@@ -9,10 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class EIDefaultInventory extends EditableEquippedItem {
-    @NotNull public Player getPlayer() { return player; }
-    @NotNull Player player;
-
-    public int getSlotNumber() { return slotNumber; }
+    @NotNull
+    Player player;
     int slotNumber;
 
     public EIDefaultInventory(@NotNull Player player, int slotNumber, ItemStack item, EquipmentSlot slot) {
@@ -25,6 +23,15 @@ public class EIDefaultInventory extends EditableEquippedItem {
         super(item, slot);
         this.player = player;
         this.slotNumber = slotNumber;
+    }
+
+    @NotNull
+    public Player getPlayer() {
+        return player;
+    }
+
+    public int getSlotNumber() {
+        return slotNumber;
     }
 
     @Override

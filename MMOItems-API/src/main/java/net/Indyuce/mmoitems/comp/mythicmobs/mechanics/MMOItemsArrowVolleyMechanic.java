@@ -39,19 +39,20 @@ import java.util.ArrayList;
  */
 public class MMOItemsArrowVolleyMechanic extends SkillMechanic implements ITargetedEntitySkill, ITargetedLocationSkill {
 
+    static boolean syncEventBlock;
     @NotNull
     PlaceholderInt amount, spread, fireTicks, removeDelay;
     @NotNull
     PlaceholderFloat velocity, scale;
     @NotNull
     PlaceholderDouble xOffset, yOffset, zOffset, fOffset, sOffset;
-
     @Nullable
     ItemStack arrowItem;
     boolean fullEvent;
     boolean scalePerArrow;
     boolean fromOrigin;
     boolean allowPickup;
+
 
     public MMOItemsArrowVolleyMechanic(SkillExecutor manager, String line, MythicLineConfig mlc) {
         super(manager, line, mlc);
@@ -98,7 +99,6 @@ public class MMOItemsArrowVolleyMechanic extends SkillMechanic implements ITarge
         sOffset = mlc.getPlaceholderDouble(new String[]{"startsoffset", "sso"}, 0);
     }
 
-
     @Override
     public SkillResult castAtLocation(SkillMetadata data, AbstractLocation target) {
 
@@ -132,7 +132,6 @@ public class MMOItemsArrowVolleyMechanic extends SkillMechanic implements ITarge
         }
         return SkillResult.SUCCESS;
     }
-
 
     public void executeMIVolley(@NotNull SkillCaster caster, @NotNull SkillMetadata data, @NotNull AbstractLocation t, int amount, float velocity, float spread, int fireTicks, int removeDelay, @NotNull PlaceholderFloat statsMultiplier) {
 
@@ -230,6 +229,4 @@ public class MMOItemsArrowVolleyMechanic extends SkillMechanic implements ITarge
             arrowList.clear();
         }, removeDelay);
     }
-
-    static boolean syncEventBlock;
 }

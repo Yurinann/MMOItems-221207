@@ -1,7 +1,6 @@
 package net.Indyuce.mmoitems.listener.reforging;
 
 import net.Indyuce.mmoitems.ItemStats;
-import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.event.MMOItemReforgeEvent;
 import net.Indyuce.mmoitems.stat.data.UpgradeData;
 import org.bukkit.event.EventHandler;

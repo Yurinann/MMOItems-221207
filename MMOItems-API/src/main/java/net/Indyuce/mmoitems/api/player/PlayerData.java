@@ -40,26 +40,23 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class PlayerData {
+    private static final Map<UUID, PlayerData> data = new HashMap<>();
     @NotNull
     private final MMOPlayerData mmoData;
-
-    // Reloaded everytime the player reconnects in case of major change.
-    private RPGPlayer rpgPlayer;
-
     private final InventoryUpdateHandler inventory = new InventoryUpdateHandler(this);
     private final CraftingStatus craftingStatus = new CraftingStatus();
 
     // Specific stat calculation TODO compress it in Map<ItemStat, DynamicStatData>
     private final Map<PotionEffectType, PotionEffect> permanentEffects = new HashMap<>();
     private final Set<ParticleRunnable> itemParticles = new HashSet<>();
+    private final PlayerStats stats;
+    private final Set<String> permissions = new HashSet<>();
+    // Reloaded everytime the player reconnects in case of major change.
+    private RPGPlayer rpgPlayer;
     private ParticleRunnable overridingItemParticles = null;
     private boolean encumbered = false;
     @Nullable
     private SetBonuses setBonuses = null;
-    private final PlayerStats stats;
-    private final Set<String> permissions = new HashSet<>();
-
-    private static final Map<UUID, PlayerData> data = new HashMap<>();
 
     private PlayerData(@NotNull MMOPlayerData mmoData) {
         this.mmoData = mmoData;
@@ -67,6 +64,73 @@ public class PlayerData {
         stats = new PlayerStats(this);
 
         load(new ConfigFile("/userdata", getUniqueId().toString()).getConfig());
+    }
+
+    @NotNull
+    public static PlayerData get(@NotNull OfflinePlayer player) {
+        return get(player.getUniqueId());
+    }
+
+    /**
+     * See {@link #has(UUID)}
+     *
+     * @return If player data is loaded for a player
+     */
+    public static boolean has(Player player) {
+        return has(player.getUniqueId());
+    }
+
+    /**
+     * Used to check if the UUID is associated to a real player
+     * or a Citizens/Sentinel NPC. Citizens NPCs do not have
+     * a player data associated to them so it's an easy O(1) way
+     * to check instead of checking for an entity metadta.
+     *
+     * @return If player data is loaded for a player UUID
+     */
+    public static boolean has(UUID uuid) {
+        return data.containsKey(uuid);
+    }
+
+    @NotNull
+    public static PlayerData get(UUID uuid) {
+        return Objects.requireNonNull(data.get(uuid), "Player data not loaded");
+    }
+
+    /**
+     * Called when the corresponding MMOPlayerData has already been initialized.
+     */
+    public static void load(@NotNull Player player) {
+        load(player.getUniqueId());
+    }
+
+    /**
+     * Called when the corresponding MMOPlayerData has already been initialized.
+     */
+    public static void load(@NotNull UUID player) {
+
+        /*
+         * Double check they are online, for some reason even if this is fired
+         * from the join event the player can be offline if they left in the
+         * same tick or something.
+         */
+        if (!data.containsKey(player)) {
+            PlayerData playerData = new PlayerData(MMOPlayerData.get(player));
+            data.put(player, playerData);
+            playerData.updateInventory();
+            return;
+        }
+
+        /*
+         * Update the cached RPGPlayer in case of any major change in the player
+         * data of other rpg plugins
+         */
+        PlayerData playerData = data.get(player);
+        playerData.rpgPlayer = MMOItems.plugin.getRPG().getInfo(playerData);
+    }
+
+    public static Collection<PlayerData> getLoaded() {
+        return data.values();
     }
 
     private void load(FileConfiguration config) {
@@ -132,7 +196,7 @@ public class PlayerData {
 
     /**
      * @return If the player hands are full i.e if the player is holding
-     *         two items in their hands, one being two handed
+     * two items in their hands, one being two handed
      */
     public boolean isEncumbered() {
 
@@ -400,73 +464,6 @@ public class PlayerData {
     @Deprecated
     public double getItemCooldown(ItemReference ref) {
         return mmoData.getCooldownMap().getInfo(ref).getRemaining() / 1000d;
-    }
-
-    @NotNull
-    public static PlayerData get(@NotNull OfflinePlayer player) {
-        return get(player.getUniqueId());
-    }
-
-    /**
-     * See {@link #has(UUID)}
-     *
-     * @return If player data is loaded for a player
-     */
-    public static boolean has(Player player) {
-        return has(player.getUniqueId());
-    }
-
-    /**
-     * Used to check if the UUID is associated to a real player
-     * or a Citizens/Sentinel NPC. Citizens NPCs do not have
-     * a player data associated to them so it's an easy O(1) way
-     * to check instead of checking for an entity metadta.
-     *
-     * @return If player data is loaded for a player UUID
-     */
-    public static boolean has(UUID uuid) {
-        return data.containsKey(uuid);
-    }
-
-    @NotNull
-    public static PlayerData get(UUID uuid) {
-        return Objects.requireNonNull(data.get(uuid), "Player data not loaded");
-    }
-
-    /**
-     * Called when the corresponding MMOPlayerData has already been initialized.
-     */
-    public static void load(@NotNull Player player) {
-        load(player.getUniqueId());
-    }
-
-    /**
-     * Called when the corresponding MMOPlayerData has already been initialized.
-     */
-    public static void load(@NotNull UUID player) {
-
-        /*
-         * Double check they are online, for some reason even if this is fired
-         * from the join event the player can be offline if they left in the
-         * same tick or something.
-         */
-        if (!data.containsKey(player)) {
-            PlayerData playerData = new PlayerData(MMOPlayerData.get(player));
-            data.put(player, playerData);
-            playerData.updateInventory();
-            return;
-        }
-
-        /*
-         * Update the cached RPGPlayer in case of any major change in the player
-         * data of other rpg plugins
-         */
-        PlayerData playerData = data.get(player);
-        playerData.rpgPlayer = MMOItems.plugin.getRPG().getInfo(playerData);
-    }
-
-    public static Collection<PlayerData> getLoaded() {
-        return data.values();
     }
 
     public enum CooldownType {

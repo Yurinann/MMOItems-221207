@@ -25,37 +25,37 @@ import java.util.List;
  * Ornaments - Found in any inventory slot.
  */
 public class OrnamentPlayerInventory implements PlayerInventory, Listener {
-	public OrnamentPlayerInventory() {
-		Bukkit.getPluginManager().registerEvents(this, MMOItems.plugin);
-	}
+    public OrnamentPlayerInventory() {
+        Bukkit.getPluginManager().registerEvents(this, MMOItems.plugin);
+    }
 
-	@Override
-	public List<EquippedItem> getInventory(Player player) {
-		List<EquippedItem> list = new ArrayList<>();
+    @Override
+    public List<EquippedItem> getInventory(Player player) {
+        List<EquippedItem> list = new ArrayList<>();
 
-		// Ornaments
-		for (ItemStack item : player.getInventory().getContents()) {
-			NBTItem nbtItem;
-			if (item != null && (nbtItem = MythicLib.plugin.getVersion().getWrapper().getNBTItem(item)).hasType() && Type.get(nbtItem.getType()).getSupertype().equals(Type.ORNAMENT))
-				list.add(new EquippedItem(nbtItem, EquipmentSlot.OTHER));
-		}
+        // Ornaments
+        for (ItemStack item : player.getInventory().getContents()) {
+            NBTItem nbtItem;
+            if (item != null && (nbtItem = MythicLib.plugin.getVersion().getWrapper().getNBTItem(item)).hasType() && Type.get(nbtItem.getType()).getSupertype().equals(Type.ORNAMENT))
+                list.add(new EquippedItem(nbtItem, EquipmentSlot.OTHER));
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	@EventHandler(ignoreCancelled = true)
-	public void a(EntityPickupItemEvent event) {
-		if (event.getEntityType() == EntityType.PLAYER) {
-			NBTItem nbt = NBTItem.get(event.getItem().getItemStack());
-			if (nbt.hasType() && Type.get(nbt.getType()).getSupertype().equals(Type.ORNAMENT))
-				PlayerData.get((Player) event.getEntity()).updateInventory();
-		}
-	}
+    @EventHandler(ignoreCancelled = true)
+    public void a(EntityPickupItemEvent event) {
+        if (event.getEntityType() == EntityType.PLAYER) {
+            NBTItem nbt = NBTItem.get(event.getItem().getItemStack());
+            if (nbt.hasType() && Type.get(nbt.getType()).getSupertype().equals(Type.ORNAMENT))
+                PlayerData.get((Player) event.getEntity()).updateInventory();
+        }
+    }
 
-	@EventHandler(ignoreCancelled = true)
-	public void b(PlayerDropItemEvent event) {
-		NBTItem nbt = NBTItem.get(event.getItemDrop().getItemStack());
-		if (nbt.hasType() && Type.get(nbt.getType()).getSupertype().equals(Type.ORNAMENT))
-			PlayerData.get(event.getPlayer()).updateInventory();
-	}
+    @EventHandler(ignoreCancelled = true)
+    public void b(PlayerDropItemEvent event) {
+        NBTItem nbt = NBTItem.get(event.getItemDrop().getItemStack());
+        if (nbt.hasType() && Type.get(nbt.getType()).getSupertype().equals(Type.ORNAMENT))
+            PlayerData.get(event.getPlayer()).updateInventory();
+    }
 }

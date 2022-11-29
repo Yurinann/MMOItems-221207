@@ -21,16 +21,16 @@ import org.jetbrains.annotations.NotNull;
  * @author indyuce
  */
 public class CustomDurability extends DoubleStat implements InternalStat {
-	public CustomDurability() {
-		super("DURABILITY", Material.SHEARS, "Custom Durability", new String[0], new String[]{"!block", "all"});
-	}
+    public CustomDurability() {
+        super("DURABILITY", Material.SHEARS, "Custom Durability", new String[0], new String[]{"!block", "all"});
+    }
 
-	@Override
-	public void whenApplied(@NotNull ItemStackBuilder item, @NotNull DoubleData data) {
-		int current = (int) data.getValue();
-		if (current != 0)
+    @Override
+    public void whenApplied(@NotNull ItemStackBuilder item, @NotNull DoubleData data) {
+        int current = (int) data.getValue();
+        if (current != 0)
 
-			// Shortcut oui oui
-			item.addItemTag(new ItemTag(getNBTPath(), current));
-	}
+            // Shortcut oui oui
+            item.addItemTag(new ItemTag(getNBTPath(), current));
+    }
 }

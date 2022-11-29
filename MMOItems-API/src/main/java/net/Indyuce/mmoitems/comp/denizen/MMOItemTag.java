@@ -7,11 +7,26 @@ import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 
 @Deprecated
 public class MMOItemTag extends SimpleTag {
+    public static ObjectTagProcessor<MMOItemTag> tagProcessor = new ObjectTagProcessor<>();
     private final ItemTag item;
 
     @Deprecated
     public MMOItemTag(ItemTag item) {
         this.item = item;
+    }
+
+    public static void registerTags() {
+
+        /*
+         * Used to get the corresponding itemStack
+         *
+         * Usage:
+         * <mmoitemTag.item>
+         *
+         * Returns:
+         * ItemTag
+         */
+        tagProcessor.registerTag("item", (attribute, object) -> object.item);
     }
 
     @Override
@@ -34,24 +49,8 @@ public class MMOItemTag extends SimpleTag {
         return identify();
     }
 
-    public static ObjectTagProcessor<MMOItemTag> tagProcessor = new ObjectTagProcessor<>();
-
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {
         return tagProcessor.getObjectAttribute(this, attribute);
-    }
-
-    public static void registerTags() {
-
-        /*
-         * Used to get the corresponding itemStack
-         *
-         * Usage:
-         * <mmoitemTag.item>
-         *
-         * Returns:
-         * ItemTag
-         */
-        tagProcessor.registerTag("item", (attribute, object) -> object.item);
     }
 }

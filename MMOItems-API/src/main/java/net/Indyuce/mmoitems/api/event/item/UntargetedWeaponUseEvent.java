@@ -8,11 +8,9 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 public class UntargetedWeaponUseEvent extends PlayerDataEvent implements Cancellable {
-    private final UntargetedWeapon weapon;
-
-    private boolean cancelled;
-
     private static final HandlerList handlers = new HandlerList();
+    private final UntargetedWeapon weapon;
+    private boolean cancelled;
 
     /**
      * Called when performing a special weapon attack using a staff or gauntlet
@@ -24,6 +22,10 @@ public class UntargetedWeaponUseEvent extends PlayerDataEvent implements Cancell
         super(who);
 
         this.weapon = weapon;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 
     /**
@@ -47,10 +49,6 @@ public class UntargetedWeaponUseEvent extends PlayerDataEvent implements Cancell
     @NotNull
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 }

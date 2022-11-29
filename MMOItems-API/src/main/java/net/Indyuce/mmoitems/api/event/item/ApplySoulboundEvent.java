@@ -7,41 +7,38 @@ import net.Indyuce.mmoitems.api.player.PlayerData;
 import org.bukkit.event.HandlerList;
 
 public class ApplySoulboundEvent extends PlayerDataEvent {
-	private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
 
-	private final VolatileMMOItem consumable;
-	private final NBTItem target;
+    private final VolatileMMOItem consumable;
+    private final NBTItem target;
 
-	/**
-	 * Called when a player tries to apply soulbound onto an item
-	 * 
-	 * @param playerData
-	 *            Player soulbinding the item
-	 * @param consumable
-	 *            Consumable used to bind the item
-	 * @param target
-	 *            Item being soulbound
-	 */
-	public ApplySoulboundEvent(PlayerData playerData, VolatileMMOItem consumable, NBTItem target) {
-		super(playerData);
+    /**
+     * Called when a player tries to apply soulbound onto an item
+     *
+     * @param playerData Player soulbinding the item
+     * @param consumable Consumable used to bind the item
+     * @param target     Item being soulbound
+     */
+    public ApplySoulboundEvent(PlayerData playerData, VolatileMMOItem consumable, NBTItem target) {
+        super(playerData);
 
-		this.consumable = consumable;
-		this.target = target;
-	}
+        this.consumable = consumable;
+        this.target = target;
+    }
 
-	public VolatileMMOItem getConsumable() {
-		return consumable;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	public NBTItem getTargetItem() {
-		return target;
-	}
+    public VolatileMMOItem getConsumable() {
+        return consumable;
+    }
 
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    public NBTItem getTargetItem() {
+        return target;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 }

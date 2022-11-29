@@ -34,241 +34,241 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class ItemStackBuilder {
-	@NotNull
-	private final MMOItem mmoitem;
+    public static final String history_keyword = "HSTRY_";
+    private static final AttributeModifier fakeModifier = new AttributeModifier(UUID.fromString("87851e28-af12-43f6-898e-c62bde6bd0ec"),
+            "mmoitemsDecoy", 0, Operation.ADD_NUMBER);
+    @NotNull
+    private final MMOItem mmoitem;
+    private final ItemStack item;
+    private final ItemMeta meta;
+    private final LoreBuilder lore;
+    private final List<ItemTag> tags = new ArrayList<>();
 
-	private final ItemStack item;
-	private final ItemMeta meta;
-	private final LoreBuilder lore;
-	private final List<ItemTag> tags = new ArrayList<>();
+    /**
+     * Used to build an MMOItem into an ItemStack.
+     *
+     * @param mmoitem The mmoitem you want to build
+     */
+    public ItemStackBuilder(@NotNull MMOItem mmoitem) {
 
-	private static final AttributeModifier fakeModifier = new AttributeModifier(UUID.fromString("87851e28-af12-43f6-898e-c62bde6bd0ec"),
-			"mmoitemsDecoy", 0, Operation.ADD_NUMBER);
+        // Reference to source MMOItem
+        this.mmoitem = mmoitem;
 
-	/**
-	 * Used to build an MMOItem into an ItemStack.
-	 *
-	 * @param mmoitem The mmoitem you want to build
-	 */
-	public ItemStackBuilder(@NotNull MMOItem mmoitem) {
+        // Generates a new ItemStack of the specified material (Specified in the Material stat, or a DIAMOND_SWORD if missing).
+        item = new ItemStack(
+                mmoitem.hasData(ItemStats.MATERIAL) ? ((MaterialData) mmoitem.getData(ItemStats.MATERIAL)).getMaterial() : Material.DIAMOND_SWORD);
 
-		// Reference to source MMOItem
-		this.mmoitem = mmoitem;
+        // Gets a lore builder, which will be used to apply the chosen lore format (Choose with the lore format stat, or the default one if unspecified)
+        lore = new LoreBuilder(mmoitem.hasData(ItemStats.LORE_FORMAT) ? MMOItems.plugin.getFormats()
+                .getFormat(mmoitem.getData(ItemStats.LORE_FORMAT).toString(), mmoitem.getType().getLoreFormat()) : MMOItems.plugin.getFormats()
+                .getFormat(mmoitem.getType().getLoreFormat()));
 
-		// Generates a new ItemStack of the specified material (Specified in the Material stat, or a DIAMOND_SWORD if missing).
-		item = new ItemStack(
-				mmoitem.hasData(ItemStats.MATERIAL) ? ((MaterialData) mmoitem.getData(ItemStats.MATERIAL)).getMaterial() : Material.DIAMOND_SWORD);
+        // Gets the meta, and hides attributes
+        meta = item.getItemMeta();
+        //noinspection ConstantConditions
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 
-		// Gets a lore builder, which will be used to apply the chosen lore format (Choose with the lore format stat, or the default one if unspecified)
-		lore = new LoreBuilder(mmoitem.hasData(ItemStats.LORE_FORMAT) ? MMOItems.plugin.getFormats()
-				.getFormat(mmoitem.getData(ItemStats.LORE_FORMAT).toString(), mmoitem.getType().getLoreFormat()) : MMOItems.plugin.getFormats()
-				.getFormat(mmoitem.getType().getLoreFormat()));
+        // Store the internal TYPE-ID Information (not stats, so it must be done manually here)
+        tags.add(new ItemTag("MMOITEMS_ITEM_TYPE", mmoitem.getType().getId()));
+        tags.add(new ItemTag("MMOITEMS_ITEM_ID", mmoitem.getId()));
 
-		// Gets the meta, and hides attributes
-		meta = item.getItemMeta();
-		//noinspection ConstantConditions
-		meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        // And a last technical tag for updating items
+        if (MMOItems.INTERNAL_REVISION_ID > 1)
+            tags.add(new ItemTag("MMOITEMS_INTERNAL_REVISION_ID", MMOItems.INTERNAL_REVISION_ID));
+    }
 
-		// Store the internal TYPE-ID Information (not stats, so it must be done manually here)
-		tags.add(new ItemTag("MMOITEMS_ITEM_TYPE", mmoitem.getType().getId()));
-		tags.add(new ItemTag("MMOITEMS_ITEM_ID", mmoitem.getId()));
+    public LoreBuilder getLore() {
+        return lore;
+    }
 
-		// And a last technical tag for updating items
-		if (MMOItems.INTERNAL_REVISION_ID > 1) tags.add(new ItemTag("MMOITEMS_INTERNAL_REVISION_ID", MMOItems.INTERNAL_REVISION_ID));
-	}
+    @NotNull
+    public MMOItem getMMOItem() {
+        return mmoitem;
+    }
 
-	public LoreBuilder getLore() {
-		return lore;
-	}
+    /**
+     * @return Does NOT return the built item stack. It returns only returns the
+     * default item stack with material applied. Built item stack is given
+     * by build(). This method should only be used to check if the item is
+     * of a specific material (like the Shield Pattern stat which checks if
+     * the item is a shield)
+     */
+    public ItemStack getItemStack() {
+        return item;
+    }
 
-	@NotNull
-	public MMOItem getMMOItem() {
-		return mmoitem;
-	}
+    public ItemMeta getMeta() {
+        return meta;
+    }
 
-	/**
-	 * @return Does NOT return the built item stack. It returns only returns the
-	 * default item stack with material applied. Built item stack is given
-	 * by build(). This method should only be used to check if the item is
-	 * of a specific material (like the Shield Pattern stat which checks if
-	 * the item is a shield)
-	 */
-	public ItemStack getItemStack() {
-		return item;
-	}
+    public void addItemTag(List<ItemTag> newTags) {
+        tags.addAll(newTags);
+    }
 
-	public ItemMeta getMeta() {
-		return meta;
-	}
+    public void addItemTag(ItemTag... itemTags) {
+        tags.addAll(Arrays.asList(itemTags));
+    }
 
-	public void addItemTag(List<ItemTag> newTags) {
-		tags.addAll(newTags);
-	}
+    /**
+     * @return Returns built NBTItem with applied tags and lore
+     */
+    public NBTItem buildNBT() {
+        return buildNBT(false);
+    }
 
-	public void addItemTag(ItemTag... itemTags) {
-		tags.addAll(Arrays.asList(itemTags));
-	}
+    /**
+     * @param forDisplay Should this item's lore display potential stats
+     *                   (like RNG ranges before rolling) rather than the
+     *                   stats it will have?
+     * @return Returns built NBTItem with applied tags and lore
+     */
+    public NBTItem buildNBT(boolean forDisplay) {
+        // Clone as to not conflict in any way
+        MMOItem builtMMOItem = mmoitem.clone();
+        //GEM//MMOItems.log("\u00a7e+ \u00a77Building \u00a7c" + mmoitem.getType().getName() + " " + mmoitem.getId() + "\u00a77 (Size \u00a7e" + mmoitem.getStatHistories().size() + "\u00a77 Historic)");
 
-	public static final String history_keyword = "HSTRY_";
+        /*
+         * As an assumption for several enchantment recognition operations,
+         * Enchantment data must never be clear and lack history. This is
+         * the basis for when an item is 'old'
+         */
+        if (!builtMMOItem.hasData(ItemStats.ENCHANTS)) {
+            builtMMOItem.setData(ItemStats.ENCHANTS, ItemStats.ENCHANTS.getClearStatData());
+        }
+        //GEM// else {MMOItems.log("\u00a73 -?- \u00a77Apparently found enchantment data \u00a7b" + (mmoitem.getData(ItemStats.ENCHANTS) == null ? "null" : ((EnchantListData) mmoitem.getData(ItemStats.ENCHANTS)).getEnchants().size())); }
 
-	/**
-	 * @return Returns built NBTItem with applied tags and lore
-	 */
-	public NBTItem buildNBT() {
-		return buildNBT(false);
-	}
+        // For every stat within this item
+        for (ItemStat stat : builtMMOItem.getStats())
 
-	/**
-	 * @param forDisplay Should this item's lore display potential stats
-	 *                   (like RNG ranges before rolling) rather than the
-	 *                   stats it will have?
-	 * @return Returns built NBTItem with applied tags and lore
-	 */
-	public NBTItem buildNBT(boolean forDisplay) {
-		// Clone as to not conflict in any way
-		MMOItem builtMMOItem = mmoitem.clone();
-		//GEM//MMOItems.log("\u00a7e+ \u00a77Building \u00a7c" + mmoitem.getType().getName() + " " + mmoitem.getId() + "\u00a77 (Size \u00a7e" + mmoitem.getStatHistories().size() + "\u00a77 Historic)");
+            // Attempt to add
+            try {
 
-		/*
-		 * As an assumption for several enchantment recognition operations,
-		 * Enchantment data must never be clear and lack history. This is
-		 * the basis for when an item is 'old'
-		 */
-		if (!builtMMOItem.hasData(ItemStats.ENCHANTS)) {
-			builtMMOItem.setData(ItemStats.ENCHANTS, ItemStats.ENCHANTS.getClearStatData());
-		}
-		//GEM// else {MMOItems.log("\u00a73 -?- \u00a77Apparently found enchantment data \u00a7b" + (mmoitem.getData(ItemStats.ENCHANTS) == null ? "null" : ((EnchantListData) mmoitem.getData(ItemStats.ENCHANTS)).getEnchants().size())); }
+                //GEM//MMOItems.log("\u00a7e -+- \u00a77Applying \u00a76" + stat.getNBTPath());
 
-		// For every stat within this item
-		for (ItemStat stat : builtMMOItem.getStats())
+                // Does the item have any stat history regarding thay?
+                StatHistory s = builtMMOItem.getStatHistory(stat);
+                int l = mmoitem.getUpgradeLevel();
 
-			// Attempt to add
-			try {
+                // Found it?
+                if (s != null) {
+                    //GEM//MMOItems.log("\u00a7a -+- \u00a77History exists...");
+                    //GEM//s.log();
 
-				//GEM//MMOItems.log("\u00a7e -+- \u00a77Applying \u00a76" + stat.getNBTPath());
+                    // Recalculate
+                    //HSY//MMOItems.log(" \u00a73-\u00a7a- \u00a77ItemStack Building Recalculation \u00a73-\u00a7a-\u00a73-\u00a7a-\u00a73-\u00a7a-\u00a73-\u00a7a-");
+                    builtMMOItem.setData(stat, s.recalculate(l));
 
-				// Does the item have any stat history regarding thay?
-				StatHistory s = builtMMOItem.getStatHistory(stat);
-				int l = mmoitem.getUpgradeLevel();
+                    // Add to NBT, if the gemstones were not purged
+                    if ((!s.isClear() || stat instanceof Enchants || stat instanceof DisplayName)) {
 
-				// Found it?
-				if (s != null) {
-					//GEM//MMOItems.log("\u00a7a -+- \u00a77History exists...");
-					//GEM//s.log();
+                        //GEM//MMOItems.log("\u00a7a -+- \u00a77Recording History");
+                        addItemTag(new ItemTag(history_keyword + stat.getId(), s.toNBTString()));
+                    }
+                }
 
-					// Recalculate
-					//HSY//MMOItems.log(" \u00a73-\u00a7a- \u00a77ItemStack Building Recalculation \u00a73-\u00a7a-\u00a73-\u00a7a-\u00a73-\u00a7a-\u00a73-\u00a7a-");
-					builtMMOItem.setData(stat, s.recalculate(l));
+                if (forDisplay && stat instanceof Previewable) {
 
-					// Add to NBT, if the gemstones were not purged
-					if ((!s.isClear() || stat instanceof Enchants || stat instanceof DisplayName)) {
+                    // Get Template
+                    MMOItemTemplate template = MMOItems.plugin.getTemplates().getTemplate(builtMMOItem.getType(), builtMMOItem.getId());
+                    if (template == null) {
+                        throw new IllegalArgumentException(
+                                "MMOItem $r" + builtMMOItem.getType().getId() + " " + builtMMOItem.getId() + "$b doesn't exist.");
+                    }
 
-						//GEM//MMOItems.log("\u00a7a -+- \u00a77Recording History");
-						addItemTag(new ItemTag(history_keyword + stat.getId(), s.toNBTString()));
-					}
-				}
+                    // Make necessary lore changes
+                    ((Previewable) stat).whenPreviewed(this, builtMMOItem.getData(stat), template.getBaseItemData().get(stat));
 
-				if (forDisplay && stat instanceof Previewable) {
+                } else {
 
-					// Get Template
-					MMOItemTemplate template = MMOItems.plugin.getTemplates().getTemplate(builtMMOItem.getType(), builtMMOItem.getId());
-					if (template == null) {
-						throw new IllegalArgumentException(
-								"MMOItem $r" + builtMMOItem.getType().getId() + " " + builtMMOItem.getId() + "$b doesn't exist.");
-					}
+                    // Make necessary lore changes
+                    stat.whenApplied(this, builtMMOItem.getData(stat));
+                }
 
-					// Make necessary lore changes
-					((Previewable) stat).whenPreviewed(this, builtMMOItem.getData(stat), template.getBaseItemData().get(stat));
+                // Something went wrong...
+            } catch (IllegalArgumentException | NullPointerException exception) {
 
-				} else {
+                // That
+                MMOItems.print(Level.WARNING, "An error occurred while trying to generate item '$f{0}$b' with stat '$f{1}$b': {2}",
+                        "ItemStackBuilder", builtMMOItem.getId(), stat.getId(), exception.getMessage());
+            }
 
-					// Make necessary lore changes
-					stat.whenApplied(this, builtMMOItem.getData(stat));
-				}
+        // Display gem stone lore hint thing
+        if (builtMMOItem.getType() == Type.GEM_STONE)
+            lore.insert("gem-stone-lore", ItemStat.translate("gem-stone-lore"));
 
-				// Something went wrong...
-			} catch (IllegalArgumentException | NullPointerException exception) {
+        // Display item type
+        lore.insert("item-type", ItemStat.translate("item-type").replace("{type}",
+                builtMMOItem.getStats().contains(ItemStats.DISPLAYED_TYPE) ? builtMMOItem.getData(ItemStats.DISPLAYED_TYPE)
+                        .toString() : builtMMOItem.getType().getName()));
 
-				// That
-				MMOItems.print(Level.WARNING, "An error occurred while trying to generate item '$f{0}$b' with stat '$f{1}$b': {2}",
-						"ItemStackBuilder", builtMMOItem.getId(), stat.getId(), exception.getMessage());
-			}
+        // Calculate extra item lore with placeholders
+        if (builtMMOItem.hasData(ItemStats.LORE)) {
+            List<String> parsed = new ArrayList<>();
+            ((StringListData) builtMMOItem.getData(ItemStats.LORE)).getList().forEach(str -> parsed.add(lore.applySpecialPlaceholders(str)));
+            lore.insert("lore", parsed);
+        }
 
-		// Display gem stone lore hint thing
-		if (builtMMOItem.getType() == Type.GEM_STONE) lore.insert("gem-stone-lore", ItemStat.translate("gem-stone-lore"));
+        // Calculate and apply item lore
+        List<String> unparsedLore = lore.getLore();
+        List<String> parsedLore = lore.build();
 
-		// Display item type
-		lore.insert("item-type", ItemStat.translate("item-type").replace("{type}",
-				builtMMOItem.getStats().contains(ItemStats.DISPLAYED_TYPE) ? builtMMOItem.getData(ItemStats.DISPLAYED_TYPE)
-						.toString() : builtMMOItem.getType().getName()));
+        GenerateLoreEvent event = new GenerateLoreEvent(builtMMOItem, lore, parsedLore, unparsedLore);
+        Bukkit.getPluginManager().callEvent(event);
+        meta.setLore(event.getParsedLore());
 
-		// Calculate extra item lore with placeholders
-		if (builtMMOItem.hasData(ItemStats.LORE)) {
-			List<String> parsed = new ArrayList<>();
-			((StringListData) builtMMOItem.getData(ItemStats.LORE)).getList().forEach(str -> parsed.add(lore.applySpecialPlaceholders(str)));
-			lore.insert("lore", parsed);
-		}
+        /*
+         * Save dynamic lore for later calculations. Not used anymore, but
+         * kept in case we need to roll back the lore update change.
+         */
+        JsonArray array = new JsonArray();
+        event.getParsedLore().forEach(array::add);
+        if (array.size() != 0) tags.add(new ItemTag("MMOITEMS_DYNAMIC_LORE", array.toString()));
 
-		// Calculate and apply item lore
-		List<String> unparsedLore = lore.getLore();
-		List<String> parsedLore = lore.build();
+        /*
+         * This tag is added to entirely override default vanilla item attribute
+         * modifiers, this way armor gives no ARMOR or ARMOR TOUGHNESS to the holder.
+         * Since 4.7 attributes are handled via custom calculations
+         */
+        meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, fakeModifier);
 
-		GenerateLoreEvent event = new GenerateLoreEvent(builtMMOItem, lore, parsedLore, unparsedLore);
-		Bukkit.getPluginManager().callEvent(event);
-		meta.setLore(event.getParsedLore());
+        item.setItemMeta(meta);
+        NBTItem nbtItem = NBTItem.get(item);
 
-		/*
-		 * Save dynamic lore for later calculations. Not used anymore, but
-		 * kept in case we need to roll back the lore update change.
-		 */
-		JsonArray array = new JsonArray();
-		event.getParsedLore().forEach(array::add);
-		if (array.size() != 0) tags.add(new ItemTag("MMOITEMS_DYNAMIC_LORE", array.toString()));
+        // Apply item display name using Components for colors
+        if (mmoitem.hasData(ItemStats.NAME) && meta.hasDisplayName())
+            nbtItem.setDisplayNameComponent(LegacyComponent.parse(meta.getDisplayName()));
 
-		/*
-		 * This tag is added to entirely override default vanilla item attribute
-		 * modifiers, this way armor gives no ARMOR or ARMOR TOUGHNESS to the holder.
-		 * Since 4.7 attributes are handled via custom calculations
-		 */
-		meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, fakeModifier);
+        if (meta.hasLore()) {
+            List<Component> componentLore = new LinkedList<>();
+            //noinspection ConstantConditions
+            meta.getLore().forEach(line -> componentLore.add(LegacyComponent.simpleParse(line)));
+            nbtItem.setLoreComponents(componentLore);
+        }
 
-		item.setItemMeta(meta);
-		NBTItem nbtItem = NBTItem.get(item);
+        return nbtItem.addTag(tags);
+    }
 
-		// Apply item display name using Components for colors
-		if (mmoitem.hasData(ItemStats.NAME) && meta.hasDisplayName()) nbtItem.setDisplayNameComponent(LegacyComponent.parse(meta.getDisplayName()));
+    /**
+     * @return Builds the item
+     */
+    @Nullable
+    public ItemStack build() {
+        ItemBuildEvent event = new ItemBuildEvent(buildNBT().toItem());
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        return event.getItemStack();
+    }
 
-		if (meta.hasLore()) {
-			List<Component> componentLore = new LinkedList<>();
-			//noinspection ConstantConditions
-			meta.getLore().forEach(line -> componentLore.add(LegacyComponent.simpleParse(line)));
-			nbtItem.setLoreComponents(componentLore);
-		}
+    /**
+     * Builds the item without calling a build event
+     */
+    public ItemStack buildSilently() {
+        return buildNBT().toItem();
+    }
 
-		return nbtItem.addTag(tags);
-	}
-
-	/**
-	 * @return Builds the item
-	 */
-	@Nullable
-	public ItemStack build() {
-		ItemBuildEvent event = new ItemBuildEvent(buildNBT().toItem());
-		Bukkit.getServer().getPluginManager().callEvent(event);
-		return event.getItemStack();
-	}
-
-	/**
-	 * Builds the item without calling a build event
-	 */
-	public ItemStack buildSilently() {
-		return buildNBT().toItem();
-	}
-
-	/**
-	 * @return Builds the item
-	 */
-	public ItemStack build(boolean forDisplay) {
-		return buildNBT(forDisplay).toItem();
-	}
+    /**
+     * @return Builds the item
+     */
+    public ItemStack build(boolean forDisplay) {
+        return buildNBT(forDisplay).toItem();
+    }
 }

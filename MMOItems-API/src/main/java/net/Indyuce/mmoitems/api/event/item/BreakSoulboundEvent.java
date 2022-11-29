@@ -7,41 +7,38 @@ import net.Indyuce.mmoitems.api.player.PlayerData;
 import org.bukkit.event.HandlerList;
 
 public class BreakSoulboundEvent extends PlayerDataEvent {
-	private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
 
-	private final VolatileMMOItem consumable;
-	private final NBTItem target;
+    private final VolatileMMOItem consumable;
+    private final NBTItem target;
 
-	/**
-	 * Called when a player tries to break an item soulbound
-	 * 
-	 * @param playerData
-	 *            Player breaking the soulbound
-	 * @param consumable
-	 *            Consumable used to break the soulbound
-	 * @param target
-	 *            Item with soulbound
-	 */
-	public BreakSoulboundEvent(PlayerData playerData, VolatileMMOItem consumable, NBTItem target) {
-		super(playerData);
+    /**
+     * Called when a player tries to break an item soulbound
+     *
+     * @param playerData Player breaking the soulbound
+     * @param consumable Consumable used to break the soulbound
+     * @param target     Item with soulbound
+     */
+    public BreakSoulboundEvent(PlayerData playerData, VolatileMMOItem consumable, NBTItem target) {
+        super(playerData);
 
-		this.consumable = consumable;
-		this.target = target;
-	}
+        this.consumable = consumable;
+        this.target = target;
+    }
 
-	public VolatileMMOItem getConsumable() {
-		return consumable;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	public NBTItem getTargetItem() {
-		return target;
-	}
+    public VolatileMMOItem getConsumable() {
+        return consumable;
+    }
 
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    public NBTItem getTargetItem() {
+        return target;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 }

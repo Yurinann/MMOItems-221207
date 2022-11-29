@@ -11,32 +11,32 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ShieldPatternData implements StatData, RandomStatData<ShieldPatternData> {
-	private final DyeColor base;
-	private final List<Pattern> patterns = new ArrayList<>();
+    private final DyeColor base;
+    private final List<Pattern> patterns = new ArrayList<>();
 
-	public ShieldPatternData(DyeColor base, Pattern... patterns) {
-		this.base = base;
-		this.patterns.addAll(Arrays.asList(patterns));
-	}
+    public ShieldPatternData(DyeColor base, Pattern... patterns) {
+        this.base = base;
+        this.patterns.addAll(Arrays.asList(patterns));
+    }
 
-	public DyeColor getBaseColor() {
-		return base;
-	}
+    public DyeColor getBaseColor() {
+        return base;
+    }
 
-	public List<Pattern> getPatterns() {
-		return patterns;
-	}
+    public List<Pattern> getPatterns() {
+        return patterns;
+    }
 
-	public void add(Pattern pattern) {
-		patterns.add(pattern);
-	}
+    public void add(Pattern pattern) {
+        patterns.add(pattern);
+    }
 
-	public void addAll(List<Pattern> patterns) {
-		this.patterns.addAll(patterns);
-	}
+    public void addAll(List<Pattern> patterns) {
+        this.patterns.addAll(patterns);
+    }
 
-	@Override
-	public ShieldPatternData randomize(MMOItemBuilder builder) {
-		return this;
-	}
+    @Override
+    public ShieldPatternData randomize(MMOItemBuilder builder) {
+        return this;
+    }
 }

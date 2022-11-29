@@ -18,7 +18,7 @@ public class GemUpgradeScaling extends ChooseStat implements GemStoneStat {
     public static String defaultValue = SUBSEQUENT;
 
     public GemUpgradeScaling() {
-        super("GEM_UPGRADE_SCALING", VersionMaterial.LIME_DYE.toMaterial(), "Gem Upgrade Scaling", new String[] { "Gem stones add their stats to items, but you may also", "upgrade your items via crafting stations or consumables.", "", "\u00a76Should this gem stone stats be affected by upgrading?" }, new String[] { "gem_stone" });
+        super("GEM_UPGRADE_SCALING", VersionMaterial.LIME_DYE.toMaterial(), "Gem Upgrade Scaling", new String[]{"Gem stones add their stats to items, but you may also", "upgrade your items via crafting stations or consumables.", "", "\u00a76Should this gem stone stats be affected by upgrading?"}, new String[]{"gem_stone"});
 
         // Set the acceptable values
         addChoices(SUBSEQUENT, NEVER, HISTORIC);
@@ -29,5 +29,9 @@ public class GemUpgradeScaling extends ChooseStat implements GemStoneStat {
         setHint(HISTORIC, "Gem stats instantly upgrade to the current item level, and subsequently thereafter.");
     }
 
-    @NotNull @Override public StringData getClearStatData() { return new StringData(defaultValue); }
+    @NotNull
+    @Override
+    public StringData getClearStatData() {
+        return new StringData(defaultValue);
+    }
 }

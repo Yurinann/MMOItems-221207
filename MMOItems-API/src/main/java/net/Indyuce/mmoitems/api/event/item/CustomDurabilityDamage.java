@@ -8,21 +8,39 @@ import org.jetbrains.annotations.NotNull;
 
 public class CustomDurabilityDamage extends Event implements Cancellable {
 
-    @NotNull DurabilityItem sourceItem;
+    private static final HandlerList handlers = new HandlerList();
+    @NotNull
+    DurabilityItem sourceItem;
     int durabilityDecrease;
-
     boolean cancelled = false;
 
     public CustomDurabilityDamage(@NotNull DurabilityItem item, int impendingDamage) {
         sourceItem = item;
-        durabilityDecrease = impendingDamage; }
+        durabilityDecrease = impendingDamage;
+    }
 
-    public int getDurabilityDecrease() { return durabilityDecrease; }
-    @NotNull public DurabilityItem getSourceItem() { return sourceItem; }
+    public int getDurabilityDecrease() {
+        return durabilityDecrease;
+    }
 
-    @Override public boolean isCancelled() { return cancelled; }
-    @Override public void setCancelled(boolean b) { cancelled = b; }
+    @NotNull
+    public DurabilityItem getSourceItem() {
+        return sourceItem;
+    }
 
-    private static final HandlerList handlers = new HandlerList();
-    @NotNull @Override public HandlerList getHandlers() { return handlers; }
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void setCancelled(boolean b) {
+        cancelled = b;
+    }
+
+    @NotNull
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 }

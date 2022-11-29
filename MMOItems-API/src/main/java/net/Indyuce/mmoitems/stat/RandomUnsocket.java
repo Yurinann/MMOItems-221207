@@ -40,8 +40,8 @@ import java.util.logging.Level;
 public class RandomUnsocket extends DoubleStat implements ConsumableItemInteraction {
     public RandomUnsocket() {
         super("RANDOM_UNSOCKET", Material.BOWL, "Random Unsocket",
-                new String[] { "Number of gems (rounded down)", "that will pop out of an item when", "this is applied." },
-                new String[] { "consumable" });
+                new String[]{"Number of gems (rounded down)", "that will pop out of an item when", "this is applied."},
+                new String[]{"consumable"});
     }
 
     @Override
@@ -51,20 +51,28 @@ public class RandomUnsocket extends DoubleStat implements ConsumableItemInteract
          * Must also check that the consumable itself does have this stat... bruh
          */
         VolatileMMOItem consumableVol = consumable.getMMOItem();
-        if (!consumableVol.hasData(ItemStats.RANDOM_UNSOCKET)) { return false; }
+        if (!consumableVol.hasData(ItemStats.RANDOM_UNSOCKET)) {
+            return false;
+        }
 
         /*
          * Cancel if the target is just not an MMOItem
          */
-        if (targetType == null) { return false; }
+        if (targetType == null) {
+            return false;
+        }
 
         /*
          * No Gemstones? No service
          */
         MMOItem mmoVol = new VolatileMMOItem(target);
-        if (!mmoVol.hasData(ItemStats.GEM_SOCKETS)) { return false; }
+        if (!mmoVol.hasData(ItemStats.GEM_SOCKETS)) {
+            return false;
+        }
         GemSocketsData mmoGems = (GemSocketsData) mmoVol.getData(ItemStats.GEM_SOCKETS);
-        if (mmoGems == null || mmoGems.getGemstones().size() == 0) { return false; }
+        if (mmoGems == null || mmoGems.getGemstones().size() == 0) {
+            return false;
+        }
         Player player = playerData.getPlayer();
 
         /*
@@ -76,11 +84,15 @@ public class RandomUnsocket extends DoubleStat implements ConsumableItemInteract
         List<Pair<GemstoneData, MMOItem>> mmoGemStones = mmo.extractGemstones();
         if (mmoGemStones.isEmpty()) {
             Message.RANDOM_UNSOCKET_GEM_TOO_OLD.format(ChatColor.YELLOW, "#item#", MMOUtils.getDisplayName(event.getCurrentItem())).send(player);
-            return false; }
+            return false;
+        }
 
         // Get removed gems amount
         DoubleData unsocket = (DoubleData) consumable.getMMOItem().getData(ItemStats.RANDOM_UNSOCKET);
-        int s = 1;  if (unsocket != null) { s = SilentNumbers.floor(unsocket.getValue()); }
+        int s = 1;
+        if (unsocket != null) {
+            s = SilentNumbers.floor(unsocket.getValue());
+        }
         //GEM//for (String str : SilentNumbers.transcribeList(mmoGemStones, (lam) -> "\u00a73Found \u00a77 " + ((MMOItem) lam).getType().getId() + " " + ((MMOItem) lam).getId() )) { MMOItems.log(str); };
 
         // Drop gemstones to the ground :0
@@ -91,7 +103,9 @@ public class RandomUnsocket extends DoubleStat implements ConsumableItemInteract
              * Choose a gem to drop :)
              */
             int randomGem = SilentNumbers.floor(SilentNumbers.randomRange(0, mmoGemStones.size()));
-            if (randomGem >= mmoGemStones.size()) { randomGem = mmoGemStones.size() - 1;}
+            if (randomGem >= mmoGemStones.size()) {
+                randomGem = mmoGemStones.size() - 1;
+            }
 
             // Choose gem
             final Pair<GemstoneData, MMOItem> pair = mmoGemStones.get(randomGem);
@@ -115,9 +129,11 @@ public class RandomUnsocket extends DoubleStat implements ConsumableItemInteract
                     String chosenColor;
                     if (gemData.getSocketColor() != null) {
                         //GEM//MMOItems.log("\u00a7b   *\u00a77 Restored slot\u00a7e " + gem.getAsGemColor());
-                        chosenColor = gemData.getSocketColor(); } else {
+                        chosenColor = gemData.getSocketColor();
+                    } else {
                         //GEM//MMOItems.log("\u00a7b   *\u00a77 Restored slot\u00a76 " + GemSocketsData.getUncoloredGemSlot() + " \u00a78(Uncolored Def)");
-                        chosenColor = GemSocketsData.getUncoloredGemSlot(); }
+                        chosenColor = GemSocketsData.getUncoloredGemSlot();
+                    }
 
                     // Unregister
                     mmo.removeGemStone(gemData.getHistoricUUID(), chosenColor);
@@ -129,7 +145,9 @@ public class RandomUnsocket extends DoubleStat implements ConsumableItemInteract
                     Message.RANDOM_UNSOCKET_SUCCESS.format(ChatColor.YELLOW, "#item#", MMOUtils.getDisplayName(event.getCurrentItem()), "#gem#", MMOUtils.getDisplayName(builtGem)).send(player);
                 }
 
-            } catch (Throwable e) { MMOItems.print(Level.WARNING, "Could not unsocket gem from item $u{0}$b: $f{1}", "Stat \u00a7eRandom Unsocket", SilentNumbers.getItemName(event.getCurrentItem()), e.getMessage()); }
+            } catch (Throwable e) {
+                MMOItems.print(Level.WARNING, "Could not unsocket gem from item $u{0}$b: $f{1}", "Stat \u00a7eRandom Unsocket", SilentNumbers.getItemName(event.getCurrentItem()), e.getMessage());
+            }
         }
 
         // Replace
@@ -139,7 +157,8 @@ public class RandomUnsocket extends DoubleStat implements ConsumableItemInteract
         event.setCurrentItem(mmo.newBuilder().build());
 
         // Give the gems back
-        for (ItemStack drop : player.getInventory().addItem(items2Drop.toArray(new ItemStack[0])).values()) player.getWorld().dropItem(player.getLocation(), drop);
+        for (ItemStack drop : player.getInventory().addItem(items2Drop.toArray(new ItemStack[0])).values())
+            player.getWorld().dropItem(player.getLocation(), drop);
         player.playSound(player.getLocation(), Sound.BLOCK_IRON_DOOR_OPEN, 1, 2);
         return true;
     }

@@ -17,26 +17,69 @@ import java.util.ArrayList;
  * @author Gunging
  */
 public class RBA_SmithingUpgrades extends RBA_ChooseableButton {
+    public static final String SMITH_UPGRADES = "upgrades";
+    static ArrayList<String> smithingList;
+    @NotNull
+    final ItemStack chooseableButton = ItemFactory.of(Material.ANVIL).name("\u00a7aUpgrades Transfer").lore(SilentNumbers.chop(
+            "What will happen to the upgrades of the ingredients? Will upgraded ingredients produce an upgraded output item?"
+            , 65, "\u00a77")).build();
+
     /**
      * A button of an Edition Inventory. Nice!
      *
      * @param inv The edition inventory this is a button of
      */
-    public RBA_SmithingUpgrades(@NotNull RecipeMakerGUI inv) { super(inv); }
+    public RBA_SmithingUpgrades(@NotNull RecipeMakerGUI inv) {
+        super(inv);
+    }
 
-    @NotNull final ItemStack chooseableButton = ItemFactory.of(Material.ANVIL).name("\u00a7aUpgrades Transfer").lore(SilentNumbers.chop(
-            "What will happen to the upgrades of the ingredients? Will upgraded ingredients produce an upgraded output item?"
-            , 65, "\u00a77")).build();
+    /**
+     * @return The allowed values of the smithing combination type list
+     */
+    @NotNull
+    static ArrayList<String> getSmithingList() {
+        if (smithingList != null) {
+            return smithingList;
+        }
+        smithingList = new ArrayList<>();
+        for (SmithingCombinationType sct : SmithingCombinationType.values()) {
+            smithingList.add(sct.toString());
+        }
+        return smithingList;
+    }
 
-    @NotNull @Override public ItemStack getChooseableButton() { return chooseableButton; }
+    @NotNull
+    @Override
+    public ItemStack getChooseableButton() {
+        return chooseableButton;
+    }
 
-    public static final String SMITH_UPGRADES = "upgrades";
-    @NotNull @Override public String getChooseableConfigPath() { return SMITH_UPGRADES; }
-    @NotNull @Override public ArrayList<String> getChooseableList() { return getSmithingList(); }
-    @NotNull @Override public String getDefaultValue() { return SmithingCombinationType.MAXIMUM.toString(); }
-    @NotNull @Override public String getChooseableDefinition(@NotNull String ofChooseable) {
+    @NotNull
+    @Override
+    public String getChooseableConfigPath() {
+        return SMITH_UPGRADES;
+    }
+
+    @NotNull
+    @Override
+    public ArrayList<String> getChooseableList() {
+        return getSmithingList();
+    }
+
+    @NotNull
+    @Override
+    public String getDefaultValue() {
+        return SmithingCombinationType.MAXIMUM.toString();
+    }
+
+    @NotNull
+    @Override
+    public String getChooseableDefinition(@NotNull String ofChooseable) {
         SmithingCombinationType sct = SmithingCombinationType.MAXIMUM;
-        try { sct = SmithingCombinationType.valueOf(getCurrentChooseableValue()); } catch (IllegalArgumentException ignored) {}
+        try {
+            sct = SmithingCombinationType.valueOf(getCurrentChooseableValue());
+        } catch (IllegalArgumentException ignored) {
+        }
 
         switch (sct) {
             case EVEN:
@@ -50,17 +93,8 @@ public class RBA_SmithingUpgrades extends RBA_ChooseableButton {
             case ADDITIVE:
                 return "The upgrade levels of the ingredients will be added, and the result will be the crafted item's level.";
 
-            default: return "Unknown behaviour. Add description in net.Indyuce.mmoitems.gui.edition.recipe.rba.RBA_SmithingUpgrades";
+            default:
+                return "Unknown behaviour. Add description in net.Indyuce.mmoitems.gui.edition.recipe.rba.RBA_SmithingUpgrades";
         }
     }
-
-    static ArrayList<String> smithingList;
-    /**
-     * @return The allowed values of the smithing combination type list
-     */
-    @NotNull static ArrayList<String> getSmithingList() {
-        if (smithingList != null) { return smithingList; }
-        smithingList = new ArrayList<>();
-        for (SmithingCombinationType sct : SmithingCombinationType.values()) { smithingList.add(sct.toString()); }
-        return smithingList; }
 }

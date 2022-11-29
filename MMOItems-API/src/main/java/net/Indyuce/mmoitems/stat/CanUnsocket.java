@@ -32,8 +32,8 @@ import java.util.List;
 public class CanUnsocket extends BooleanStat implements ConsumableItemInteraction {
     public CanUnsocket() {
         super("CAN_UNSOCKET", Material.PAPER, "Can Unsocket?",
-                new String[] { "This item, when used on another item, if", "that other item has Gem Stones", "may be used to remove those Gems." },
-                new String[] { "consumable" });
+                new String[]{"This item, when used on another item, if", "that other item has Gem Stones", "may be used to remove those Gems."},
+                new String[]{"consumable"});
     }
 
     @Override
@@ -42,15 +42,21 @@ public class CanUnsocket extends BooleanStat implements ConsumableItemInteractio
         /*
          * Cancel if the target is just not an MMOItem
          */
-        if (targetType == null) { return false; }
+        if (targetType == null) {
+            return false;
+        }
 
         /*
          * No Gemstones? No service
          */
         MMOItem mmo = new VolatileMMOItem(target);
-        if (!mmo.hasData(ItemStats.GEM_SOCKETS)) { return false; }
+        if (!mmo.hasData(ItemStats.GEM_SOCKETS)) {
+            return false;
+        }
         GemSocketsData mmoGems = (GemSocketsData) mmo.getData(ItemStats.GEM_SOCKETS);
-        if (mmoGems == null || mmoGems.getGemstones().size() == 0) { return false; }
+        if (mmoGems == null || mmoGems.getGemstones().size() == 0) {
+            return false;
+        }
         Player player = playerData.getPlayer();
 
         /*
@@ -62,7 +68,8 @@ public class CanUnsocket extends BooleanStat implements ConsumableItemInteractio
         final List<Pair<GemstoneData, MMOItem>> mmoGemStones = mmo.extractGemstones();
         if (mmoGemStones.isEmpty()) {
             Message.RANDOM_UNSOCKET_GEM_TOO_OLD.format(ChatColor.YELLOW, "#item#", MMOUtils.getDisplayName(event.getCurrentItem())).send(player);
-            return false; }
+            return false;
+        }
 
         return true;
     }

@@ -9,56 +9,77 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class AbilityListData implements StatData, Mergeable<AbilityListData> {
-	@NotNull private final Set<AbilityData> abilities = new LinkedHashSet<>();
+    @NotNull
+    private final Set<AbilityData> abilities = new LinkedHashSet<>();
 
-	public AbilityListData(@NotNull AbilityData... abilities) {
-		add(abilities);
-	}
+    public AbilityListData(@NotNull AbilityData... abilities) {
+        add(abilities);
+    }
 
-	public AbilityListData(@NotNull Set<AbilityData> abilit) { add(abilit); }
+    public AbilityListData(@NotNull Set<AbilityData> abilit) {
+        add(abilit);
+    }
 
-	public void add(@NotNull AbilityData... abilities) {
-		this.abilities.addAll(Arrays.asList(abilities));
-	}
+    public void add(@NotNull AbilityData... abilities) {
+        this.abilities.addAll(Arrays.asList(abilities));
+    }
 
-	public void add(@NotNull Set<AbilityData> abilit) { abilities.addAll(abilit); }
+    public void add(@NotNull Set<AbilityData> abilit) {
+        abilities.addAll(abilit);
+    }
 
-	@NotNull
-	public Set<AbilityData> getAbilities() {
-		return abilities;
-	}
+    @NotNull
+    public Set<AbilityData> getAbilities() {
+        return abilities;
+    }
 
-	@Override
-	public void merge(@NotNull AbilityListData data) {
-		abilities.addAll(data.abilities);
-	}
+    @Override
+    public void merge(@NotNull AbilityListData data) {
+        abilities.addAll(data.abilities);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof AbilityListData)) { return false; }
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof AbilityListData)) {
+            return false;
+        }
 
-		// Different number of abilities? Not equal
-		if (getAbilities().size() != ((AbilityListData) obj).getAbilities().size()) { return false; }
+        // Different number of abilities? Not equal
+        if (getAbilities().size() != ((AbilityListData) obj).getAbilities().size()) {
+            return false;
+        }
 
-		// Examine each
-		for (AbilityData ab : ((AbilityListData) obj).getAbilities()) {
+        // Examine each
+        for (AbilityData ab : ((AbilityListData) obj).getAbilities()) {
 
-			if (ab == null) { continue; }
+            if (ab == null) {
+                continue;
+            }
 
-			boolean unmatched = true;
-			for (AbilityData thi : getAbilities()) { if (ab.equals(thi)) { unmatched = false; break; } }
+            boolean unmatched = true;
+            for (AbilityData thi : getAbilities()) {
+                if (ab.equals(thi)) {
+                    unmatched = false;
+                    break;
+                }
+            }
 
-			// Extraneous ability found, not equal.
-			if (unmatched) { return false; }
-		}
+            // Extraneous ability found, not equal.
+            if (unmatched) {
+                return false;
+            }
+        }
 
-		return true; }
+        return true;
+    }
 
-	@Override
-	public @NotNull AbilityListData cloneData() { return new AbilityListData(getAbilities()); }
+    @Override
+    public @NotNull AbilityListData cloneData() {
+        return new AbilityListData(getAbilities());
+    }
 
-	@Override
-	public boolean isEmpty() {
-		return abilities.isEmpty();
-	}
+    @Override
+    public boolean isEmpty() {
+        return abilities.isEmpty();
+    }
 }

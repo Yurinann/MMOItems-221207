@@ -7,5 +7,9 @@ import org.jetbrains.annotations.NotNull;
  * The smoker yes
  */
 public class RMGRR_LBSmoker extends RMGRR_LegacyBurning {
-    @NotNull @Override public CraftingType getLegacyBurningType() { return CraftingType.SMOKER; }
+    @NotNull
+    @Override
+    public CraftingType getLegacyBurningType() {
+        return CraftingType.SMOKER;
+    }
 }

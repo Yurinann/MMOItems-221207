@@ -31,76 +31,76 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Field;
 
 public class CanDeskin extends BooleanStat implements ConsumableItemInteraction {
-	public CanDeskin() {
-		super("CAN_DESKIN", Material.LEATHER, "Can Deskin?",
-				new String[] { "Players can deskin their item", "and get their skin back", "from the item." }, new String[] { "consumable" });
-	}
+    public CanDeskin() {
+        super("CAN_DESKIN", Material.LEATHER, "Can Deskin?",
+                new String[]{"Players can deskin their item", "and get their skin back", "from the item."}, new String[]{"consumable"});
+    }
 
-	@Override
-	public boolean handleConsumableEffect(@NotNull InventoryClickEvent event, @NotNull PlayerData playerData, @NotNull Consumable consumable, @NotNull NBTItem target, Type targetType) {
-		final String skinId = target.getString("MMOITEMS_SKIN_ID");
-		Player player = playerData.getPlayer();
+    @Override
+    public boolean handleConsumableEffect(@NotNull InventoryClickEvent event, @NotNull PlayerData playerData, @NotNull Consumable consumable, @NotNull NBTItem target, Type targetType) {
+        final String skinId = target.getString("MMOITEMS_SKIN_ID");
+        Player player = playerData.getPlayer();
 
-		if (consumable.getNBTItem().getBoolean("MMOITEMS_CAN_DESKIN") && !skinId.isEmpty()) {
+        if (consumable.getNBTItem().getBoolean("MMOITEMS_CAN_DESKIN") && !skinId.isEmpty()) {
 
-			// Set target item to default skin
-			String targetItemId = target.getString("MMOITEMS_ITEM_ID");
-			target.removeTag("MMOITEMS_HAS_SKIN");
-			target.removeTag("MMOITEMS_SKIN_ID");
+            // Set target item to default skin
+            String targetItemId = target.getString("MMOITEMS_ITEM_ID");
+            target.removeTag("MMOITEMS_HAS_SKIN");
+            target.removeTag("MMOITEMS_SKIN_ID");
 
-			MMOItemTemplate targetTemplate = MMOItems.plugin.getTemplates().getTemplateOrThrow(targetType, targetItemId);
-			MMOItem originalMmoitem = targetTemplate.newBuilder(playerData.getRPG()).build();
-			ItemStack originalItem = targetTemplate.newBuilder(playerData.getRPG()).build().newBuilder().build();
+            MMOItemTemplate targetTemplate = MMOItems.plugin.getTemplates().getTemplateOrThrow(targetType, targetItemId);
+            MMOItem originalMmoitem = targetTemplate.newBuilder(playerData.getRPG()).build();
+            ItemStack originalItem = targetTemplate.newBuilder(playerData.getRPG()).build().newBuilder().build();
 
-			int originalCustomModelData = originalItem.getItemMeta().hasCustomModelData() ? originalItem.getItemMeta().getCustomModelData() : -1;
-			if (originalCustomModelData != -1)
-				target.addTag(new ItemTag("CustomModelData", originalCustomModelData));
-			else
-				target.removeTag("CustomModelData");
+            int originalCustomModelData = originalItem.getItemMeta().hasCustomModelData() ? originalItem.getItemMeta().getCustomModelData() : -1;
+            if (originalCustomModelData != -1)
+                target.addTag(new ItemTag("CustomModelData", originalCustomModelData));
+            else
+                target.removeTag("CustomModelData");
 
-			if (originalMmoitem.hasData(ItemStats.ITEM_PARTICLES)) {
-				JsonObject itemParticles = ((ParticleData) originalMmoitem.getData(ItemStats.ITEM_PARTICLES)).toJson();
-				target.addTag(new ItemTag("MMOITEMS_ITEM_PARTICLES", itemParticles.toString()));
-			} else
-				target.removeTag("MMOITEMS_ITEM_PARTICLES");
+            if (originalMmoitem.hasData(ItemStats.ITEM_PARTICLES)) {
+                JsonObject itemParticles = ((ParticleData) originalMmoitem.getData(ItemStats.ITEM_PARTICLES)).toJson();
+                target.addTag(new ItemTag("MMOITEMS_ITEM_PARTICLES", itemParticles.toString()));
+            } else
+                target.removeTag("MMOITEMS_ITEM_PARTICLES");
 
-			ItemStack targetItem = target.toItem();
-			ItemMeta targetItemMeta = targetItem.getItemMeta();
-			ItemMeta originalItemMeta = originalItem.getItemMeta();
+            ItemStack targetItem = target.toItem();
+            ItemMeta targetItemMeta = targetItem.getItemMeta();
+            ItemMeta originalItemMeta = originalItem.getItemMeta();
 
-			if (targetItemMeta.isUnbreakable()) {
-				targetItemMeta.setUnbreakable(originalItemMeta.isUnbreakable());
-				if (targetItemMeta instanceof Damageable && originalItemMeta instanceof Damageable)
-					((Damageable) targetItemMeta).setDamage(((Damageable) originalItemMeta).getDamage());
-			}
+            if (targetItemMeta.isUnbreakable()) {
+                targetItemMeta.setUnbreakable(originalItemMeta.isUnbreakable());
+                if (targetItemMeta instanceof Damageable && originalItemMeta instanceof Damageable)
+                    ((Damageable) targetItemMeta).setDamage(((Damageable) originalItemMeta).getDamage());
+            }
 
-			if (targetItemMeta instanceof LeatherArmorMeta && originalItemMeta instanceof LeatherArmorMeta)
-				((LeatherArmorMeta) targetItemMeta).setColor(((LeatherArmorMeta) originalItemMeta).getColor());
+            if (targetItemMeta instanceof LeatherArmorMeta && originalItemMeta instanceof LeatherArmorMeta)
+                ((LeatherArmorMeta) targetItemMeta).setColor(((LeatherArmorMeta) originalItemMeta).getColor());
 
-			if (target.hasTag("SkullOwner") && (targetItem.getType() == VersionMaterial.PLAYER_HEAD.toMaterial())
-					&& (originalItem.getType() == VersionMaterial.PLAYER_HEAD.toMaterial())) {
-				try {
-					Field profileField = targetItemMeta.getClass().getDeclaredField("profile");
-					profileField.setAccessible(true);
-					profileField.set(targetItemMeta, ((SkullTextureData) originalMmoitem.getData(ItemStats.SKULL_TEXTURE)).getGameProfile());
-				} catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-					MMOItems.plugin.getLogger().warning("Could not read skull texture");
-				}
-			}
+            if (target.hasTag("SkullOwner") && (targetItem.getType() == VersionMaterial.PLAYER_HEAD.toMaterial())
+                    && (originalItem.getType() == VersionMaterial.PLAYER_HEAD.toMaterial())) {
+                try {
+                    Field profileField = targetItemMeta.getClass().getDeclaredField("profile");
+                    profileField.setAccessible(true);
+                    profileField.set(targetItemMeta, ((SkullTextureData) originalMmoitem.getData(ItemStats.SKULL_TEXTURE)).getGameProfile());
+                } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+                    MMOItems.plugin.getLogger().warning("Could not read skull texture");
+                }
+            }
 
-			// Update deskined item
-			final ItemStack updated = target.getItem();
-			updated.setItemMeta(targetItemMeta);
-			updated.setType(originalItem.getType());
+            // Update deskined item
+            final ItemStack updated = target.getItem();
+            updated.setItemMeta(targetItemMeta);
+            updated.setType(originalItem.getType());
 
-			// Give back skin item
-			MMOItemTemplate template = MMOItems.plugin.getTemplates().getTemplateOrThrow(Type.SKIN, skinId);
-			MMOItem mmoitem = template.newBuilder(playerData.getRPG()).build();
-			new SmartGive(player).give(mmoitem.newBuilder().build());
+            // Give back skin item
+            MMOItemTemplate template = MMOItems.plugin.getTemplates().getTemplateOrThrow(Type.SKIN, skinId);
+            MMOItem mmoitem = template.newBuilder(playerData.getRPG()).build();
+            new SmartGive(player).give(mmoitem.newBuilder().build());
 
-			Message.SKIN_REMOVED.format(ChatColor.YELLOW, "#item#", MMOUtils.getDisplayName(targetItem)).send(player);
-			return true;
-		}
-		return false;
-	}
+            Message.SKIN_REMOVED.format(ChatColor.YELLOW, "#item#", MMOUtils.getDisplayName(targetItem)).send(player);
+            return true;
+        }
+        return false;
+    }
 }

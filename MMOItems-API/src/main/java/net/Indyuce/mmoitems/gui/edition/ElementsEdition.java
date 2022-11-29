@@ -24,14 +24,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.*;
 
 public class ElementsEdition extends EditionInventory {
+    private static final int[] INIT_SLOTS = {19, 28, 37};
+    private static final int ELEMENTS_PER_PAGE = 3;
     private final List<Element> elements = new ArrayList<>();
     private final int maxPage;
     private final Map<Integer, Pair<Element, ElementStatType>> editableStats = new HashMap<>();
-
     private int page = 1;
-
-    private static final int[] INIT_SLOTS = {19, 28, 37};
-    private static final int ELEMENTS_PER_PAGE = 3;
 
     public ElementsEdition(Player player, MMOItemTemplate template) {
         super(player, template);

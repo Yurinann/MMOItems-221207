@@ -45,21 +45,26 @@ import java.util.HashMap;
 public class CustomSmithingRecipe extends MythicRecipeOutput {
 
     /**
-     * @param outputItem The MMOItem that results from the completion of these recipes.
-     * @param dropGemstones Should extra gemstones be dropped? (Otherwise lost)
-     * @param enchantmentTreatment Should enchantments be destroyed?
-     * @param upgradeTreatment How will upgrades combine?
+     * The MMOItem that results from the completion of these recipes.
      */
-    public CustomSmithingRecipe(@NotNull MMOItemTemplate outputItem, boolean dropGemstones, @NotNull SmithingCombinationType enchantmentTreatment, @NotNull SmithingCombinationType upgradeTreatment, int outputAmount) {
-        this.outputItem = outputItem;
-        this.dropGemstones = dropGemstones;
-        this.enchantmentTreatment = enchantmentTreatment;
-        this.upgradeTreatment = upgradeTreatment;
-        this.outputAmount = outputAmount;
-    }
+    @NotNull
+    final MMOItemTemplate outputItem;
 
     //region Advanced Variant
-
+    /**
+     * Will the extra gemstones be dropped to the ground?
+     */
+    final boolean dropGemstones;
+    /**
+     * Will the enchantments be...??
+     */
+    @NotNull
+    final SmithingCombinationType enchantmentTreatment;
+    /**
+     * How to treat upgrade level combinations?
+     */
+    @NotNull
+    final SmithingCombinationType upgradeTreatment;
     /**
      * If this is not null, then the ingredients themselves will change as this output resolves
      * (like milk buckets turning into normal buckets when crafting a cake).
@@ -70,34 +75,75 @@ public class CustomSmithingRecipe extends MythicRecipeOutput {
      * If this is not null, then the ingredients themselves will change as this output resolves
      * (like milk buckets turning into normal buckets when crafting a cake).
      */
-    @Nullable public MythicRecipe getMainInputConsumption() { return mainInputConsumption; }
+    @Nullable
+    MythicRecipe ingotInputConsumption;
+    /**
+     * The amount of output produced by one smithing
+     */
+    int outputAmount;
+
+    /**
+     * @param outputItem           The MMOItem that results from the completion of these recipes.
+     * @param dropGemstones        Should extra gemstones be dropped? (Otherwise lost)
+     * @param enchantmentTreatment Should enchantments be destroyed?
+     * @param upgradeTreatment     How will upgrades combine?
+     */
+    public CustomSmithingRecipe(@NotNull MMOItemTemplate outputItem, boolean dropGemstones, @NotNull SmithingCombinationType enchantmentTreatment, @NotNull SmithingCombinationType upgradeTreatment, int outputAmount) {
+        this.outputItem = outputItem;
+        this.dropGemstones = dropGemstones;
+        this.enchantmentTreatment = enchantmentTreatment;
+        this.upgradeTreatment = upgradeTreatment;
+        this.outputAmount = outputAmount;
+    }
+
+    /**
+     * If this is not null, then the ingredients themselves will change as this output resolves
+     * (like milk buckets turning into normal buckets when crafting a cake).
+     */
+    @Nullable
+    public MythicRecipe getMainInputConsumption() {
+        return mainInputConsumption;
+    }
+
     /**
      * @param mic If this is not null, then the ingredients themselves will change as this output resolves
      *            (like milk buckets turning into normal buckets when crafting a cake).
      */
-    public void setMainInputConsumption(@Nullable MythicRecipe mic) {  mainInputConsumption = nullifyIfEmpty(mic); }
+    public void setMainInputConsumption(@Nullable MythicRecipe mic) {
+        mainInputConsumption = nullifyIfEmpty(mic);
+    }
+    //endregion
 
     /**
      * @return If the ingredients themselves will change as this output resolves
-     *         (like milk buckets turning into normal buckets when crafting a cake).
+     * (like milk buckets turning into normal buckets when crafting a cake).
      */
-    public boolean hasInputConsumption() { return ingotInputConsumption != null || mainInputConsumption != null; }
+    public boolean hasInputConsumption() {
+        return ingotInputConsumption != null || mainInputConsumption != null;
+    }
 
     /**
      * @param mic Some mythic recipe
-     *
      * @return <code>null</code> if there is not a single actual item in this MythicRecipe,
-     *         or the MythicRecipe itself.
+     * or the MythicRecipe itself.
      */
-    @Nullable public MythicRecipe nullifyIfEmpty(@Nullable MythicRecipe mic) {
+    @Nullable
+    public MythicRecipe nullifyIfEmpty(@Nullable MythicRecipe mic) {
 
         // Null is just null
-        if (mic == null) { return null; }
+        if (mic == null) {
+            return null;
+        }
 
         // Anything not air will count a success
         for (MythicRecipeIngredient mri : mic.getIngredients()) {
-            if (mri == null) { continue; }
-            if (mri.getIngredient().isDefinesItem()) { return mic; } }
+            if (mri == null) {
+                continue;
+            }
+            if (mri.getIngredient().isDefinesItem()) {
+                return mic;
+            }
+        }
 
         // Nope, nothing that wasn't air
         return null;
@@ -108,18 +154,17 @@ public class CustomSmithingRecipe extends MythicRecipeOutput {
      * (like milk buckets turning into normal buckets when crafting a cake).
      */
     @Nullable
-    MythicRecipe ingotInputConsumption;
-    /**
-     * If this is not null, then the ingredients themselves will change as this output resolves
-     * (like milk buckets turning into normal buckets when crafting a cake).
-     */
-    @Nullable public MythicRecipe getIngotInputConsumption() { return ingotInputConsumption; }
+    public MythicRecipe getIngotInputConsumption() {
+        return ingotInputConsumption;
+    }
+
     /**
      * @param mic If this is not null, then the ingredients themselves will change as this output resolves
      *            (like milk buckets turning into normal buckets when crafting a cake).
      */
-    public void setIngotInputConsumption(@Nullable MythicRecipe mic) { ingotInputConsumption = nullifyIfEmpty(mic); }
-
+    public void setIngotInputConsumption(@Nullable MythicRecipe mic) {
+        ingotInputConsumption = nullifyIfEmpty(mic);
+    }
 
     /**
      * Generates a new, independent MythicRecipeInventory
@@ -127,7 +172,8 @@ public class CustomSmithingRecipe extends MythicRecipeOutput {
      *
      * @return A new result to be given to the player.
      */
-    @NotNull MythicRecipeInventory generateResultOf(@NotNull MythicRecipe mythicRecipe) {
+    @NotNull
+    MythicRecipeInventory generateResultOf(@NotNull MythicRecipe mythicRecipe) {
 
         // Rows yes
         HashMap<Integer, ItemStack[]> rowsInformation = new HashMap<>();
@@ -136,14 +182,18 @@ public class CustomSmithingRecipe extends MythicRecipeOutput {
         for (MythicRecipeIngredient mmIngredient : mythicRecipe.getIngredients()) {
 
             // Ignore
-            if (mmIngredient == null) { continue; }
+            if (mmIngredient == null) {
+                continue;
+            }
 
             // Identify Ingredient
             ShapedIngredient shaped = ((ShapedIngredient) mmIngredient);
             MythicIngredient ingredient = mmIngredient.getIngredient();
 
             // Does not define an item? I sleep
-            if (!ingredient.isDefinesItem()) { continue; }
+            if (!ingredient.isDefinesItem()) {
+                continue;
+            }
 
             // Any errors yo?
             FriendlyFeedbackProvider ffp = new FriendlyFeedbackProvider(FFPMMOItems.get());
@@ -166,11 +216,15 @@ public class CustomSmithingRecipe extends MythicRecipeOutput {
 
                 // Get current row
                 ItemStack[] row = rowsInformation.get(-shaped.getVerticalOffset());
-                if (row == null) { row = new ItemStack[(shaped.getHorizontalOffset() + 1)]; }
+                if (row == null) {
+                    row = new ItemStack[(shaped.getHorizontalOffset() + 1)];
+                }
                 if (row.length < (shaped.getHorizontalOffset() + 1)) {
                     ItemStack[] newRow = new ItemStack[(shaped.getHorizontalOffset() + 1)];
                     //noinspection ManualArrayCopy
-                    for (int r = 0; r < row.length; r++) { newRow[r] = row[r]; }
+                    for (int r = 0; r < row.length; r++) {
+                        newRow[r] = row[r];
+                    }
                     row = newRow;
                 }
 
@@ -190,62 +244,58 @@ public class CustomSmithingRecipe extends MythicRecipeOutput {
 
         // Add all rows into new
         MythicRecipeInventory ret = new MythicRecipeInventory();
-        for (Integer h : rowsInformation.keySet()) { ret.setRow(h, rowsInformation.get(h)); }
+        for (Integer h : rowsInformation.keySet()) {
+            ret.setRow(h, rowsInformation.get(h));
+        }
 
         // Yes
         return ret;
     }
-    //endregion
 
-    /**
-     * The amount of output produced by one smithing
-     */
-    int outputAmount;
     /**
      * @return The amount of output produced by one smithing
      */
-    public int getOutputAmount() { return outputAmount; }
+    public int getOutputAmount() {
+        return outputAmount;
+    }
+
     /**
      * @param amount The amount of output produced by one smithing
      */
-    public void setOutputAmount(int amount) { outputAmount = amount; }
+    public void setOutputAmount(int amount) {
+        outputAmount = amount;
+    }
 
-    /**
-     * The MMOItem that results from the completion of these recipes.
-     */
-    @NotNull final MMOItemTemplate outputItem;
     /**
      * @return The MMOItem that results from the completion of these recipes.
      */
-    @NotNull public MMOItemTemplate getOutputItem() { return outputItem; }
+    @NotNull
+    public MMOItemTemplate getOutputItem() {
+        return outputItem;
+    }
 
     /**
-     * Will the extra gemstones be dropped to the ground?
-     */
-    final boolean dropGemstones;
-    /**
      * Will the enchantments be...??
      */
-    @NotNull final SmithingCombinationType enchantmentTreatment;
-    /**
-     * Will the enchantments be...??
-     */
-    @NotNull public SmithingCombinationType getEnchantmentTreatment() { return enchantmentTreatment; }
+    @NotNull
+    public SmithingCombinationType getEnchantmentTreatment() {
+        return enchantmentTreatment;
+    }
 
     /**
      * @return Will the extra gemstones be dropped to the ground?
      */
-    public boolean isDropGemstones() { return dropGemstones; }
+    public boolean isDropGemstones() {
+        return dropGemstones;
+    }
 
     /**
      * @return How to treat upgrade level combinations?
      */
     @NotNull
-    public SmithingCombinationType getUpgradeTreatment() { return upgradeTreatment; }
-    /**
-     * How to treat upgrade level combinations?
-     */
-    @NotNull final SmithingCombinationType upgradeTreatment;
+    public SmithingCombinationType getUpgradeTreatment() {
+        return upgradeTreatment;
+    }
 
     /**
      * Is this a MMOItem? Well fetch
@@ -253,34 +303,48 @@ public class CustomSmithingRecipe extends MythicRecipeOutput {
      * @param item Item Stack to transform
      * @return a MMOItem if appropriate.
      */
-    @Nullable MMOItem fromStack(@Nullable ItemStack item) {
+    @Nullable
+    MMOItem fromStack(@Nullable ItemStack item) {
 
-        if (item == null) { return null; } else {
+        if (item == null) {
+            return null;
+        } else {
 
             NBTItem itemNBT = NBTItem.get(item);
-            if (MMOItems.getType(itemNBT) != null) { return new LiveMMOItem(item); } }
+            if (MMOItems.getType(itemNBT) != null) {
+                return new LiveMMOItem(item);
+            }
+        }
 
-        return null; }
+        return null;
+    }
+
     /**
      * Is there at least one item in the first side inventory? Well git
      *
      * @param b Blueprint
      * @return an ItemStack if any exists
      */
-    @Nullable ItemStack firstFromFirstSide(@NotNull MythicBlueprintInventory b) {
+    @Nullable
+    ItemStack firstFromFirstSide(@NotNull MythicBlueprintInventory b) {
 
         // No sides?
-        if (b.getSideInventoryNames().size() == 0) { return null; }
+        if (b.getSideInventoryNames().size() == 0) {
+            return null;
+        }
 
         // Get
-        return b.getSideInventory(b.getSideInventoryNames().get(0)).getFirst(); }
+        return b.getSideInventory(b.getSideInventoryNames().get(0)).getFirst();
+    }
 
     @NotNull
     @Override
     public MythicRecipeInventory applyDisplay(@NotNull MythicBlueprintInventory mythicRecipeInventory, @NotNull InventoryClickEvent eventTrigger, @NotNull VanillaInventoryMapping mapping) {
 
         // Not supported
-        if (!(eventTrigger.getWhoClicked() instanceof Player)) { return mythicRecipeInventory.getResultInventory(); }
+        if (!(eventTrigger.getWhoClicked() instanceof Player)) {
+            return mythicRecipeInventory.getResultInventory();
+        }
 
         // Get the two combinant items
         MythicBlueprintInventory original = mapping.extractFrom(eventTrigger.getView().getTopInventory());
@@ -308,7 +372,9 @@ public class CustomSmithingRecipe extends MythicRecipeOutput {
          * Did anyone cancel it? Well I guess we'll touch nothing then, but you also cant craft this item >:I
          */
         eventTrigger.setCancelled(true);
-        if (!(eventTrigger.getWhoClicked() instanceof Player)) { return; }
+        if (!(eventTrigger.getWhoClicked() instanceof Player)) {
+            return;
+        }
         Player player = (Player) eventTrigger.getWhoClicked();
 
         // Get the two combinant items
@@ -361,7 +427,9 @@ public class CustomSmithingRecipe extends MythicRecipeOutput {
 
             // Get the zeroth entry, which will be put in the players cursor >:o
             ItemStack cursor = resultInventory.getItemAt(map.getResultWidth(eventTrigger.getSlot()), map.getResultHeight(eventTrigger.getSlot()));
-            if (cursor == null) { cursor = new ItemStack(Material.AIR); }
+            if (cursor == null) {
+                cursor = new ItemStack(Material.AIR);
+            }
             ItemStack actualCursor = cursor.clone();
 
             /*
@@ -378,7 +446,9 @@ public class CustomSmithingRecipe extends MythicRecipeOutput {
                     int maxAmount = actualCursor.getMaxStackSize();
 
                     // Cancel if their sum would exceed the max
-                    if (cAmount + aAmount > maxAmount) { return; }
+                    if (cAmount + aAmount > maxAmount) {
+                        return;
+                    }
 
                     // All right recalculate amount then
                     actualCursor.setAmount(cAmount + aAmount);
@@ -451,7 +521,7 @@ public class CustomSmithingRecipe extends MythicRecipeOutput {
                 MRORecipe.distributeInInventoryOrDrop(eventTrigger.getWhoClicked().getInventory(), inputConsumptionOverflow, eventTrigger.getWhoClicked().getLocation());
             }
 
-        // Player is crafting to completion - move to inventory style.
+            // Player is crafting to completion - move to inventory style.
         } else {
 
             /*
@@ -511,17 +581,20 @@ public class CustomSmithingRecipe extends MythicRecipeOutput {
                     //RR//io.lumine.mythic.lib.api.crafting.recipes.MythicCraftingManager.log("\u00a78Result \u00a7cIC\u00a77 Iteration Cancelled: \u00a7cNo Inventory Space");
                     break;
 
-                // Prepare for next iteration
+                    // Prepare for next iteration
                 } else {
 
                     // Store changes
                     modifiedInventory = localIterationResult;
                     trueTimes = t;
                     //RR//io.lumine.mythic.lib.api.crafting.recipes.MythicCraftingManager.log("\u00a78Result \u00a7aIV\u00a77 Iteration Validated, total times: \u00a7a" + trueTimes);
-                } }
+                }
+            }
 
             // True times is 0? Cancel this.
-            if (trueTimes == 0) { return; }
+            if (trueTimes == 0) {
+                return;
+            }
 
             // All right apply
             times = trueTimes;
@@ -532,7 +605,8 @@ public class CustomSmithingRecipe extends MythicRecipeOutput {
                 //RR//io.lumine.mythic.lib.api.crafting.recipes.MythicCraftingManager.log("\u00a78Result \u00a79IS\u00a77 Putting \u00a7b@" + s + "\u00a77 a " + SilentNumbers.getItemName(putt));
 
                 // Set
-                inven.setItem(s, putt); }
+                inven.setItem(s, putt);
+            }
 
             // Consume ingredients
             consumeIngredients(otherInventories, cache, eventTrigger.getInventory(), map, times);
@@ -546,19 +620,23 @@ public class CustomSmithingRecipe extends MythicRecipeOutput {
                     droppedGemstones.getValue().toArray(new ItemStack[0])).values()) {
 
                 // Not air right
-                if (SilentNumbers.isAir(drop)) { continue; }
+                if (SilentNumbers.isAir(drop)) {
+                    continue;
+                }
 
                 // Drop to the world
-                player.getWorld().dropItem(player.getLocation(), drop); } }
+                player.getWorld().dropItem(player.getLocation(), drop);
+            }
+        }
     }
 
     /**
-     * @param itemStack The item you are upgrading
+     * @param itemStack  The item you are upgrading
      * @param ingotStack The second item you are upgrading
-     *
      * @return What would the output be if combined with this other MMOItem?
      */
-    @NotNull MMOItem fromCombinationWith(@Nullable ItemStack itemStack, @Nullable ItemStack ingotStack, @NotNull Player p, @Nullable Ref<ArrayList<ItemStack>> rem) {
+    @NotNull
+    MMOItem fromCombinationWith(@Nullable ItemStack itemStack, @Nullable ItemStack ingotStack, @NotNull Player p, @Nullable Ref<ArrayList<ItemStack>> rem) {
 
         // Read MMOItems
         MMOItem item = fromStack(itemStack);
@@ -598,7 +676,8 @@ public class CustomSmithingRecipe extends MythicRecipeOutput {
 
                 // Just keep as 'remaining'
                 remainingStones.add(m.newBuilder().build());
-                continue; }
+                continue;
+            }
 
             // Ok proceed
             GemStone asGem = new GemStone(p, m.newBuilder().buildNBT());
@@ -613,10 +692,12 @@ public class CustomSmithingRecipe extends MythicRecipeOutput {
                 gen = res.getResultAsMMOItem();
                 //GEM// MMOItems.log("\u00a7a W\u00a77 Socketed! ");
 
-            // Didn't fit L
+                // Didn't fit L
             } else {
                 //GEM// MMOItems.log("\u00a7e !!\u00a77 Dropping: Does not fit socket ");
-                remainingStones.add(m.newBuilder().build()); } }
+                remainingStones.add(m.newBuilder().build());
+            }
+        }
 
         // Set value
         Ref.setValue(rem, remainingStones);
@@ -626,7 +707,10 @@ public class CustomSmithingRecipe extends MythicRecipeOutput {
         if (getEnchantmentTreatment() != SmithingCombinationType.NONE) {
 
             // Get enchantment data
-            EnchantListData genEnchants = (EnchantListData) gen.getData(ItemStats.ENCHANTS); if (genEnchants == null) { genEnchants = (EnchantListData) ItemStats.ENCHANTS.getClearStatData(); }
+            EnchantListData genEnchants = (EnchantListData) gen.getData(ItemStats.ENCHANTS);
+            if (genEnchants == null) {
+                genEnchants = (EnchantListData) ItemStats.ENCHANTS.getClearStatData();
+            }
             EnchantListData itemEnchants = item != null ? (EnchantListData) item.getData(ItemStats.ENCHANTS) : Enchants.fromVanilla(itemStack);
             EnchantListData ingotEnchants = ingot != null ? (EnchantListData) ingot.getData(ItemStats.ENCHANTS) : Enchants.fromVanilla(ingotStack);
 
@@ -642,10 +726,29 @@ public class CustomSmithingRecipe extends MythicRecipeOutput {
                 //ECH// MMOItems.log("§8Smith §8ENCH§7 Gen:\u00a73 " + genLevel + "\u00a77, Item:\u00a7e " + itemLevel + "\u00a77, Ingot:\u00a7b " + ingotLevel);
 
                 switch (getEnchantmentTreatment()) {
-                    case ADDITIVE: finalLevel = itemLevel + ingotLevel + genLevel; break;
-                    case MAXIMUM: if (genLevel == 0) { genLevel = itemLevel; } finalLevel = Math.max(genLevel, Math.max(itemLevel, ingotLevel)); break;
-                    case MINIMUM: if (genLevel == 0) { genLevel = itemLevel; } finalLevel = Math.max(genLevel, Math.min(itemLevel, ingotLevel)); break;
-                    default:  if (genLevel == 0) { finalLevel = SilentNumbers.ceil((itemLevel + ingotLevel) / 2D); } else { finalLevel = SilentNumbers.ceil((itemLevel + ingotLevel + genLevel) / 3D); }  break; }
+                    case ADDITIVE:
+                        finalLevel = itemLevel + ingotLevel + genLevel;
+                        break;
+                    case MAXIMUM:
+                        if (genLevel == 0) {
+                            genLevel = itemLevel;
+                        }
+                        finalLevel = Math.max(genLevel, Math.max(itemLevel, ingotLevel));
+                        break;
+                    case MINIMUM:
+                        if (genLevel == 0) {
+                            genLevel = itemLevel;
+                        }
+                        finalLevel = Math.max(genLevel, Math.min(itemLevel, ingotLevel));
+                        break;
+                    default:
+                        if (genLevel == 0) {
+                            finalLevel = SilentNumbers.ceil((itemLevel + ingotLevel) / 2D);
+                        } else {
+                            finalLevel = SilentNumbers.ceil((itemLevel + ingotLevel + genLevel) / 3D);
+                        }
+                        break;
+                }
 
                 //ECH// MMOItems.log("§8Smith §8ENCH§7 Result: \u00a7a" + finalLevel);
                 genEnchants.addEnchant(observedEnchantment, finalLevel);
@@ -659,18 +762,34 @@ public class CustomSmithingRecipe extends MythicRecipeOutput {
         if (gen.hasUpgradeTemplate() && getUpgradeTreatment() != SmithingCombinationType.NONE) {
 
             // All right get the levels of them both
-            int itemLevel = 0; if (item != null) { itemLevel = item.getUpgradeLevel(); }
-            int ingotLevel = 0; if (ingot != null) { ingotLevel = ingot.getUpgradeLevel(); }
+            int itemLevel = 0;
+            if (item != null) {
+                itemLevel = item.getUpgradeLevel();
+            }
+            int ingotLevel = 0;
+            if (ingot != null) {
+                ingotLevel = ingot.getUpgradeLevel();
+            }
             int finalLevel;
 
             switch (getUpgradeTreatment()) {
-                case ADDITIVE: finalLevel = itemLevel + ingotLevel; break;
-                case MAXIMUM: finalLevel = Math.max(itemLevel, ingotLevel); break;
-                case MINIMUM: finalLevel = Math.min(itemLevel, ingotLevel); break;
-                default: finalLevel = SilentNumbers.ceil((itemLevel + ingotLevel) / 2D); break; }
+                case ADDITIVE:
+                    finalLevel = itemLevel + ingotLevel;
+                    break;
+                case MAXIMUM:
+                    finalLevel = Math.max(itemLevel, ingotLevel);
+                    break;
+                case MINIMUM:
+                    finalLevel = Math.min(itemLevel, ingotLevel);
+                    break;
+                default:
+                    finalLevel = SilentNumbers.ceil((itemLevel + ingotLevel) / 2D);
+                    break;
+            }
 
             // Upgrade yes
-            gen.getUpgradeTemplate().upgradeTo(gen, Math.min(finalLevel, gen.getMaxUpgradeLevel())); }
+            gen.getUpgradeTemplate().upgradeTo(gen, Math.min(finalLevel, gen.getMaxUpgradeLevel()));
+        }
 
         // That's it
         return gen;

@@ -12,17 +12,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Random;
 
 public class CustomBlock {
+    private static final Random RANDOM = new Random();
     private final int id;
     private final MushroomState state;
-
     private final MMOItem mmoitem;
-
     @Nullable
     private final WorldGenTemplate template;
     private final int minExp, maxExp, requiredPower;
     private final boolean requirePowerToBreak;
-
-    private static final Random RANDOM = new Random();
 
     public CustomBlock(MushroomState state, MMOItem mmoitem) {
         this.mmoitem = mmoitem;

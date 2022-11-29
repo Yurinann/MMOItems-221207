@@ -4,7 +4,6 @@ import io.lumine.mythic.lib.MythicLib;
 import io.lumine.mythic.lib.api.util.AltChar;
 import io.lumine.mythic.lib.skill.trigger.TriggerType;
 import net.Indyuce.mmoitems.MMOItems;
-import net.Indyuce.mmoitems.util.MMOUtils;
 import net.Indyuce.mmoitems.api.ConfigFile;
 import net.Indyuce.mmoitems.api.ReforgeOptions;
 import net.Indyuce.mmoitems.api.item.util.ConfigItem;
@@ -15,6 +14,7 @@ import net.Indyuce.mmoitems.skill.RegisteredSkill;
 import net.Indyuce.mmoitems.stat.GemUpgradeScaling;
 import net.Indyuce.mmoitems.stat.LuteAttackEffectStat.LuteAttackEffect;
 import net.Indyuce.mmoitems.stat.StaffSpiritStat.StaffSpirit;
+import net.Indyuce.mmoitems.util.MMOUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -34,9 +34,8 @@ import java.util.logging.Level;
 
 public class ConfigManager implements Reloadable {
 
-    // cached config files
-    private ConfigFile abilities, loreFormat, messages, potionEffects, stats, attackEffects, dynLore;
-
+    private static final String[] fileNames = {"abilities", "messages", "potion-effects", "stats", "items", "attack-effects"};
+    private static final String[] languages = {"french", "chinese", "spanish", "russian", "polish"};
     // cached config options
     // TODO remove ability-player-damage and add some WG flag or something
     public boolean abilityPlayerDamage, dodgeKnockbackEnabled, replaceMushroomDrops, worldGenEnabled, upgradeRequirementsCheck, keepSoulboundOnDeath, rerollOnItemUpdate;
@@ -44,9 +43,8 @@ public class ConfigManager implements Reloadable {
     public double dodgeKnockbackForce, soulboundBaseDamage, soulboundPerLvlDamage, levelSpread;
     public NumericStatFormula defaultItemCapacity;
     public ReforgeOptions revisionOptions, phatLootsOptions;
-
-    private static final String[] fileNames = {"abilities", "messages", "potion-effects", "stats", "items", "attack-effects"};
-    private static final String[] languages = {"french", "chinese", "spanish", "russian", "polish"};
+    // cached config files
+    private ConfigFile abilities, loreFormat, messages, potionEffects, stats, attackEffects, dynLore;
 
     public ConfigManager() {
         mkdir("layouts");

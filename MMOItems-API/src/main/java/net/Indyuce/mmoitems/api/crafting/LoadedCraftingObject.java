@@ -30,16 +30,16 @@ public class LoadedCraftingObject<C> {
         return id;
     }
 
-    public void setDisplay(ConditionalDisplay display) {
-        this.display = display;
-    }
-
     public boolean hasDisplay() {
         return display != null;
     }
 
     public ConditionalDisplay getDisplay() {
         return display;
+    }
+
+    public void setDisplay(ConditionalDisplay display) {
+        this.display = display;
     }
 
     public C load(MMOLineConfig config) {

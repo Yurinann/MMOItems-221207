@@ -24,13 +24,14 @@ import java.util.Arrays;
 
 /**
  * Inventory displayed when enabling the item updater.
- * @see RevisionID
- * @see MMOItemReforger
  *
  * @author Gunging
+ * @see RevisionID
+ * @see MMOItemReforger
  */
 public class RevisionInventory extends EditionInventory {
 
+    static final String REVISION = "\u00a76Revision ID";
     static ItemStack name;
     static ItemStack lore;
     static ItemStack enchantments;
@@ -38,10 +39,7 @@ public class RevisionInventory extends EditionInventory {
     static ItemStack gemstones;
     static ItemStack soulbind;
     static ItemStack external;
-
     static ItemStack revisionID;
-
-    static final String REVISION = "\u00a76Revision ID";
 
     public RevisionInventory(@NotNull Player player, @NotNull MMOItemTemplate template) {
         super(player, template);
@@ -85,7 +83,9 @@ public class RevisionInventory extends EditionInventory {
         }
     }
 
-    @NotNull @Override public Inventory getInventory() {
+    @NotNull
+    @Override
+    public Inventory getInventory() {
         Inventory inv = Bukkit.createInventory(this, 54, "Revision Manager");
 
         // Place corresponding item stacks in there
@@ -141,13 +141,13 @@ public class RevisionInventory extends EditionInventory {
                     // Add mentioning if enabled
                     inv.setItem(i, addLore(which, "", "\u00a78Enabled (in config)? \u00a76" + enable.toString()));
 
-                // If ID is enabled
+                    // If ID is enabled
                 } else if (id != null) {
 
                     // Add mentioning if enabled
                     inv.setItem(i, addLore(which, "", "\u00a78Current Value: \u00a76" + id));
 
-                // Neither enable nor ID are defined
+                    // Neither enable nor ID are defined
                 } else {
 
                     // Add
@@ -169,7 +169,9 @@ public class RevisionInventory extends EditionInventory {
         event.setCancelled(true);
 
         // If the click did not happen in the correct inventory, or the item is not clickable
-        if (event.getInventory() != event.getClickedInventory() || !MMOUtils.isMetaItem(item, false)) { return; }
+        if (event.getInventory() != event.getClickedInventory() || !MMOUtils.isMetaItem(item, false)) {
+            return;
+        }
 
         // Is the player clicking the revision ID thing?
         if (item.getItemMeta().getDisplayName().equals(REVISION)) {
@@ -183,7 +185,7 @@ public class RevisionInventory extends EditionInventory {
                 // Decrease by 1, but never before 1
                 id = Math.max(id - 1, 1);
 
-            // Any other click
+                // Any other click
             } else {
 
                 // Increase by 1 until the ultimate maximum
@@ -200,12 +202,15 @@ public class RevisionInventory extends EditionInventory {
         }
     }
 
-    @NotNull ItemStack addLore(@NotNull ItemStack iSource, String... extraLines){
+    @NotNull
+    ItemStack addLore(@NotNull ItemStack iSource, String... extraLines) {
 
         // Get its lore
         ArrayList<String> iLore = new ArrayList<>();
         ItemMeta iMeta = iSource.getItemMeta();
-        if (iMeta != null && iMeta.getLore() != null) {iLore = new ArrayList<>(iMeta.getLore()); }
+        if (iMeta != null && iMeta.getLore() != null) {
+            iLore = new ArrayList<>(iMeta.getLore());
+        }
 
         // Add lines
         iLore.addAll(Arrays.asList(extraLines));

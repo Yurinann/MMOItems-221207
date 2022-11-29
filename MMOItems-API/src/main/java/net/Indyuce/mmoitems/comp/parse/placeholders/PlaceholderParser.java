@@ -4,5 +4,5 @@ import org.bukkit.OfflinePlayer;
 
 @Deprecated
 public interface PlaceholderParser {
-	String parse(OfflinePlayer player, String string);
+    String parse(OfflinePlayer player, String string);
 }

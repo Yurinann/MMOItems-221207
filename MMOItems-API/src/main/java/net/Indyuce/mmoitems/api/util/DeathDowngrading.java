@@ -29,12 +29,12 @@ public class DeathDowngrading {
 
     /**
      * This will go through the following steps:
-     *
-     *  #1 Evaluate the list of equipped items {@link InventoryUpdateHandler#getEquipped()} to
-     *     find those that can be death-downgraded.
-     *
-     *
-     *  #2 Roll for death downgrade chances, downgrading the items
+     * <p>
+     * #1 Evaluate the list of equipped items {@link InventoryUpdateHandler#getEquipped()} to
+     * find those that can be death-downgraded.
+     * <p>
+     * <p>
+     * #2 Roll for death downgrade chances, downgrading the items
      *
      * @param player Player whose inventory is to be death-downgraded.
      */
@@ -46,7 +46,9 @@ public class DeathDowngrading {
         // Get total downgrade chance, anything less than zero is invalid
         double deathChance = data.getStats().getStat(ItemStats.DOWNGRADE_ON_DEATH_CHANCE);
         //DET//MMOItems.log("\u00a78DETH \u00a7cDG\u00a77 Current chance:\u00a7b " + deathChance);
-        if (deathChance <= 0) { return; }
+        if (deathChance <= 0) {
+            return;
+        }
 
         // Make sure the equipped items list is up to date and retrieve it
         data.updateInventory();
@@ -57,7 +59,9 @@ public class DeathDowngrading {
         for (EquippedItem playerItem : items) {
 
             // Cannot downgrade? skip
-            if (!canDeathDowngrade(playerItem)) { continue; }
+            if (!canDeathDowngrade(playerItem)) {
+                continue;
+            }
 
             // Okay explore stat
             equipped.add((EditableEquippedItem) playerItem);
@@ -67,7 +71,8 @@ public class DeathDowngrading {
         // Nothing to perform operations? Snooze
         if (equipped.size() == 0) {
             //DET//MMOItems.log("\u00a78DETH \u00a7cDG\u00a77 No items to downgrade. ");
-            return; }
+            return;
+        }
 
         // Create random
         Random random = new Random();
@@ -113,16 +118,14 @@ public class DeathDowngrading {
     }
 
     /**
-     * @param allItems Absolutely all the items equipped by the player. This method will only affect
-     *                 those that (A) can be downgraded, and (B) RNG roll to be downgraded.
-     *
-     * @param player Player whose items are being downgraded.
-     *
+     * @param allItems    Absolutely all the items equipped by the player. This method will only affect
+     *                    those that (A) can be downgraded, and (B) RNG roll to be downgraded.
+     * @param player      Player whose items are being downgraded.
      * @param deathChance Chance of downgrading one item of the list. Overrollable.
-     *
      * @return The same list of items... but some of them possibly downgraded.
      */
-    @NotNull public static ArrayList<ItemStack> downgradeItems(@NotNull List<ItemStack> allItems, @NotNull Player player, double deathChance) {
+    @NotNull
+    public static ArrayList<ItemStack> downgradeItems(@NotNull List<ItemStack> allItems, @NotNull Player player, double deathChance) {
 
         // List of result and downgrade
         ArrayList<ItemStack> result = new ArrayList<>();
@@ -132,7 +135,9 @@ public class DeathDowngrading {
         for (ItemStack item : allItems) {
 
             // ?? Not that
-            if (SilentNumbers.isAir(item)) { continue; }
+            if (SilentNumbers.isAir(item)) {
+                continue;
+            }
 
             // Downgrade yay or nay
             if (canDeathDowngrade(item)) {
@@ -199,20 +204,23 @@ public class DeathDowngrading {
     /**
      * @param player For some reason I myself dont understand, {@link DurabilityItem} wants
      *               a non-null player to be able to perform durability operations.
-     *
-     * @param item Item to downgrade, make sure to have checked
-     *             {@link #canDeathDowngrade(ItemStack)} before!
-     *
+     * @param item   Item to downgrade, make sure to have checked
+     *               {@link #canDeathDowngrade(ItemStack)} before!
      * @return This item but downgraded if it was possible.
      */
-    @NotNull public static ItemStack downgrade(@NotNull ItemStack item, @NotNull Player player) {
+    @NotNull
+    public static ItemStack downgrade(@NotNull ItemStack item, @NotNull Player player) {
 
         // No Item Meta I sleep
-        if (SilentNumbers.isAir(item) || !item.getType().isItem()) { return item; }
+        if (SilentNumbers.isAir(item) || !item.getType().isItem()) {
+            return item;
+        }
 
         // Must be a MMOItem
         NBTItem asNBT = NBTItem.get(item);
-        if (!asNBT.hasType()) { return item; }
+        if (!asNBT.hasType()) {
+            return item;
+        }
 
         // Delegate to MMOItem Method
         return downgrade(new LiveMMOItem(asNBT), player);
@@ -221,13 +229,12 @@ public class DeathDowngrading {
     /**
      * @param player For some reason I myself dont understand, {@link DurabilityItem} wants
      *               a non-null player to be able to perform durability operations.
-     *
-     * @param mmo Item to downgrade, make sure to have checked
-     *             {@link #canDeathDowngrade(MMOItem)} before!
-     *
+     * @param mmo    Item to downgrade, make sure to have checked
+     *               {@link #canDeathDowngrade(MMOItem)} before!
      * @return This item but downgraded if it was possible.
      */
-    @NotNull public static ItemStack downgrade(@NotNull LiveMMOItem mmo, @NotNull Player player) {
+    @NotNull
+    public static ItemStack downgrade(@NotNull LiveMMOItem mmo, @NotNull Player player) {
 
         mmo.getUpgradeTemplate().upgradeTo(mmo, mmo.getUpgradeLevel() - 1);
 
@@ -240,7 +247,8 @@ public class DeathDowngrading {
         // Perform durability operations
         if (dur.getDurability() != dur.getMaxDurability()) {
             dur.addDurability(dur.getMaxDurability());
-            bakedItem.setItemMeta(dur.toItem().getItemMeta());}
+            bakedItem.setItemMeta(dur.toItem().getItemMeta());
+        }
 
         // Send downgrading message
         Message.DEATH_DOWNGRADING.format(ChatColor.RED, "#item#", MMOUtils.getDisplayName(mmo.getNBT().getItem())).send(player);
@@ -251,7 +259,6 @@ public class DeathDowngrading {
 
     /**
      * @param player Player to check their death downgrade chance
-     *
      * @return The death downgrade chance of the player
      */
     public static double getDeathDowngradeChance(@NotNull Player player) {
@@ -265,21 +272,23 @@ public class DeathDowngrading {
 
     /**
      * @param playerItem Equipped Item you want to know if it can be death downgraded
-     *
      * @return If this is an instance of {@link EditableEquippedItem} and meets {@link #canDeathDowngrade(MMOItem)}
      */
     @Contract("null->false")
     public static boolean canDeathDowngrade(@Nullable EquippedItem playerItem) {
 
         // Null
-        if (playerItem == null) { return false; }
+        if (playerItem == null) {
+            return false;
+        }
         //DET//playerItem.getItem().hasData(ItemStats.NAME);
         //DET//MMOItems.log("\u00a78DETH \u00a7cDG\u00a77 Item:\u00a7b " + playerItem.getItem().getData(ItemStats.NAME));
 
         // Cannot perform operations of items that are uneditable
         if (!(playerItem instanceof EditableEquippedItem)) {
             //DET//MMOItems.log("\u00a78DETH \u00a7cDG\u00a77 Not equippable. \u00a7cCancel");
-            return false; }
+            return false;
+        }
 
         // Delegate to MMOItem Method
         return canDeathDowngrade(playerItem.getCached());
@@ -287,20 +296,23 @@ public class DeathDowngrading {
 
     /**
      * @param playerItem Item you want to know if it can be death downgraded
-     *
      * @return If this item is an MMOItem and meets {@link #canDeathDowngrade(MMOItem)}
      */
     @Contract("null->false")
     public static boolean canDeathDowngrade(@Nullable ItemStack playerItem) {
 
         // Null
-        if (SilentNumbers.isAir(playerItem) || !playerItem.getType().isItem()) { return false; }
+        if (SilentNumbers.isAir(playerItem) || !playerItem.getType().isItem()) {
+            return false;
+        }
         //DET//playerItem.getItem().hasData(ItemStats.NAME);
         //DET//MMOItems.log("\u00a78DETH \u00a7cDG\u00a77 Item:\u00a7b " + playerItem.getItem().getData(ItemStats.NAME));
 
         // Get NBT
         NBTItem asNBT = NBTItem.get(playerItem);
-        if (!asNBT.hasType()) { return false; }
+        if (!asNBT.hasType()) {
+            return false;
+        }
 
         // Delegate to MMOItem Method
         return canDeathDowngrade(new VolatileMMOItem(asNBT));
@@ -308,26 +320,30 @@ public class DeathDowngrading {
 
     /**
      * @param playerItem MMOItem you want to know if it can be death downgraded
-     *
      * @return If this item has {@link ItemStats#DOWNGRADE_ON_DEATH} enabled, and
-     *         has an upgrade template, and hasnt reached its minimum upgrades.
+     * has an upgrade template, and hasnt reached its minimum upgrades.
      */
     @Contract("null->false")
     public static boolean canDeathDowngrade(@Nullable MMOItem playerItem) {
-        if (playerItem == null) { return false; }
+        if (playerItem == null) {
+            return false;
+        }
 
         // Not downgradeable on death? Snooze
         if (!playerItem.hasData(ItemStats.DOWNGRADE_ON_DEATH)) {
             //DET//MMOItems.log("\u00a78DETH \u00a7cDG\u00a77 Not Downgradeable. \u00a7cCancel");
-            return false; }
+            return false;
+        }
 
         // No upgrade template no snooze
-        if(!playerItem.hasData(ItemStats.UPGRADE)) {
+        if (!playerItem.hasData(ItemStats.UPGRADE)) {
             //DET//MMOItems.log("\u00a78DETH \u00a7cDG\u00a77 Not Upgradeable. \u00a7cCancel");
-            return false; }
+            return false;
+        }
         if (!playerItem.hasUpgradeTemplate()) {
             //DET//MMOItems.log("\u00a78DETH \u00a7cDG\u00a77 Null Template. \u00a7cCancel");
-            return false; }
+            return false;
+        }
 
         // If it can be downgraded by one level...
         UpgradeData upgradeData = (UpgradeData) playerItem.getData(ItemStats.UPGRADE);

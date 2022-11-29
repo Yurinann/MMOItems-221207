@@ -12,73 +12,73 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WorldGenTemplate {
-	private final String id;
-	private final double chunkChance;
-	private final int minDepth, maxDepth, veinSize, veinCount;
+    private final String id;
+    private final double chunkChance;
+    private final int minDepth, maxDepth, veinSize, veinCount;
 
-	private final List<Material> replaceable = new ArrayList<>();
-	private final List<Material> bordering = new ArrayList<>();
-	private final List<Material> notBordering = new ArrayList<>();
-	private final List<String> worldWhitelist = new ArrayList<>(), worldBlacklist = new ArrayList<>();
-	private final List<String> biomeWhitelist = new ArrayList<>(), biomeBlacklist = new ArrayList<>();
-	private final boolean slimeChunk;
+    private final List<Material> replaceable = new ArrayList<>();
+    private final List<Material> bordering = new ArrayList<>();
+    private final List<Material> notBordering = new ArrayList<>();
+    private final List<String> worldWhitelist = new ArrayList<>(), worldBlacklist = new ArrayList<>();
+    private final List<String> biomeWhitelist = new ArrayList<>(), biomeBlacklist = new ArrayList<>();
+    private final boolean slimeChunk;
 
-	public WorldGenTemplate(ConfigurationSection config) {
-		Validate.notNull(config, "Could not read gen template config");
+    public WorldGenTemplate(ConfigurationSection config) {
+        Validate.notNull(config, "Could not read gen template config");
 
-		id = config.getName().toLowerCase().replace(" ", "-").replace("_", "-");
-		config.getStringList("replace").forEach(str -> replaceable.add(Material.valueOf(str.toUpperCase().replace("-", "_").replace(" ", "_"))));
-		config.getStringList("bordering").forEach(str -> bordering.add(Material.valueOf(str.toUpperCase().replace("-", "_").replace(" ", "_"))));
-		config.getStringList("not-bordering").forEach(str -> notBordering.add(Material.valueOf(str.toUpperCase().replace("-", "_").replace(" ", "_"))));
-		
-		for (String world : config.getStringList("worlds")) {
-			(world.startsWith("!") ? worldBlacklist : worldWhitelist).add(world.toLowerCase().replace("_", "-"));
-		}
-		for (String biome : config.getStringList("biomes")) {
-			(biome.startsWith("!") ? biomeBlacklist : biomeWhitelist).add(biome.toUpperCase().replace("-", "_").replace(" ", "_"));
-		}
-		chunkChance = config.getDouble("chunk-chance");
-		slimeChunk = config.getBoolean("slime-chunk", false);
+        id = config.getName().toLowerCase().replace(" ", "-").replace("_", "-");
+        config.getStringList("replace").forEach(str -> replaceable.add(Material.valueOf(str.toUpperCase().replace("-", "_").replace(" ", "_"))));
+        config.getStringList("bordering").forEach(str -> bordering.add(Material.valueOf(str.toUpperCase().replace("-", "_").replace(" ", "_"))));
+        config.getStringList("not-bordering").forEach(str -> notBordering.add(Material.valueOf(str.toUpperCase().replace("-", "_").replace(" ", "_"))));
 
-		String[] depth = config.getString("depth").split("=");
-		minDepth = Integer.parseInt(depth[0]);
-		maxDepth = Integer.parseInt(depth[1]);
+        for (String world : config.getStringList("worlds")) {
+            (world.startsWith("!") ? worldBlacklist : worldWhitelist).add(world.toLowerCase().replace("_", "-"));
+        }
+        for (String biome : config.getStringList("biomes")) {
+            (biome.startsWith("!") ? biomeBlacklist : biomeWhitelist).add(biome.toUpperCase().replace("-", "_").replace(" ", "_"));
+        }
+        chunkChance = config.getDouble("chunk-chance");
+        slimeChunk = config.getBoolean("slime-chunk", false);
 
-		//Validate.isTrue(minDepth >= 0, "Min depth must be greater than 0");
-		//Validate.isTrue(maxDepth < 256, "Max depth must be at most 255");
+        String[] depth = config.getString("depth").split("=");
+        minDepth = Integer.parseInt(depth[0]);
+        maxDepth = Integer.parseInt(depth[1]);
 
-		veinSize = config.getInt("vein-size");
-		veinCount = config.getInt("vein-count");
+        //Validate.isTrue(minDepth >= 0, "Min depth must be greater than 0");
+        //Validate.isTrue(maxDepth < 256, "Max depth must be at most 255");
 
-		Validate.isTrue(veinSize > 0 && veinCount > 0, "Vein size and count must be at least 1");
-	}
+        veinSize = config.getInt("vein-size");
+        veinCount = config.getInt("vein-count");
 
-	public String getId() {
-		return id;
-	}
+        Validate.isTrue(veinSize > 0 && veinCount > 0, "Vein size and count must be at least 1");
+    }
 
-	public double getChunkChance() {
-		return chunkChance;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public int getVeinSize() {
-		return veinSize;
-	}
+    public double getChunkChance() {
+        return chunkChance;
+    }
 
-	public int getVeinCount() {
-		return veinCount;
-	}
+    public int getVeinSize() {
+        return veinSize;
+    }
 
-	public int getMinDepth() {
-		return minDepth;
-	}
+    public int getVeinCount() {
+        return veinCount;
+    }
 
-	public int getMaxDepth() {
-		return maxDepth;
-	}
+    public int getMinDepth() {
+        return minDepth;
+    }
 
-	public boolean canGenerateInWorld(World w) {
-	    // check world list
+    public int getMaxDepth() {
+        return maxDepth;
+    }
+
+    public boolean canGenerateInWorld(World w) {
+        // check world list
         String world = w.getName().toLowerCase().replace("_", "-");
         if (!worldWhitelist.isEmpty() && !worldWhitelist.contains(world)) {
             return false;
@@ -87,85 +87,85 @@ public class WorldGenTemplate {
             return false;
         }
         return true;
-	}
-	
-	public boolean canGenerate(Location pos) {
+    }
 
-		// check biome list
-		Biome biome = pos.getWorld().getBiome(pos.getBlockX(), pos.getBlockY(), pos.getBlockZ());
-		if (!biomeWhitelist.isEmpty() && !biomeWhitelist.contains(biome.name())) {
-			return false;
-		}
-		if (!biomeBlacklist.isEmpty() && biomeBlacklist.contains(biome.name())) {
-			return false;
-		}
-		
-		// check extra options
-		if (slimeChunk && !pos.getChunk().isSlimeChunk()) {
-			return false;
-		}
-		
-		if(!bordering.isEmpty()) {
-		    if(!checkIfBorderingBlocks(pos)) {
-		        return false;
-		    }
-		}
-		
-		if(!notBordering.isEmpty()) {
-			return checkIfNotBorderingBlocks(pos);
+    public boolean canGenerate(Location pos) {
+
+        // check biome list
+        Biome biome = pos.getWorld().getBiome(pos.getBlockX(), pos.getBlockY(), pos.getBlockZ());
+        if (!biomeWhitelist.isEmpty() && !biomeWhitelist.contains(biome.name())) {
+            return false;
         }
-		
-		// can generate if no restrictions applied
-		return true;
-	}
+        if (!biomeBlacklist.isEmpty() && biomeBlacklist.contains(biome.name())) {
+            return false;
+        }
 
-	public boolean canReplace(Material type) {
-		return replaceable.isEmpty() || replaceable.contains(type);
-	}
-	
-	public boolean canBorder(Material type) {
+        // check extra options
+        if (slimeChunk && !pos.getChunk().isSlimeChunk()) {
+            return false;
+        }
+
+        if (!bordering.isEmpty()) {
+            if (!checkIfBorderingBlocks(pos)) {
+                return false;
+            }
+        }
+
+        if (!notBordering.isEmpty()) {
+            return checkIfNotBorderingBlocks(pos);
+        }
+
+        // can generate if no restrictions applied
+        return true;
+    }
+
+    public boolean canReplace(Material type) {
+        return replaceable.isEmpty() || replaceable.contains(type);
+    }
+
+    public boolean canBorder(Material type) {
         return bordering.isEmpty() || bordering.contains(type);
     }
-    
+
     public boolean checkIfBorderingBlocks(Location pos) {
-        if(!canBorder(pos.getBlock().getRelative(BlockFace.NORTH).getType())) {
+        if (!canBorder(pos.getBlock().getRelative(BlockFace.NORTH).getType())) {
             return false;
         }
-        if(!canBorder(pos.getBlock().getRelative(BlockFace.EAST).getType())) {
+        if (!canBorder(pos.getBlock().getRelative(BlockFace.EAST).getType())) {
             return false;
         }
-        if(!canBorder(pos.getBlock().getRelative(BlockFace.SOUTH).getType())) {
+        if (!canBorder(pos.getBlock().getRelative(BlockFace.SOUTH).getType())) {
             return false;
         }
-        if(!canBorder(pos.getBlock().getRelative(BlockFace.WEST).getType())) {
+        if (!canBorder(pos.getBlock().getRelative(BlockFace.WEST).getType())) {
             return false;
         }
-        if(!canBorder(pos.getBlock().getRelative(BlockFace.UP).getType())) {
+        if (!canBorder(pos.getBlock().getRelative(BlockFace.UP).getType())) {
             return false;
         }
-		return canBorder(pos.getBlock().getRelative(BlockFace.DOWN).getType());
-	}
-	
-	public boolean canNotBorder(Material type) {
+        return canBorder(pos.getBlock().getRelative(BlockFace.DOWN).getType());
+    }
+
+    public boolean canNotBorder(Material type) {
         return !notBordering.isEmpty() && notBordering.contains(type);
     }
-	
-	public boolean checkIfNotBorderingBlocks(Location pos) {
-        if(canNotBorder(pos.getBlock().getRelative(BlockFace.NORTH).getType())) {
+
+    public boolean checkIfNotBorderingBlocks(Location pos) {
+        if (canNotBorder(pos.getBlock().getRelative(BlockFace.NORTH).getType())) {
             return false;
         }
-        if(canNotBorder(pos.getBlock().getRelative(BlockFace.EAST).getType())) {
+        if (canNotBorder(pos.getBlock().getRelative(BlockFace.EAST).getType())) {
             return false;
         }
-        if(canNotBorder(pos.getBlock().getRelative(BlockFace.SOUTH).getType())) {
+        if (canNotBorder(pos.getBlock().getRelative(BlockFace.SOUTH).getType())) {
             return false;
         }
-        if(canNotBorder(pos.getBlock().getRelative(BlockFace.WEST).getType())) {
+        if (canNotBorder(pos.getBlock().getRelative(BlockFace.WEST).getType())) {
             return false;
         }
-        if(canNotBorder(pos.getBlock().getRelative(BlockFace.UP).getType())) {
+        if (canNotBorder(pos.getBlock().getRelative(BlockFace.UP).getType())) {
             return false;
         }
-		return !canNotBorder(pos.getBlock().getRelative(BlockFace.DOWN).getType());
-	}
+        return !canNotBorder(pos.getBlock().getRelative(BlockFace.DOWN).getType());
+    }
 }

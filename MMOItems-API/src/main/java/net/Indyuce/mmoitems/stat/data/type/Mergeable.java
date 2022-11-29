@@ -30,7 +30,7 @@ public interface Mergeable<S extends StatData> extends StatData {
 
     /**
      * @return <code>true</code> If this is the default state of the StatData, like an enchantment
-     *         list data having 0 enchantments, or a percent bonus double stat having a value of 0.
+     * list data having 0 enchantments, or a percent bonus double stat having a value of 0.
      */
     @Deprecated
     default boolean isClear() {

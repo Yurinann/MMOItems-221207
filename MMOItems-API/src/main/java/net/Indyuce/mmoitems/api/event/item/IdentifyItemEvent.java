@@ -7,41 +7,38 @@ import net.Indyuce.mmoitems.api.player.PlayerData;
 import org.bukkit.event.HandlerList;
 
 public class IdentifyItemEvent extends PlayerDataEvent {
-	private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
 
-	private final VolatileMMOItem consumable;
-	private final NBTItem unidentified;
+    private final VolatileMMOItem consumable;
+    private final NBTItem unidentified;
 
-	/**
-	 * Called when a player tries to identify an item using a consumable
-	 * 
-	 * @param playerData
-	 *            Player identifying the item
-	 * @param consumable
-	 *            Consumable used to identify the item
-	 * @param unidentified
-	 *            Item being identified
-	 */
-	public IdentifyItemEvent(PlayerData playerData, VolatileMMOItem consumable, NBTItem unidentified) {
-		super(playerData);
+    /**
+     * Called when a player tries to identify an item using a consumable
+     *
+     * @param playerData   Player identifying the item
+     * @param consumable   Consumable used to identify the item
+     * @param unidentified Item being identified
+     */
+    public IdentifyItemEvent(PlayerData playerData, VolatileMMOItem consumable, NBTItem unidentified) {
+        super(playerData);
 
-		this.consumable = consumable;
-		this.unidentified = unidentified;
-	}
+        this.consumable = consumable;
+        this.unidentified = unidentified;
+    }
 
-	public VolatileMMOItem getConsumable() {
-		return consumable;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	public NBTItem getUnidentifiedItem() {
-		return unidentified;
-	}
+    public VolatileMMOItem getConsumable() {
+        return consumable;
+    }
 
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    public NBTItem getUnidentifiedItem() {
+        return unidentified;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 }

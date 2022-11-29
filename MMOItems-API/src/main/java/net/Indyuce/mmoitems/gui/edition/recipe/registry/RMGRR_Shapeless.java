@@ -31,13 +31,29 @@ import java.util.ArrayList;
 
 public class RMGRR_Shapeless implements RecipeRegistry {
 
-    @NotNull @Override public String getRecipeTypeName() { return "Shapeless"; }
-    @NotNull @Override public String getRecipeConfigPath() { return "shapeless"; }
+    @NotNull
+    final ItemStack displayListItem = RecipeMakerGUI.rename(new ItemStack(Material.OAK_LOG), FFPMMOItems.get().getExampleFormat() + "Shapeless Recipe");
 
-    @NotNull final ItemStack displayListItem = RecipeMakerGUI.rename(new ItemStack(Material.OAK_LOG), FFPMMOItems.get().getExampleFormat() + "Shapeless Recipe");
-    @NotNull @Override public ItemStack getDisplayListItem() { return displayListItem; }
+    @NotNull
+    @Override
+    public String getRecipeTypeName() {
+        return "Shapeless";
+    }
 
-    @Override public void openForPlayer(@NotNull EditionInventory inv, @NotNull String recipeName, Object... otherParams) {
+    @NotNull
+    @Override
+    public String getRecipeConfigPath() {
+        return "shapeless";
+    }
+
+    @NotNull
+    @Override
+    public ItemStack getDisplayListItem() {
+        return displayListItem;
+    }
+
+    @Override
+    public void openForPlayer(@NotNull EditionInventory inv, @NotNull String recipeName, Object... otherParams) {
         new RMG_Shapeless(inv.getPlayer(), inv.getEdited(), recipeName, this).open(inv.getPreviousPage());
     }
 
@@ -51,7 +67,9 @@ public class RMGRR_Shapeless implements RecipeRegistry {
         // Read some values
         ConfigurationSection recipeSection = RecipeMakerGUI.getSection(recipeTypeSection, recipeName);
         NamespacedKey nk = namespace.getValue();
-        if (nk == null) { throw new IllegalArgumentException(FriendlyFeedbackProvider.quickForConsole(FFPMMOItems.get(), "Illegal (Null) Namespace")); }
+        if (nk == null) {
+            throw new IllegalArgumentException(FriendlyFeedbackProvider.quickForConsole(FFPMMOItems.get(), "Illegal (Null) Namespace"));
+        }
 
         //region Identify the input
         ArrayList<MythicRecipeIngredient> poofs = new ArrayList<>();
@@ -62,19 +80,25 @@ public class RMGRR_Shapeless implements RecipeRegistry {
         for (String str : recipe) {
 
             // Null is a sleeper
-            if (str == null || "AIR".equals(str)) { continue; }
+            if (str == null || "AIR".equals(str)) {
+                continue;
+            }
 
             // Add
             ProvidedUIFilter p = RecipeMakerGUI.readIngredientFrom(str, ffp);
 
             // Not air right
-            if (p.isAir()) { continue; }
+            if (p.isAir()) {
+                continue;
+            }
 
             // Ok snooze
             nonAirFound = true;
             poofs.add(new MythicRecipeIngredient(p));
         }
-        if (!nonAirFound) { throw new IllegalArgumentException(FriendlyFeedbackProvider.quickForConsole(FFPMMOItems.get(), "Shapeless recipe containing only AIR, $fignored$b.")); }
+        if (!nonAirFound) {
+            throw new IllegalArgumentException(FriendlyFeedbackProvider.quickForConsole(FFPMMOItems.get(), "Shapeless recipe containing only AIR, $fignored$b."));
+        }
         ShapelessRecipe input = new ShapelessRecipe(nk.getKey(), poofs);
         //endregion
 
@@ -84,7 +108,7 @@ public class RMGRR_Shapeless implements RecipeRegistry {
         boolean hideBook = recipeSection.getBoolean(RBA_HideFromBook.BOOK_HIDDEN, false);
 
         // Build Output
-        ShapedRecipe outputItem = ShapedRecipe.single(nk.getKey(),  new ProvidedUIFilter(MMOItemUIFilter.get(), template.getType().getId(), template.getId(), Math.max(outputAmount, 1)));
+        ShapedRecipe outputItem = ShapedRecipe.single(nk.getKey(), new ProvidedUIFilter(MMOItemUIFilter.get(), template.getType().getId(), template.getId(), Math.max(outputAmount, 1)));
         MythicRecipeOutput outputRecipe = new MRORecipe(outputItem, output);
 
         // That's our blueprint :)
@@ -98,13 +122,18 @@ public class RMGRR_Shapeless implements RecipeRegistry {
             String permission = ((StringData) perm).getString();
 
             // Finally
-            if (permission != null) { ret.addRequiredPermission(permission); } }
+            if (permission != null) {
+                ret.addRequiredPermission(permission);
+            }
+        }
 
         // Enable it
         ret.deploy(MythicRecipeStation.WORKBENCH, namespace);
 
         // Hide book if specified
-        if (hideBook) { namespace.setValue(null); }
+        if (hideBook) {
+            namespace.setValue(null);
+        }
 
         // That's it
         return ret;

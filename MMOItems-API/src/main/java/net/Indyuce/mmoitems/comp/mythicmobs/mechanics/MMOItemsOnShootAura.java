@@ -32,6 +32,8 @@ import java.util.Optional;
  */
 public class MMOItemsOnShootAura extends Aura implements ITargetedEntitySkill {
     @NotNull
+    final ArrayList<UseItemTypes> auraWeapons = new ArrayList<>();
+    @NotNull
     PlaceholderString skillName;
     @NotNull
     String weaponTypes;
@@ -39,9 +41,6 @@ public class MMOItemsOnShootAura extends Aura implements ITargetedEntitySkill {
     Skill metaskill;
     boolean cancelEvent;
     boolean forceAsPower;
-
-    @NotNull
-    final ArrayList<UseItemTypes> auraWeapons = new ArrayList<>();
 
     public MMOItemsOnShootAura(SkillExecutor manager, String skill, MythicLineConfig mlc) {
         super(manager, skill, mlc);
@@ -88,6 +87,55 @@ public class MMOItemsOnShootAura extends Aura implements ITargetedEntitySkill {
         }
     }
 
+    @Nullable
+    public static Skill GetSkill(String skillName) {
+
+        if (SkillExists(skillName)) {
+
+            Optional<Skill> mSkillFk = MythicBukkit.inst().getSkillManager().getSkill(skillName);
+            if (mSkillFk == null) {
+                return null;
+            }
+            if (mSkillFk.isPresent()) {
+                return mSkillFk.get();
+            }
+        }
+
+        return null;
+    }
+
+    public static boolean SkillExists(String skillName) {
+        // If null no
+        if (skillName == null) {
+            return false;
+        }
+
+        Optional<Skill> mSkillFk = MythicBukkit.inst().getSkillManager().getSkill(skillName);
+
+        // Is there a skill of that name?
+        if (mSkillFk.isPresent()) {
+
+            try {
+                // Ok then retrieve the skill
+                Skill mSkill = (Skill) mSkillFk.get();
+
+                // Success
+                return true;
+
+            } catch (Exception e) {
+
+                // RIP
+                return false;
+            }
+
+            // The skill was not found
+        } else {
+
+            // False means the skill does not exist.
+            return false;
+        }
+    }
+
     public SkillResult castAtEntity(SkillMetadata data, AbstractEntity target) {
         // Find caster
         SkillCaster caster;
@@ -109,6 +157,30 @@ public class MMOItemsOnShootAura extends Aura implements ITargetedEntitySkill {
 
         new MMOItemsOnShootAura.Tracker(caster, data, target);
         return SkillResult.SUCCESS;
+    }
+
+    enum UseItemTypes {
+        CROSSBOW(Crossbow.class),
+        GAUNTLET(Gauntlet.class),
+        LUTE(Lute.class),
+        MUSKET(Musket.class),
+        STAFF(Staff.class),
+        WHIP(Whip.class);
+
+        @NotNull
+        final Class inst;
+
+        UseItemTypes(@NotNull Class inst) {
+            this.inst = inst;
+        }
+
+        /**
+         * @return Class to use InstanceOf and identify a weapon.
+         */
+        @NotNull
+        public Class getInst() {
+            return inst;
+        }
     }
 
     private class Tracker extends Aura.AuraTracker implements IParentSkill, Runnable {
@@ -168,79 +240,6 @@ public class MMOItemsOnShootAura extends Aura implements ITargetedEntitySkill {
 
             }));
             this.executeAuraSkill(MMOItemsOnShootAura.this.onStartSkill, this.skillMetadata);
-        }
-    }
-
-    @Nullable
-    public static Skill GetSkill(String skillName) {
-
-        if (SkillExists(skillName)) {
-
-            Optional<Skill> mSkillFk = MythicBukkit.inst().getSkillManager().getSkill(skillName);
-            if (mSkillFk == null) {
-                return null;
-            }
-            if (mSkillFk.isPresent()) {
-                return mSkillFk.get();
-            }
-        }
-
-        return null;
-    }
-
-    public static boolean SkillExists(String skillName) {
-        // If null no
-        if (skillName == null) {
-            return false;
-        }
-
-        Optional<Skill> mSkillFk = MythicBukkit.inst().getSkillManager().getSkill(skillName);
-
-        // Is there a skill of that name?
-        if (mSkillFk.isPresent()) {
-
-            try {
-                // Ok then retrieve the skill
-                Skill mSkill = (Skill) mSkillFk.get();
-
-                // Success
-                return true;
-
-            } catch (Exception e) {
-
-                // RIP
-                return false;
-            }
-
-            // The skill was not found
-        } else {
-
-            // False means the skill does not exist.
-            return false;
-        }
-    }
-
-    enum UseItemTypes {
-        CROSSBOW(Crossbow.class),
-        GAUNTLET(Gauntlet.class),
-        LUTE(Lute.class),
-        MUSKET(Musket.class),
-        STAFF(Staff.class),
-        WHIP(Whip.class);
-
-        /**
-         * @return Class to use InstanceOf and identify a weapon.
-         */
-        @NotNull
-        public Class getInst() {
-            return inst;
-        }
-
-        @NotNull
-        final Class inst;
-
-        UseItemTypes(@NotNull Class inst) {
-            this.inst = inst;
         }
     }
 }

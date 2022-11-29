@@ -30,9 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HeroesHook implements RPGHandler, Listener, AttackHandler {
-    private final Map<SkillType, DamageType> damages = new HashMap<>();
-
     public static final ItemStat MAX_STAMINA = new DoubleStat("MAX_STAMINA", Material.EMERALD, "Max Stamina", new String[]{"Adds stamina to your max stamina bar"});
+    private final Map<SkillType, DamageType> damages = new HashMap<>();
 
     public HeroesHook() {
         MythicLib.plugin.getDamage().registerHandler(this);
@@ -112,13 +111,13 @@ public class HeroesHook implements RPGHandler, Listener, AttackHandler {
         }
 
         @Override
-        public double getStamina() {
-            return hero.getStamina();
+        public void setMana(double value) {
+            hero.setMana((int) value);
         }
 
         @Override
-        public void setMana(double value) {
-            hero.setMana((int) value);
+        public double getStamina() {
+            return hero.getStamina();
         }
 
         @Override

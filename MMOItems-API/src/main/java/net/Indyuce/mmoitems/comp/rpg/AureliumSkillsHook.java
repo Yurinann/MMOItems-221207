@@ -25,12 +25,11 @@ import org.bukkit.event.Listener;
 import java.util.Locale;
 
 public class AureliumSkillsHook implements RPGHandler, Listener {
-    private final AureliumSkills aSkills;
-
     private static final ItemStat WISDOM = new DoubleStat("WISDOM", Material.BOOK,
             "Additional Wisdom",
             new String[]{"Additional wisdom (AureliumSkills)"},
             new String[]{"!miscellaneous", "!block", "all"});
+    private final AureliumSkills aSkills;
 
     public AureliumSkillsHook() {
         aSkills = (AureliumSkills) Bukkit.getPluginManager().getPlugin("AureliumSkills");
@@ -103,13 +102,13 @@ public class AureliumSkillsHook implements RPGHandler, Listener {
         }
 
         @Override
-        public double getStamina() {
-            return getPlayer().getFoodLevel();
+        public void setMana(double value) {
+            info.setMana(value);
         }
 
         @Override
-        public void setMana(double value) {
-            info.setMana(value);
+        public double getStamina() {
+            return getPlayer().getFoodLevel();
         }
 
         @Override

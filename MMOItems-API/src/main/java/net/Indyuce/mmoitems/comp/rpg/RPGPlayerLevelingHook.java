@@ -40,13 +40,13 @@ public class RPGPlayerLevelingHook implements RPGHandler {
         }
 
         @Override
-        public double getStamina() {
-            return new API().getPower(getPlayer());
+        public void setMana(double value) {
+            new API().setMana(getPlayer(), (int) value);
         }
 
         @Override
-        public void setMana(double value) {
-            new API().setMana(getPlayer(), (int) value);
+        public double getStamina() {
+            return new API().getPower(getPlayer());
         }
 
         @Override

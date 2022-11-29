@@ -7,28 +7,28 @@ import net.Indyuce.mmoitems.api.player.PlayerData;
 import org.apache.commons.lang.Validate;
 
 public class MoneyCondition extends Condition {
-	private final double amount;
+    private final double amount;
 
-	public MoneyCondition(MMOLineConfig config) {
-		super("money");
+    public MoneyCondition(MMOLineConfig config) {
+        super("money");
 
-		Validate.isTrue(MMOItems.plugin.hasEconomy(), "No economy plugin found");
-		config.validateKeys("amount");
-		amount = config.getDouble("amount");
-	}
+        Validate.isTrue(MMOItems.plugin.hasEconomy(), "No economy plugin found");
+        config.validateKeys("amount");
+        amount = config.getDouble("amount");
+    }
 
-	@Override
-	public boolean isMet(PlayerData data) {
-		return MMOItems.plugin.getVault().getEconomy().has(data.getPlayer(), amount);
-	}
+    @Override
+    public boolean isMet(PlayerData data) {
+        return MMOItems.plugin.getVault().getEconomy().has(data.getPlayer(), amount);
+    }
 
-	@Override
-	public String formatDisplay(String string) {
-		return string.replace("#money#", String.valueOf(amount));
-	}
+    @Override
+    public String formatDisplay(String string) {
+        return string.replace("#money#", String.valueOf(amount));
+    }
 
-	@Override
-	public void whenCrafting(PlayerData data) {
-		MMOItems.plugin.getVault().getEconomy().withdrawPlayer(data.getPlayer(), amount);
-	}
+    @Override
+    public void whenCrafting(PlayerData data) {
+        MMOItems.plugin.getVault().getEconomy().withdrawPlayer(data.getPlayer(), amount);
+    }
 }

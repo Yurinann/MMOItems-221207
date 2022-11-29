@@ -29,6 +29,28 @@ import java.util.ArrayList;
  * @author Gunging
  */
 public class MMOItemUIFilter implements UIFilter {
+    static MMOItemUIFilter global;
+    private static boolean reg = true;
+    ArrayList<String> validDataments;
+
+    /**
+     * Registers this filter onto the manager.
+     */
+    public static void register() {
+        global = new MMOItemUIFilter();
+        UIFilterManager.registerUIFilter(global);
+        VanillaMMOItemCountermatch.enable();
+        reg = false;
+    }
+
+    /**
+     * @return The general instance of this MMOItem UIFilter.
+     */
+    @NotNull
+    public static MMOItemUIFilter get() {
+        return global;
+    }
+
     @NotNull
     @Override
     public String getIdentifier() {
@@ -43,10 +65,14 @@ public class MMOItemUIFilter implements UIFilter {
         data = data.replace(" ", "_").replace("-", "_").toUpperCase();
 
         // Check validity
-        if (!isValid(argument, data, ffp)) { return false; }
+        if (!isValid(argument, data, ffp)) {
+            return false;
+        }
 
         // Check counter matches
-        if (cancelMatch(item, ffp)) { return false; }
+        if (cancelMatch(item, ffp)) {
+            return false;
+        }
 
         // Is this item a MMOItem?
         NBTItem asNBT = NBTItem.get(item);
@@ -68,7 +94,10 @@ public class MMOItemUIFilter implements UIFilter {
             // Just clip them out for now yea
             dataments = data.substring(data.indexOf('{') + 1);
             data = data.substring(0, data.indexOf('{'));
-            if (dataments.endsWith("}")) { dataments = dataments.substring(0, dataments.length()-1); } }
+            if (dataments.endsWith("}")) {
+                dataments = dataments.substring(0, dataments.length() - 1);
+            }
+        }
 
         // All right get its Type and ID
         if (!mmo.getType().getId().equals(argument) || !mmo.getId().equals(data)) {
@@ -116,7 +145,9 @@ public class MMOItemUIFilter implements UIFilter {
 
     @Override
     public boolean isValid(@NotNull String argument, @NotNull String data, @Nullable FriendlyFeedbackProvider ffp) {
-        if (reg) { return true; }
+        if (reg) {
+            return true;
+        }
         argument = argument.replace(" ", "_").replace("-", "_").toUpperCase();
         data = data.replace(" ", "_").replace("-", "_").toUpperCase();
 
@@ -129,7 +160,7 @@ public class MMOItemUIFilter implements UIFilter {
             // Error
             FriendlyFeedbackProvider.log(ffp, FriendlyFeedbackCategory.ERROR,
                     "$fInvalid MMOItem Type $r{0}$f. ", argument);
-            
+
             return false;
         }
 
@@ -137,7 +168,8 @@ public class MMOItemUIFilter implements UIFilter {
         if (data.contains("{") && data.contains("}")) {
 
             // Just clip them out for now yea
-            data = data.substring(0, data.indexOf('{')); }
+            data = data.substring(0, data.indexOf('{'));
+        }
 
         // Can find item?
         if (MMOItems.plugin.getMMOItem(t, data) == null) {
@@ -167,10 +199,10 @@ public class MMOItemUIFilter implements UIFilter {
     @NotNull
     @Override
     public ArrayList<String> tabCompleteData(@NotNull String argument, @NotNull String data) {
-        
-        //Find type? 
+
+        //Find type?
         Type t = MMOItems.plugin.getTypes().get(argument);
-        
+
         if (t != null) {
 
             // Strip data
@@ -182,7 +214,9 @@ public class MMOItemUIFilter implements UIFilter {
                 data = data.substring(0, data.indexOf('{'));
 
                 int datashort = 0;
-                if (dataments.contains(",")) { datashort = dataments.lastIndexOf(',') + 1; }
+                if (dataments.contains(",")) {
+                    datashort = dataments.lastIndexOf(',') + 1;
+                }
 
                 datamentsTab = dataments.substring(datashort);
                 dataments = dataments.substring(0, datashort);
@@ -210,7 +244,7 @@ public class MMOItemUIFilter implements UIFilter {
                             break;
                     }
 
-                // No equals sign, suggest dataments
+                    // No equals sign, suggest dataments
                 } else {
 
                     // Suggest that
@@ -221,7 +255,9 @@ public class MMOItemUIFilter implements UIFilter {
                 for (String sug : suggestions) {
                     for (String comp : datamentsSug) {
                         // All the suggestions that could complete this..
-                        trueSuggestions.add(sug + "{" + dataments + comp); } }
+                        trueSuggestions.add(sug + "{" + dataments + comp);
+                    }
+                }
             }
 
             // That's it
@@ -234,16 +270,26 @@ public class MMOItemUIFilter implements UIFilter {
         }
     }
 
-    ArrayList<String> validDataments;
-    @NotNull public ArrayList<String> getValidDataments() { if (validDataments != null) { return validDataments; } validDataments = SilentNumbers.toArrayList("level"); return validDataments; }
+    @NotNull
+    public ArrayList<String> getValidDataments() {
+        if (validDataments != null) {
+            return validDataments;
+        }
+        validDataments = SilentNumbers.toArrayList("level");
+        return validDataments;
+    }
 
     @Override
-    public boolean fullyDefinesItem() { return true; }
+    public boolean fullyDefinesItem() {
+        return true;
+    }
 
     @Nullable
     @Override
     public ItemStack getItemStack(@NotNull String argument, @NotNull String data, @Nullable FriendlyFeedbackProvider ffp) {
-        if (!isValid(argument, data, ffp)) { return null; }
+        if (!isValid(argument, data, ffp)) {
+            return null;
+        }
         argument = argument.replace(" ", "_").replace("-", "_").toUpperCase();
         data = data.replace(" ", "_").replace("-", "_").toUpperCase();
         return MMOItems.plugin.getItem(argument, data);
@@ -252,7 +298,9 @@ public class MMOItemUIFilter implements UIFilter {
     @NotNull
     @Override
     public ItemStack getDisplayStack(@NotNull String argument, @NotNull String data, @Nullable FriendlyFeedbackProvider ffp) {
-        if (!isValid(argument, data, ffp)) { return ItemFactory.of(Material.STRUCTURE_VOID).name("\u00a7cInvalid MMOItem \u00a7e" + argument + " " + data).build(); }
+        if (!isValid(argument, data, ffp)) {
+            return ItemFactory.of(Material.STRUCTURE_VOID).name("\u00a7cInvalid MMOItem \u00a7e" + argument + " " + data).build();
+        }
         argument = argument.replace(" ", "_").replace("-", "_").toUpperCase();
 
         // Strip data
@@ -262,7 +310,10 @@ public class MMOItemUIFilter implements UIFilter {
             // Just clip them out for now yea
             dataments = data.substring(data.indexOf('{') + 1);
             data = data.substring(0, data.indexOf('{'));
-            if (dataments.endsWith("}")) { dataments = dataments.substring(0, dataments.length()-1); } }
+            if (dataments.endsWith("}")) {
+                dataments = dataments.substring(0, dataments.length() - 1);
+            }
+        }
 
         data = data.replace(" ", "_").replace("-", "_").toUpperCase();
         MMOItem m = MMOItems.plugin.getMMOItem(MMOItems.plugin.getTypes().get(argument), data);
@@ -299,14 +350,18 @@ public class MMOItemUIFilter implements UIFilter {
     public ArrayList<String> getDescription(@NotNull String argument, @NotNull String data) {
 
         // Check validity
-        if (!isValid(argument, data, null)) { return SilentNumbers.toArrayList("This MMOItem is $finvalid$b."); }
+        if (!isValid(argument, data, null)) {
+            return SilentNumbers.toArrayList("This MMOItem is $finvalid$b.");
+        }
         argument = argument.replace(" ", "_").replace("-", "_").toUpperCase();
         data = data.replace(" ", "_").replace("-", "_").toUpperCase();
         return SilentNumbers.toArrayList(SilentNumbers.getItemName(MMOItems.plugin.getItem(argument, data)));
     }
 
     @Override
-    public boolean determinateGeneration() { return false; }
+    public boolean determinateGeneration() {
+        return false;
+    }
 
     @Override
     public boolean partialDeterminateGeneration(@NotNull String argument, @NotNull String data) {
@@ -342,21 +397,4 @@ public class MMOItemUIFilter implements UIFilter {
     public String exampleData() {
         return "MANGO";
     }
-
-    /**
-     * Registers this filter onto the manager.
-     */
-    public static void register() {
-        global = new MMOItemUIFilter();
-        UIFilterManager.registerUIFilter(global);
-        VanillaMMOItemCountermatch.enable();
-        reg = false; }
-
-    private static boolean reg = true;
-
-    /**
-     * @return The general instance of this MMOItem UIFilter.
-     */
-    @NotNull public static MMOItemUIFilter get() { return global; }
-    static MMOItemUIFilter global;
 }

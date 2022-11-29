@@ -66,6 +66,54 @@ public class RecipeManager implements Reloadable {
     private final ArrayList<NamespacedKey> blacklistedFromAutomaticDiscovery = new ArrayList<>();
 
     private boolean book;
+    @Nullable
+    private ArrayList<NamespacedKey> generatedNamespacedKeys;
+
+    @NotNull
+    public static WorkbenchIngredient getWorkbenchIngredient(@NotNull String input) throws IllegalArgumentException {
+
+        // Read it this other way ~
+        ProvidedUIFilter poof = ProvidedUIFilter.getFromString(RecipeMakerGUI.poofFromLegacy(input), null);
+
+        // Air is AIR
+        if (poof == null) {
+            return new AirIngredient();
+        }
+
+        // With class, obviously - no need for prefix tho
+        FriendlyFeedbackProvider ffp = new FriendlyFeedbackProvider(FFPMMOItems.get());
+
+        // Valid right
+        if (!poof.isValid(ffp)) {
+
+            // Snooze that
+            //noinspection ConstantConditions
+            throw new IllegalArgumentException(SilentNumbers.collapseList(SilentNumbers.transcribeList(ffp.getFeedbackOf(FriendlyFeedbackCategory.ERROR), s -> ((FriendlyFeedbackMessage) s).forConsole(FFPMMOItems.get())), ". "));
+        }
+
+        // Get amount
+        int amount = poof.getAmount(0);
+
+        // MMOItem?
+        if (poof.getParent() instanceof MMOItemUIFilter) {
+
+            // Get those
+            Type miType = MMOItems.plugin.getTypes().getOrThrow(poof.getArgument());
+
+            // Find template
+            MMOItemTemplate mmo = MMOItems.plugin.getTemplates().getTemplateOrThrow(miType, poof.getData());
+
+            // Treat is as MMOItem :pogyoo:
+            return new MMOItemIngredient(miType, mmo.getId(), amount);
+
+            // Must be vanilla
+        } else if (poof.getParent() instanceof VanillaUIFilter) {
+
+            return new VanillaIngredient(Material.valueOf(poof.getArgument().toUpperCase().replace("-", "_").replace(" ", "_")), amount);
+        }
+
+        throw new IllegalArgumentException("Unsupported ingredient, you may only specify vanilla or mmoitems.");
+    }
 
     public void loadRecipes() {
         this.book = MMOItems.plugin.getConfig().getBoolean("recipes.use-recipe-book");
@@ -181,9 +229,6 @@ public class RecipeManager implements Reloadable {
     public ArrayList<MythicRecipeBlueprint> getBooklessRecipes() {
         return booklessRecipes;
     }
-
-    @Nullable
-    private ArrayList<NamespacedKey> generatedNamespacedKeys;
 
     public ArrayList<NamespacedKey> getNamespacedKeys() {
         if (generatedNamespacedKeys != null)
@@ -333,52 +378,6 @@ public class RecipeManager implements Reloadable {
                 MMOItems.print(null, "Could not register crafting book recipe for $r{0}$b:$f {1}", "MMOItems Custom Crafting", recipe.getKey(), e.getMessage());
             }
         }
-    }
-
-    @NotNull
-    public static WorkbenchIngredient getWorkbenchIngredient(@NotNull String input) throws IllegalArgumentException {
-
-        // Read it this other way ~
-        ProvidedUIFilter poof = ProvidedUIFilter.getFromString(RecipeMakerGUI.poofFromLegacy(input), null);
-
-        // Air is AIR
-        if (poof == null) {
-            return new AirIngredient();
-        }
-
-        // With class, obviously - no need for prefix tho
-        FriendlyFeedbackProvider ffp = new FriendlyFeedbackProvider(FFPMMOItems.get());
-
-        // Valid right
-        if (!poof.isValid(ffp)) {
-
-            // Snooze that
-            //noinspection ConstantConditions
-            throw new IllegalArgumentException(SilentNumbers.collapseList(SilentNumbers.transcribeList(ffp.getFeedbackOf(FriendlyFeedbackCategory.ERROR), s -> ((FriendlyFeedbackMessage) s).forConsole(FFPMMOItems.get())), ". "));
-        }
-
-        // Get amount
-        int amount = poof.getAmount(0);
-
-        // MMOItem?
-        if (poof.getParent() instanceof MMOItemUIFilter) {
-
-            // Get those
-            Type miType = MMOItems.plugin.getTypes().getOrThrow(poof.getArgument());
-
-            // Find template
-            MMOItemTemplate mmo = MMOItems.plugin.getTemplates().getTemplateOrThrow(miType, poof.getData());
-
-            // Treat is as MMOItem :pogyoo:
-            return new MMOItemIngredient(miType, mmo.getId(), amount);
-
-            // Must be vanilla
-        } else if (poof.getParent() instanceof VanillaUIFilter) {
-
-            return new VanillaIngredient(Material.valueOf(poof.getArgument().toUpperCase().replace("-", "_").replace(" ", "_")), amount);
-        }
-
-        throw new IllegalArgumentException("Unsupported ingredient, you may only specify vanilla or mmoitems.");
     }
 
     /**

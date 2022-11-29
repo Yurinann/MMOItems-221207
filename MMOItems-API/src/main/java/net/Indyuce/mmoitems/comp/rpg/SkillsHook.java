@@ -52,14 +52,14 @@ public class SkillsHook implements RPGHandler, Listener {
         }
 
         @Override
-        public double getStamina() {
-            return getPlayer().getFoodLevel();
-        }
-
-        @Override
         public void setMana(double value) {
             PlayerInfo info = Skills.get().getPlayerDataManager().loadPlayerInfo(getPlayer());
             info.setActiveStatType(ScalingType.ENERGY, value);
+        }
+
+        @Override
+        public double getStamina() {
+            return getPlayer().getFoodLevel();
         }
 
         @Override

@@ -80,6 +80,21 @@ public class MMOItemBuilder {
         }
     }
 
+    /**
+     * @param template The template to list modifiers from
+     * @return A sorted (or unsorted depending on the template options) list of
+     * modifiers that can be later rolled and applied to the builder
+     */
+    @NotNull
+    public static Collection<TemplateModifier> rollModifiers(@NotNull MMOItemTemplate template) {
+        if (!template.hasOption(TemplateOption.ROLL_MODIFIER_CHECK_ORDER))
+            return template.getModifiers().values();
+
+        List<TemplateModifier> modifiers = new ArrayList<>(template.getModifiers().values());
+        Collections.shuffle(modifiers);
+        return modifiers;
+    }
+
     public int getLevel() {
         return level;
     }
@@ -203,20 +218,5 @@ public class MMOItemBuilder {
             nameModifiers.remove(ro);
         }
         nameModifiers.put(mod, modifier);
-    }
-
-    /**
-     * @param template The template to list modifiers from
-     * @return A sorted (or unsorted depending on the template options) list of
-     *         modifiers that can be later rolled and applied to the builder
-     */
-    @NotNull
-    public static Collection<TemplateModifier> rollModifiers(@NotNull MMOItemTemplate template) {
-        if (!template.hasOption(TemplateOption.ROLL_MODIFIER_CHECK_ORDER))
-            return template.getModifiers().values();
-
-        List<TemplateModifier> modifiers = new ArrayList<>(template.getModifiers().values());
-        Collections.shuffle(modifiers);
-        return modifiers;
     }
 }

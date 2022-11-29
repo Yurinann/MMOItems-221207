@@ -20,10 +20,14 @@ public class PhatLootsHook implements Listener {
 
 
     @EventHandler
-    public void OnLootBeLooted(MobDropLootEvent event) { handle(event);}
+    public void OnLootBeLooted(MobDropLootEvent event) {
+        handle(event);
+    }
 
     @EventHandler
-    public void OnLootBeLooted(PlayerLootEvent event) { handle(event);}
+    public void OnLootBeLooted(PlayerLootEvent event) {
+        handle(event);
+    }
 
     public void handle(LootEvent event) {
 
@@ -34,7 +38,8 @@ public class PhatLootsHook implements Listener {
             // Skip
             if (SilentNumbers.isAir(itm)) {
                 //UPD//MMOItems.log("\u00a71*\u00a78 Air");
-                continue; }
+                continue;
+            }
 
             // Can reforge?
             MMOItemReforger mod = new MMOItemReforger(itm);
@@ -42,12 +47,14 @@ public class PhatLootsHook implements Listener {
             // Cancel that!
             if (!mod.canReforge()) {
                 //UPD//MMOItems.log("\u00a71*\u00a78 Cant reforge this");
-                continue; }
+                continue;
+            }
 
             // All right update the bitch
             if (!mod.reforge(MMOItems.plugin.getLanguage().phatLootsOptions)) {
                 //UPD//MMOItems.log("\u00a71*\u00a78 Cancelled while reforging");
-                continue; }
+                continue;
+            }
 
             // Changes?
             if (mod.hasChanges()) {
@@ -61,7 +68,9 @@ public class PhatLootsHook implements Listener {
                 // Completely Replace
                 itm.setType(gen.getType());
                 itm.setItemMeta(genMeta);
-                itm.setData(gen.getData()); }
+                itm.setData(gen.getData());
+            }
 
-        } }
+        }
+    }
 }

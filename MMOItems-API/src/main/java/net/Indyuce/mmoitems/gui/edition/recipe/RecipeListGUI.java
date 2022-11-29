@@ -34,20 +34,24 @@ import java.util.UUID;
  */
 public class RecipeListGUI extends EditionInventory {
 
-    @NotNull final ItemStack nextPage = ItemFactory.of(Material.ARROW).name("\u00a77Next Page").build();
-    @NotNull final ItemStack prevPage = ItemFactory.of(Material.ARROW).name("\u00a77Previous Page").build();
-    @NotNull final ItemStack noRecipe = ItemFactory.of(Material.BLACK_STAINED_GLASS_PANE).name("\u00a77No Recipe").build();
+    @NotNull
+    final ItemStack nextPage = ItemFactory.of(Material.ARROW).name("\u00a77Next Page").build();
+    @NotNull
+    final ItemStack prevPage = ItemFactory.of(Material.ARROW).name("\u00a77Previous Page").build();
+    @NotNull
+    final ItemStack noRecipe = ItemFactory.of(Material.BLACK_STAINED_GLASS_PANE).name("\u00a77No Recipe").build();
 
-    @NotNull final RecipeRegistry recipeType;
-    @NotNull public RecipeRegistry getRecipeRegistry() { return recipeType; }
-
-    @NotNull final ItemStack listedItem;
-    @NotNull public ItemStack getListedItem() { return listedItem; }
-
-    @NotNull final ArrayList<String> recipeNames = new ArrayList<>();
-    @NotNull public ArrayList<String> getRecipeNames() { return recipeNames; }
-
+    @NotNull
+    final RecipeRegistry recipeType;
+    @NotNull
+    final ItemStack listedItem;
+    @NotNull
+    final ArrayList<String> recipeNames = new ArrayList<>();
+    @NotNull
+    final HashMap<Integer, String> recipeMap = new HashMap<>();
     boolean invalidRecipe;
+    int currentPage;
+    int createSlot = -1;
 
     public RecipeListGUI(@NotNull Player player, @NotNull MMOItemTemplate template, @NotNull RecipeRegistry kind) {
         super(player, template);
@@ -62,7 +66,9 @@ public class RecipeListGUI extends EditionInventory {
 
         // What is all the recipes within this kind?
         for (String recipeName : type.getValues(false).keySet()) {
-            if (recipeName == null || recipeName.isEmpty()) { continue; }
+            if (recipeName == null || recipeName.isEmpty()) {
+                continue;
+            }
 
             /*
              * This is now a for loop going through all the recipes
@@ -72,11 +78,48 @@ public class RecipeListGUI extends EditionInventory {
         }
     }
 
-    int currentPage;
-    int createSlot = -1;
-    @NotNull final HashMap<Integer, String> recipeMap = new HashMap<>();
+    public static int page(int p) {
 
-    @NotNull @Override public Inventory getInventory() {
+        // Remove multiples of 21
+        int red = SilentNumbers.floor(p / 21.00D);
+        p -= red * 21;
+
+        /*
+         * A page is the third, fourth, and fifth rows, excluding the first and last column.
+         *
+         * #1 Obtain the relative column, and relative row
+         *
+         * #2 Convert to absolute inventory positions
+         */
+        int relRow = SilentNumbers.floor(p / 7.00D);
+        int relCol = p - (7 * relRow);
+
+        // Starting at the third row, each row adds 9 slots.
+        int rowAdditive = 18 + (relRow * 9);
+        int columnAdditive = relCol + 1;
+
+        // Sum to obtain final
+        return rowAdditive + columnAdditive;
+    }
+
+    @NotNull
+    public RecipeRegistry getRecipeRegistry() {
+        return recipeType;
+    }
+
+    @NotNull
+    public ItemStack getListedItem() {
+        return listedItem;
+    }
+
+    @NotNull
+    public ArrayList<String> getRecipeNames() {
+        return recipeNames;
+    }
+
+    @NotNull
+    @Override
+    public Inventory getInventory() {
 
         // Create and prepare
         Inventory inv = Bukkit.createInventory(this, 54, "Choose " + getRecipeRegistry().getRecipeTypeName() + " Recipe");
@@ -90,6 +133,7 @@ public class RecipeListGUI extends EditionInventory {
         // That's it lets GOOOO
         return inv;
     }
+
     /**
      * Updates the inventory, refreshes the page number whatever.
      *
@@ -102,8 +146,12 @@ public class RecipeListGUI extends EditionInventory {
         createSlot = -1;
 
         // Include page buttons
-        if (currentPage > 0) { inv.setItem(27, prevPage); }
-        if (recipeNames.size() >= ((currentPage + 1) * 21)) { inv.setItem(36, nextPage); }
+        if (currentPage > 0) {
+            inv.setItem(27, prevPage);
+        }
+        if (recipeNames.size() >= ((currentPage + 1) * 21)) {
+            inv.setItem(36, nextPage);
+        }
 
         // Fill the space I guess
         for (int p = 21 * currentPage; p < 21 * (currentPage + 1); p++) {
@@ -131,62 +179,43 @@ public class RecipeListGUI extends EditionInventory {
             if (p == recipeNames.size()) {
 
                 // Rename list item...
-                inv.setItem(absolute, RecipeMakerGUI.rename(new ItemStack(Material.NETHER_STAR),   FFPMMOItems.get().getBodyFormat() + "Create new " + SilentNumbers.getItemName(getListedItem(), false)));
+                inv.setItem(absolute, RecipeMakerGUI.rename(new ItemStack(Material.NETHER_STAR), FFPMMOItems.get().getBodyFormat() + "Create new " + SilentNumbers.getItemName(getListedItem(), false)));
 
                 // If this slot is clicked, a new recipe will be created.
                 createSlot = absolute;
 
-            // The current item is greater, fill with empty glass panes
+                // The current item is greater, fill with empty glass panes
             } else if (p > recipeNames.size()) {
 
                 // Just snooze
                 inv.setItem(absolute, noRecipe);
 
-            // There exists a recipe for this slot
+                // There exists a recipe for this slot
             } else {
 
                 // Display name
-                inv.setItem(absolute, RecipeMakerGUI.rename(getListedItem().clone(),  FFPMMOItems.get().getBodyFormat() + "Edit " + FFPMMOItems.get().getInputFormat() + recipeNames.get(p)));
+                inv.setItem(absolute, RecipeMakerGUI.rename(getListedItem().clone(), FFPMMOItems.get().getBodyFormat() + "Edit " + FFPMMOItems.get().getInputFormat() + recipeNames.get(p)));
 
                 // Store
                 recipeMap.put(absolute, recipeNames.get(p));
             }
         }
     }
-    public static int page(int p) {
 
-        // Remove multiples of 21
-        int red = SilentNumbers.floor(p / 21.00D);
-        p -= red * 21;
-
-        /*
-         * A page is the third, fourth, and fifth rows, excluding the first and last column.
-         *
-         * #1 Obtain the relative column, and relative row
-         *
-         * #2 Convert to absolute inventory positions
-         */
-        int relRow = SilentNumbers.floor(p / 7.00D);
-        int relCol = p - (7 * relRow);
-
-        // Starting at the third row, each row adds 9 slots.
-        int rowAdditive = 18 + (relRow * 9);
-        int columnAdditive = relCol + 1;
-
-        // Sum to obtain final
-        return rowAdditive + columnAdditive;
-    }
-
-
-    @Override public void whenClicked(InventoryClickEvent event) {
+    @Override
+    public void whenClicked(InventoryClickEvent event) {
 
         // Clicked inventory was not the observed inventory? Not our business
-        if ((event.getView().getTopInventory() != event.getClickedInventory())) { return; }
+        if ((event.getView().getTopInventory() != event.getClickedInventory())) {
+            return;
+        }
 
         // Disallow any clicking.
         event.setCancelled(true);
 
-        if (invalidRecipe) { return; }
+        if (invalidRecipe) {
+            return;
+        }
 
         // Selecting a recipe to edit (or creating?)
         if (event.getAction() == InventoryAction.PICKUP_ALL) {
@@ -198,24 +227,26 @@ public class RecipeListGUI extends EditionInventory {
                 currentPage--;
                 arrangeInventory(event.getView().getTopInventory());
 
-            // Next Page
+                // Next Page
             } else if (event.getSlot() == 36) {
 
                 // Advance page
                 currentPage++;
                 arrangeInventory(event.getView().getTopInventory());
 
-            // Create a new recipe
+                // Create a new recipe
             } else if (event.getSlot() == createSlot) {
 
                 // Well make sure tha name is not taken
                 String chadName = String.valueOf(recipeMap.size() + 1);
-                if (recipeMap.containsValue(chadName)) { chadName = chadName + "_" + UUID.randomUUID(); }
+                if (recipeMap.containsValue(chadName)) {
+                    chadName = chadName + "_" + UUID.randomUUID();
+                }
 
                 // Create a new one with that chad name
                 getRecipeRegistry().openForPlayer(this, chadName);
 
-            // Might be clicking a recipe to edit then
+                // Might be clicking a recipe to edit then
             } else if (event.getSlot() > 18) {
 
                 // A recipe exists of this name?
@@ -229,7 +260,7 @@ public class RecipeListGUI extends EditionInventory {
                 }
             }
 
-        // Deleting a recipe
+            // Deleting a recipe
         } else if (event.getAction() == InventoryAction.PICKUP_HALF) {
 
             // A recipe exists of this name?

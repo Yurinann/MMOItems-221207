@@ -9,59 +9,71 @@ import java.util.Arrays;
 import java.util.List;
 
 public class PotionEffectListData implements StatData, Mergeable<PotionEffectListData> {
-	private final List<PotionEffectData> effects = new ArrayList<>();
+    private final List<PotionEffectData> effects = new ArrayList<>();
 
-	// public PotionEffectListData(ConfigurationSection config) {
-	// Validate.notNull(config, "Config must not be null");
-	// for (String key : config.getKeys(false))
-	// this.effects.add(new
-	// PotionEffectData(config.getConfigurationSection(key)));
-	// }
+    // public PotionEffectListData(ConfigurationSection config) {
+    // Validate.notNull(config, "Config must not be null");
+    // for (String key : config.getKeys(false))
+    // this.effects.add(new
+    // PotionEffectData(config.getConfigurationSection(key)));
+    // }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof PotionEffectListData)) { return false; }
+    public PotionEffectListData(PotionEffectData... effects) {
+        add(effects);
+    }
 
-		if (((PotionEffectListData) obj).getEffects().size() != getEffects().size()) { return false; }
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof PotionEffectListData)) {
+            return false;
+        }
 
-		for (PotionEffectData eff : ((PotionEffectListData) obj).getEffects()) {
+        if (((PotionEffectListData) obj).getEffects().size() != getEffects().size()) {
+            return false;
+        }
 
-			if (eff == null) { continue; }
+        for (PotionEffectData eff : ((PotionEffectListData) obj).getEffects()) {
 
-			// COmpare
-			boolean unmatched = true;
-			for (PotionEffectData thi : getEffects()) {
+            if (eff == null) {
+                continue;
+            }
 
-				if (eff.equals(thi)) {
-					unmatched = false;
-					break; } }
-			if (unmatched) { return false; }
-		}
-		return true;
-	}
+            // COmpare
+            boolean unmatched = true;
+            for (PotionEffectData thi : getEffects()) {
 
-	public PotionEffectListData(PotionEffectData... effects) {
-		add(effects);
-	}
+                if (eff.equals(thi)) {
+                    unmatched = false;
+                    break;
+                }
+            }
+            if (unmatched) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	public void add(PotionEffectData... effects) {
-		this.effects.addAll(Arrays.asList(effects));
-	}
+    public void add(PotionEffectData... effects) {
+        this.effects.addAll(Arrays.asList(effects));
+    }
 
-	public List<PotionEffectData> getEffects() {
-		return effects;
-	}
+    public List<PotionEffectData> getEffects() {
+        return effects;
+    }
 
-	@Override
-	public boolean isEmpty() {
-		return effects.isEmpty();
-	}
+    @Override
+    public boolean isEmpty() {
+        return effects.isEmpty();
+    }
 
-	@Override
-	public void merge(PotionEffectListData data) {
-		effects.addAll(data.effects);
-	}
+    @Override
+    public void merge(PotionEffectListData data) {
+        effects.addAll(data.effects);
+    }
 
-	@Override
-	public @NotNull PotionEffectListData cloneData() { return new PotionEffectListData(getEffects().toArray(new PotionEffectData[0])); }
+    @Override
+    public @NotNull PotionEffectListData cloneData() {
+        return new PotionEffectListData(getEffects().toArray(new PotionEffectData[0]));
+    }
 }

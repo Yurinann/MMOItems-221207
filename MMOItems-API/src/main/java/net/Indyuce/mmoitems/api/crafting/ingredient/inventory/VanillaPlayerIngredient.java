@@ -9,12 +9,11 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 
 public class VanillaPlayerIngredient extends PlayerIngredient {
-    @NotNull public ItemStack getSourceItem() { return sourceItem; }
-    @NotNull final ItemStack sourceItem;
-
+    @NotNull
+    final ItemStack sourceItem;
     private final Material material;
-    @Nullable private final String displayName;
-
+    @Nullable
+    private final String displayName;
     public VanillaPlayerIngredient(NBTItem item) {
         super(item);
 
@@ -23,7 +22,16 @@ public class VanillaPlayerIngredient extends PlayerIngredient {
         this.material = item.getItem().getType();
 
         ItemMeta meta = item.getItem().getItemMeta();
-        if (meta != null) { this.displayName = meta.hasDisplayName() ? meta.getDisplayName() : null; } else { this.displayName = null; }
+        if (meta != null) {
+            this.displayName = meta.hasDisplayName() ? meta.getDisplayName() : null;
+        } else {
+            this.displayName = null;
+        }
+    }
+
+    @NotNull
+    public ItemStack getSourceItem() {
+        return sourceItem;
     }
 
     public Material getType() {

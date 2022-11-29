@@ -9,14 +9,14 @@ import java.util.function.Predicate;
  * Filters items with a specific type
  */
 public class TypeFilter implements Predicate<MMOItemTemplate> {
-	private final Type type;
+    private final Type type;
 
-	public TypeFilter(Type type) {
-		this.type = type;
-	}
+    public TypeFilter(Type type) {
+        this.type = type;
+    }
 
-	@Override
-	public boolean test(MMOItemTemplate template) {
-		return template.getType().equals(type);
-	}
+    @Override
+    public boolean test(MMOItemTemplate template) {
+        return template.getType().equals(type);
+    }
 }

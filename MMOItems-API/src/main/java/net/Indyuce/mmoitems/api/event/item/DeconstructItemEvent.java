@@ -10,50 +10,46 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public class DeconstructItemEvent extends PlayerDataEvent {
-	private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
 
-	private final VolatileMMOItem consumable;
-	private final NBTItem deconstructed;
-	private final List<ItemStack> loot;
+    private final VolatileMMOItem consumable;
+    private final NBTItem deconstructed;
+    private final List<ItemStack> loot;
 
-	/**
-	 * Called when a player deconstructs an item using a consumable
-	 * 
-	 * @param playerData
-	 *            Player deconstructing the item
-	 * @param consumable
-	 *            Consumable used to deconstruct the item
-	 * @param deconstructed
-	 *            Item being deconstructed
-	 * @param loot
-	 *            Items which will be given to the player if the item is
-	 *            successfully deconstructed
-	 */
-	public DeconstructItemEvent(PlayerData playerData, VolatileMMOItem consumable, NBTItem deconstructed, List<ItemStack> loot) {
-		super(playerData);
+    /**
+     * Called when a player deconstructs an item using a consumable
+     *
+     * @param playerData    Player deconstructing the item
+     * @param consumable    Consumable used to deconstruct the item
+     * @param deconstructed Item being deconstructed
+     * @param loot          Items which will be given to the player if the item is
+     *                      successfully deconstructed
+     */
+    public DeconstructItemEvent(PlayerData playerData, VolatileMMOItem consumable, NBTItem deconstructed, List<ItemStack> loot) {
+        super(playerData);
 
-		this.consumable = consumable;
-		this.deconstructed = deconstructed;
-		this.loot = loot;
-	}
+        this.consumable = consumable;
+        this.deconstructed = deconstructed;
+        this.loot = loot;
+    }
 
-	public VolatileMMOItem getConsumable() {
-		return consumable;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	public NBTItem getDeconstructedItem() {
-		return deconstructed;
-	}
+    public VolatileMMOItem getConsumable() {
+        return consumable;
+    }
 
-	public List<ItemStack> getLoot() {
-		return loot;
-	}
+    public NBTItem getDeconstructedItem() {
+        return deconstructed;
+    }
 
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    public List<ItemStack> getLoot() {
+        return loot;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 }

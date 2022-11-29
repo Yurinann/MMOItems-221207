@@ -31,21 +31,6 @@ public class ReloadCommandTreeNode extends CommandTreeNode {
         return CommandResult.SUCCESS;
     }
 
-    public class SubReloadCommandTreeNode extends CommandTreeNode {
-        private final Consumer<CommandSender> action;
-
-        public SubReloadCommandTreeNode(String sub, CommandTreeNode parent, Consumer<CommandSender> action) {
-            super(parent, sub);
-            this.action = action;
-        }
-
-        @Override
-        public CommandResult execute(CommandSender sender, String[] args) {
-            action.accept(sender);
-            return CommandResult.SUCCESS;
-        }
-    }
-
     public void reloadSkills(CommandSender sender) {
         MythicLib.plugin.getSkills().initialize(true);
         MMOItems.plugin.getSkills().initialize(true);
@@ -99,5 +84,20 @@ public class ReloadCommandTreeNode extends CommandTreeNode {
                 + MMOItems.plugin.getCrafting().getAll().size() + ChatColor.GRAY + " Crafting Stations");
         sender.sendMessage(MMOItems.plugin.getPrefix() + "- " + ChatColor.RED
                 + MMOItems.plugin.getCrafting().countRecipes() + ChatColor.GRAY + " Recipes");
+    }
+
+    public class SubReloadCommandTreeNode extends CommandTreeNode {
+        private final Consumer<CommandSender> action;
+
+        public SubReloadCommandTreeNode(String sub, CommandTreeNode parent, Consumer<CommandSender> action) {
+            super(parent, sub);
+            this.action = action;
+        }
+
+        @Override
+        public CommandResult execute(CommandSender sender, String[] args) {
+            action.accept(sender);
+            return CommandResult.SUCCESS;
+        }
     }
 }

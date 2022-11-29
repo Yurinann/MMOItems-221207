@@ -27,10 +27,18 @@ import java.util.Objects;
  */
 public class RBA_AmountOutput extends RecipeButtonAction {
 
+    public static final String AMOUNT_INGREDIENTS = "amount";
+    @NotNull
+    public final String[] amountLog = {
+            FriendlyFeedbackProvider.quickForPlayer(FFPMMOItems.get(), "Write in the chat the amount of output of this recipe."),
+            FriendlyFeedbackProvider.quickForPlayer(FFPMMOItems.get(), "It must be an integer number, ex $e4$b.")};
+    @NotNull
+    final ItemStack button;
+
     /**
      * The button that displays how much output this recipe will produce.
      *
-     * @param inv Inventory this button is part of
+     * @param inv        Inventory this button is part of
      * @param resultItem Output item of this recipe
      */
     public RBA_AmountOutput(@NotNull RecipeMakerGUI inv, @NotNull ItemStack resultItem) {
@@ -46,16 +54,18 @@ public class RBA_AmountOutput extends RecipeButtonAction {
         @NotNull ItemMeta buttonMeta = Objects.requireNonNull(button.getItemMeta());
         @NotNull ItemMeta resultMeta = Objects.requireNonNull(resultItem.getItemMeta());
 
-        if (MythicLib.plugin.getVersion().isStrictlyHigher(1, 13) && resultMeta.hasCustomModelData()) { buttonMeta.setCustomModelData(resultMeta.getCustomModelData()); }
-        if (resultMeta instanceof LeatherArmorMeta) { ((LeatherArmorMeta) buttonMeta).setColor(((LeatherArmorMeta) resultMeta).getColor()); }
-        if (resultMeta instanceof BannerMeta) { ((BannerMeta) buttonMeta).setPatterns(((BannerMeta) resultMeta).getPatterns()); }
+        if (MythicLib.plugin.getVersion().isStrictlyHigher(1, 13) && resultMeta.hasCustomModelData()) {
+            buttonMeta.setCustomModelData(resultMeta.getCustomModelData());
+        }
+        if (resultMeta instanceof LeatherArmorMeta) {
+            ((LeatherArmorMeta) buttonMeta).setColor(((LeatherArmorMeta) resultMeta).getColor());
+        }
+        if (resultMeta instanceof BannerMeta) {
+            ((BannerMeta) buttonMeta).setPatterns(((BannerMeta) resultMeta).getPatterns());
+        }
         buttonMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DYE, ItemFlag.HIDE_POTION_EFFECTS);
         button.setItemMeta(buttonMeta);
     }
-
-    @NotNull public final String[] amountLog = {
-            FriendlyFeedbackProvider.quickForPlayer(FFPMMOItems.get(), "Write in the chat the amount of output of this recipe."),
-            FriendlyFeedbackProvider.quickForPlayer(FFPMMOItems.get(), "It must be an integer number, ex $e4$b.")};
 
     /**
      * When the player clicks the display item, it means they want to change
@@ -64,7 +74,8 @@ public class RBA_AmountOutput extends RecipeButtonAction {
      *
      * @return If the player clicked the display item
      */
-    @Override public boolean runPrimary() {
+    @Override
+    public boolean runPrimary() {
 
         // Query user for input
         new StatEdition(inv, ItemStats.CRAFTING, RecipeMakerGUI.PRIMARY, this).enable(amountLog);
@@ -72,23 +83,30 @@ public class RBA_AmountOutput extends RecipeButtonAction {
         // Success
         return true;
     }
+
     /**
      * The player has written a number that will be set as the output amount of this recipe.
      * <br>
      * The amount is saved in YML path {@code [ID].crafting.[recipe].[name].amount}
      *
      * @param message Input from the user
-     * @param info Additional objects, specific to each case, provided.
-     *
+     * @param info    Additional objects, specific to each case, provided.
      * @throws IllegalArgumentException If the player did not write an integer number
      */
-    @Override public void primaryProcessInput(@NotNull String message, Object... info) throws IllegalArgumentException {
+    @Override
+    public void primaryProcessInput(@NotNull String message, Object... info) throws IllegalArgumentException {
 
         // Parse
         Integer val = SilentNumbers.IntegerParse(message);
-        if (val == null) { throw new IllegalArgumentException("Expected an integer number instead of $u" + message); }
-        if (val > 64) { throw new IllegalArgumentException("Max stack size is $e64$b, Minecraft doesnt support $u" + message); }
-        if (val <= 0) { throw new IllegalArgumentException("Min output stack size is $e0$b, you specified $u" + message); }
+        if (val == null) {
+            throw new IllegalArgumentException("Expected an integer number instead of $u" + message);
+        }
+        if (val > 64) {
+            throw new IllegalArgumentException("Max stack size is $e64$b, Minecraft doesnt support $u" + message);
+        }
+        if (val <= 0) {
+            throw new IllegalArgumentException("Min output stack size is $e0$b, you specified $u" + message);
+        }
 
         // Set value
         getInv().getNameSection().set(AMOUNT_INGREDIENTS, val);
@@ -100,7 +118,8 @@ public class RBA_AmountOutput extends RecipeButtonAction {
      *
      * @return If the player clicked the display item
      */
-    @Override public boolean runSecondary() {
+    @Override
+    public boolean runSecondary() {
 
         // Set value
         getInv().getNameSection().set(AMOUNT_INGREDIENTS, null);
@@ -119,32 +138,32 @@ public class RBA_AmountOutput extends RecipeButtonAction {
     /**
      * @return Straight from the file, the amount output of this recipe.
      */
-    public int getOutputAmount() { return getInv().getNameSection().getInt(AMOUNT_INGREDIENTS, 1); }
+    public int getOutputAmount() {
+        return getInv().getNameSection().getInt(AMOUNT_INGREDIENTS, 1);
+    }
 
     /**
      * The user needs to input nothing; Thus this method never runs.
      *
      * @param message Input from the user
-     * @param info Additional objects, specific to each case, provided.
-     *
+     * @param info    Additional objects, specific to each case, provided.
      * @throws IllegalArgumentException Never
      */
-    @Override public void secondaryProcessInput(@NotNull String message, Object... info) throws IllegalArgumentException { }
-
-    @NotNull final ItemStack button;
+    @Override
+    public void secondaryProcessInput(@NotNull String message, Object... info) throws IllegalArgumentException {
+    }
 
     @Override
-    @NotNull public ItemStack getButton() {
+    @NotNull
+    public ItemStack getButton() {
 
         // Dupe and change amount
         ItemStack ret = button.clone();
         ret.setAmount(getOutputAmount());
 
         // That's it
-        return RecipeMakerGUI.addLore(ret, SilentNumbers.toArrayList( "",
+        return RecipeMakerGUI.addLore(ret, SilentNumbers.toArrayList("",
                 ChatColor.YELLOW + AltChar.listDash + " Right click to reset to 1.",
-                ChatColor.YELLOW + AltChar.listDash + " Left click to edit amount." ));
+                ChatColor.YELLOW + AltChar.listDash + " Left click to edit amount."));
     }
-
-    public static final String AMOUNT_INGREDIENTS = "amount";
 }

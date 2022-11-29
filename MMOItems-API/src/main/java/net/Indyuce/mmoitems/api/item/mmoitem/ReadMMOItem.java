@@ -9,53 +9,54 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class ReadMMOItem extends MMOItem {
-	@NotNull private final NBTItem item;
+    @NotNull
+    private final NBTItem item;
 
-	/**
-	 * This class is used when reading an MMOItem from an ItemStack (the
-	 * opposite of ItemStackBuilder, like an ItemStackReader)
-	 *
-	 * @param item
-	 *            The NBTItem being read to generate an MMOItem
-	 */
-	public ReadMMOItem(@NotNull NBTItem item) {
-		super(Type.get(item.getType()), item.getString("MMOITEMS_ITEM_ID"));
+    /**
+     * This class is used when reading an MMOItem from an ItemStack (the
+     * opposite of ItemStackBuilder, like an ItemStackReader)
+     *
+     * @param item The NBTItem being read to generate an MMOItem
+     */
+    public ReadMMOItem(@NotNull NBTItem item) {
+        super(Type.get(item.getType()), item.getString("MMOITEMS_ITEM_ID"));
 
-		this.item = item;
-	}
+        this.item = item;
+    }
 
-	@Override
-	@Deprecated
-	public int getDamage() {
+    @Override
+    @Deprecated
+    public int getDamage() {
 
-		// Does it use custom durability?
-		if (hasData(ItemStats.MAX_DURABILITY))
-			return getNBT().hasTag("MMOITEMS_DURABILITY") ? getNBT().getInteger("MMOITEMS_MAX_DURABILITY") - getNBT().getInteger("MMOITEMS_DURABILITY") : 0;
+        // Does it use custom durability?
+        if (hasData(ItemStats.MAX_DURABILITY))
+            return getNBT().hasTag("MMOITEMS_DURABILITY") ? getNBT().getInteger("MMOITEMS_MAX_DURABILITY") - getNBT().getInteger("MMOITEMS_DURABILITY") : 0;
 
-			// Its using vanilla durability-yo
-		else {
+            // Its using vanilla durability-yo
+        else {
 
-			// Uh use the item stack I guess
-			ItemStack asStack = getNBT().getItem();
+            // Uh use the item stack I guess
+            ItemStack asStack = getNBT().getItem();
 
-			// Bruh
-			if (asStack.hasItemMeta()) {
-				ItemMeta iMeta = asStack.getItemMeta();
+            // Bruh
+            if (asStack.hasItemMeta()) {
+                ItemMeta iMeta = asStack.getItemMeta();
 
-				// Is it damageable?
-				if (iMeta instanceof Damageable) {
+                // Is it damageable?
+                if (iMeta instanceof Damageable) {
 
-					// Return that damage
-					return ((Damageable) iMeta).getDamage();
-				}
-			}
+                    // Return that damage
+                    return ((Damageable) iMeta).getDamage();
+                }
+            }
 
-			// Not damageable no damage
-			return 0;
-		}
-	}
+            // Not damageable no damage
+            return 0;
+        }
+    }
 
-	@NotNull public NBTItem getNBT() {
-		return item;
-	}
+    @NotNull
+    public NBTItem getNBT() {
+        return item;
+    }
 }

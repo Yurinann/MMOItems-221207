@@ -29,13 +29,29 @@ import org.jetbrains.annotations.Nullable;
 
 public class RMGRR_Smithing implements RecipeRegistry {
 
-    @NotNull @Override public String getRecipeTypeName() { return "Smithing"; }
-    @NotNull @Override public String getRecipeConfigPath() { return "smithing"; }
+    @NotNull
+    final ItemStack displayListItem = RecipeMakerGUI.rename(new ItemStack(Material.SMITHING_TABLE), FFPMMOItems.get().getExampleFormat() + "Smithing Recipe");
 
-    @NotNull final ItemStack displayListItem = RecipeMakerGUI.rename(new ItemStack(Material.SMITHING_TABLE), FFPMMOItems.get().getExampleFormat() + "Smithing Recipe");
-    @NotNull @Override public ItemStack getDisplayListItem() { return displayListItem; }
+    @NotNull
+    @Override
+    public String getRecipeTypeName() {
+        return "Smithing";
+    }
 
-    @Override public void openForPlayer(@NotNull EditionInventory inv, @NotNull String recipeName, Object... otherParams) {
+    @NotNull
+    @Override
+    public String getRecipeConfigPath() {
+        return "smithing";
+    }
+
+    @NotNull
+    @Override
+    public ItemStack getDisplayListItem() {
+        return displayListItem;
+    }
+
+    @Override
+    public void openForPlayer(@NotNull EditionInventory inv, @NotNull String recipeName, Object... otherParams) {
         new RMG_Smithing(inv.getPlayer(), inv.getEdited(), recipeName, this).open(inv.getPreviousPage());
     }
 
@@ -49,7 +65,9 @@ public class RMGRR_Smithing implements RecipeRegistry {
         // Read some values
         ConfigurationSection recipeSection = RecipeMakerGUI.getSection(recipeTypeSection, recipeName);
         NamespacedKey nk = namespace.getValue();
-        if (nk == null) { throw new IllegalArgumentException(FriendlyFeedbackProvider.quickForConsole(FFPMMOItems.get(), "Illegal (Null) Namespace")); }
+        if (nk == null) {
+            throw new IllegalArgumentException(FriendlyFeedbackProvider.quickForConsole(FFPMMOItems.get(), "Illegal (Null) Namespace"));
+        }
 
         //region Identify the input
 
@@ -60,7 +78,9 @@ public class RMGRR_Smithing implements RecipeRegistry {
         // All right lets read them
         ProvidedUIFilter itemPoof = RecipeMakerGUI.readIngredientFrom(inputSplit[0], ffp);
         ProvidedUIFilter ingotPoof = RecipeMakerGUI.readIngredientFrom(inputSplit[1], ffp);
-        if (itemPoof.isAir() || ingotPoof.isAir()) { throw new IllegalArgumentException(FriendlyFeedbackProvider.quickForConsole(FFPMMOItems.get(), "Smithing recipe containing AIR, $fignored$b.")); }
+        if (itemPoof.isAir() || ingotPoof.isAir()) {
+            throw new IllegalArgumentException(FriendlyFeedbackProvider.quickForConsole(FFPMMOItems.get(), "Smithing recipe containing AIR, $fignored$b."));
+        }
 
         // Make ingredients
         MythicRecipeIngredient itemIngredient = new MythicRecipeIngredient(itemPoof);
@@ -107,12 +127,19 @@ public class RMGRR_Smithing implements RecipeRegistry {
         return ret;
     }
 
-    @NotNull SmithingCombinationType readSCT(@Nullable String str) {
+    @NotNull
+    SmithingCombinationType readSCT(@Nullable String str) {
 
         // Default value is max
-        if (str == null) { return SmithingCombinationType.MAXIMUM; }
+        if (str == null) {
+            return SmithingCombinationType.MAXIMUM;
+        }
 
         // Correct syntax or default
-        try { return SmithingCombinationType.valueOf(str); } catch (IllegalArgumentException ignored) { return SmithingCombinationType.MAXIMUM; }
+        try {
+            return SmithingCombinationType.valueOf(str);
+        } catch (IllegalArgumentException ignored) {
+            return SmithingCombinationType.MAXIMUM;
+        }
     }
 }

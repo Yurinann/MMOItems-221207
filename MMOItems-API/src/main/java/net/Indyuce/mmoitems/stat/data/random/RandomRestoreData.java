@@ -7,30 +7,30 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class RandomRestoreData implements RandomStatData<RestoreData> {
-	private final NumericStatFormula health, food, saturation;
+    private final NumericStatFormula health, food, saturation;
 
-	public RandomRestoreData(ConfigurationSection config) {
-		Validate.notNull(config, "Could not load restore config");
+    public RandomRestoreData(ConfigurationSection config) {
+        Validate.notNull(config, "Could not load restore config");
 
-		health = config.contains("health") ? new NumericStatFormula(config) : NumericStatFormula.ZERO;
-		food = config.contains("food") ? new NumericStatFormula(config) : NumericStatFormula.ZERO;
-		saturation = config.contains("saturation") ? new NumericStatFormula(config) : NumericStatFormula.ZERO;
-	}
+        health = config.contains("health") ? new NumericStatFormula(config) : NumericStatFormula.ZERO;
+        food = config.contains("food") ? new NumericStatFormula(config) : NumericStatFormula.ZERO;
+        saturation = config.contains("saturation") ? new NumericStatFormula(config) : NumericStatFormula.ZERO;
+    }
 
-	public NumericStatFormula getHealth() {
-		return health;
-	}
+    public NumericStatFormula getHealth() {
+        return health;
+    }
 
-	public NumericStatFormula getFood() {
-		return food;
-	}
+    public NumericStatFormula getFood() {
+        return food;
+    }
 
-	public NumericStatFormula getSaturation() {
-		return saturation;
-	}
+    public NumericStatFormula getSaturation() {
+        return saturation;
+    }
 
-	@Override
-	public RestoreData randomize(MMOItemBuilder builder) {
-		return new RestoreData(health.calculate(builder.getLevel()), food.calculate(builder.getLevel()), saturation.calculate(builder.getLevel()));
-	}
+    @Override
+    public RestoreData randomize(MMOItemBuilder builder) {
+        return new RestoreData(health.calculate(builder.getLevel()), food.calculate(builder.getLevel()), saturation.calculate(builder.getLevel()));
+    }
 }

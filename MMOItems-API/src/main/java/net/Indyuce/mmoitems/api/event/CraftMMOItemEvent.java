@@ -5,29 +5,29 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
 public class CraftMMOItemEvent extends PlayerDataEvent {
-	private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
 
-	private ItemStack result;
+    private ItemStack result;
 
-	public CraftMMOItemEvent(PlayerData playerData, ItemStack result) {
-		super(playerData);
+    public CraftMMOItemEvent(PlayerData playerData, ItemStack result) {
+        super(playerData);
 
-		this.result = result;
-	}
+        this.result = result;
+    }
 
-	public ItemStack getResult() {
-		return result;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	public void setResult(ItemStack result) {
-		this.result = result;
-	}
+    public ItemStack getResult() {
+        return result;
+    }
 
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    public void setResult(ItemStack result) {
+        this.result = result;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 }

@@ -13,41 +13,41 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class ItemGenerationDropItem extends DropItem {
-	protected final int level;
-	protected final ItemTier tier;
+    protected final int level;
+    protected final ItemTier tier;
 
-	// chance to get one of these two modifiers
-	private final double unidentified, soulbound;
+    // chance to get one of these two modifiers
+    private final double unidentified, soulbound;
 
-	public ItemGenerationDropItem(MMOLineConfig config) {
-		super(config);
+    public ItemGenerationDropItem(MMOLineConfig config) {
+        super(config);
 
-		level = config.getInt("level", 0);
+        level = config.getInt("level", 0);
 
-		if (config.contains("tier")) {
-			String format = config.getString("tier").toUpperCase().replace("-", "_").replace(" ", "_");
-			Validate.isTrue(MMOItems.plugin.getTiers().has(format), "Could not find item tier with ID '" + format + "'");
-			tier = MMOItems.plugin.getTiers().get(format);
-		} else
-			tier = null;
+        if (config.contains("tier")) {
+            String format = config.getString("tier").toUpperCase().replace("-", "_").replace(" ", "_");
+            Validate.isTrue(MMOItems.plugin.getTiers().has(format), "Could not find item tier with ID '" + format + "'");
+            tier = MMOItems.plugin.getTiers().get(format);
+        } else
+            tier = null;
 
-		unidentified = config.getDouble("unidentified", 0);
-		soulbound = config.getDouble("soulbound", 0);
-	}
+        unidentified = config.getDouble("unidentified", 0);
+        soulbound = config.getDouble("soulbound", 0);
+    }
 
-	public MMOItem rollMMOItem(MMOItemTemplate template, RPGPlayer rpgPlayer) {
-		int itemLevel = level > 0 ? level
-				: template.hasOption(TemplateOption.LEVEL_ITEM) ? MMOItems.plugin.getTemplates().rollLevel(rpgPlayer.getLevel()) : 0;
-		ItemTier itemTier = tier != null ? tier : template.hasOption(TemplateOption.TIERED) ? MMOItems.plugin.getTemplates().rollTier() : null;
-		return new MMOItemBuilder(template, itemLevel, itemTier).build();
-	}
+    public MMOItem rollMMOItem(MMOItemTemplate template, RPGPlayer rpgPlayer) {
+        int itemLevel = level > 0 ? level
+                : template.hasOption(TemplateOption.LEVEL_ITEM) ? MMOItems.plugin.getTemplates().rollLevel(rpgPlayer.getLevel()) : 0;
+        ItemTier itemTier = tier != null ? tier : template.hasOption(TemplateOption.TIERED) ? MMOItems.plugin.getTemplates().rollTier() : null;
+        return new MMOItemBuilder(template, itemLevel, itemTier).build();
+    }
 
-	public ItemStack rollUnidentification(MMOItem mmoitem) {
-		return random.nextDouble() < unidentified ? mmoitem.getType().getUnidentifiedTemplate().newBuilder(mmoitem.newBuilder().buildNBT()).build()
-				: mmoitem.newBuilder().build();
-	}
+    public ItemStack rollUnidentification(MMOItem mmoitem) {
+        return random.nextDouble() < unidentified ? mmoitem.getType().getUnidentifiedTemplate().newBuilder(mmoitem.newBuilder().buildNBT()).build()
+                : mmoitem.newBuilder().build();
+    }
 
-	public boolean rollSoulbound() {
-		return random.nextDouble() < soulbound;
-	}
+    public boolean rollSoulbound() {
+        return random.nextDouble() < soulbound;
+    }
 }

@@ -22,72 +22,72 @@ import java.util.List;
 import java.util.Optional;
 
 public class Lore extends StringListStat implements GemStoneStat {
-	public Lore() {
-		super("LORE", VersionMaterial.WRITABLE_BOOK.toMaterial(), "Lore", new String[] { "The item lore." }, new String[] { "all" });
-	}
+    public Lore() {
+        super("LORE", VersionMaterial.WRITABLE_BOOK.toMaterial(), "Lore", new String[]{"The item lore."}, new String[]{"all"});
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public StringListData whenInitialized(Object object) {
-		Validate.isTrue(object instanceof List<?>, "Must specify a string list");
-		return new StringListData((List<String>) object);
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public StringListData whenInitialized(Object object) {
+        Validate.isTrue(object instanceof List<?>, "Must specify a string list");
+        return new StringListData((List<String>) object);
+    }
 
-	@Override
-	public void whenApplied(@NotNull ItemStackBuilder item, @NotNull StringListData data) {
+    @Override
+    public void whenApplied(@NotNull ItemStackBuilder item, @NotNull StringListData data) {
 
-		// Apply yes
-		item.addItemTag(getAppliedNBT(data));
-	}
+        // Apply yes
+        item.addItemTag(getAppliedNBT(data));
+    }
 
-	@Override
-	public void whenClicked(@NotNull EditionInventory inv, @NotNull InventoryClickEvent event) {
-		if (event.getAction() == InventoryAction.PICKUP_ALL)
-			new StatEdition(inv, ItemStats.LORE).enable("Write in the chat the lore line you want to add.");
+    @Override
+    public void whenClicked(@NotNull EditionInventory inv, @NotNull InventoryClickEvent event) {
+        if (event.getAction() == InventoryAction.PICKUP_ALL)
+            new StatEdition(inv, ItemStats.LORE).enable("Write in the chat the lore line you want to add.");
 
-		if (event.getAction() == InventoryAction.PICKUP_HALF && inv.getEditedSection().contains("lore")) {
-			List<String> lore = inv.getEditedSection().getStringList("lore");
-			if (lore.isEmpty())
-				return;
+        if (event.getAction() == InventoryAction.PICKUP_HALF && inv.getEditedSection().contains("lore")) {
+            List<String> lore = inv.getEditedSection().getStringList("lore");
+            if (lore.isEmpty())
+                return;
 
-			String last = lore.get(lore.size() - 1);
-			lore.remove(last);
-			inv.getEditedSection().set("lore", lore.isEmpty() ? null : lore);
-			inv.registerTemplateEdition();
-			inv.getPlayer()
-					.sendMessage(MMOItems.plugin.getPrefix() + "Successfully removed '" + MythicLib.plugin.parseColors(last) + ChatColor.GRAY + "'.");
-		}
-	}
+            String last = lore.get(lore.size() - 1);
+            lore.remove(last);
+            inv.getEditedSection().set("lore", lore.isEmpty() ? null : lore);
+            inv.registerTemplateEdition();
+            inv.getPlayer()
+                    .sendMessage(MMOItems.plugin.getPrefix() + "Successfully removed '" + MythicLib.plugin.parseColors(last) + ChatColor.GRAY + "'.");
+        }
+    }
 
-	@Override
-	public void whenInput(@NotNull EditionInventory inv, @NotNull String message, Object... info) {
-		List<String> lore = inv.getEditedSection().contains("lore") ? inv.getEditedSection().getStringList("lore") : new ArrayList<>();
-		lore.add(message);
-		inv.getEditedSection().set("lore", lore);
-		inv.registerTemplateEdition();
-		inv.getPlayer().sendMessage(MMOItems.plugin.getPrefix() + "Lore successfully added.");
-	}
+    @Override
+    public void whenInput(@NotNull EditionInventory inv, @NotNull String message, Object... info) {
+        List<String> lore = inv.getEditedSection().contains("lore") ? inv.getEditedSection().getStringList("lore") : new ArrayList<>();
+        lore.add(message);
+        inv.getEditedSection().set("lore", lore);
+        inv.registerTemplateEdition();
+        inv.getPlayer().sendMessage(MMOItems.plugin.getPrefix() + "Lore successfully added.");
+    }
 
-	@Override
-	public void whenDisplayed(List<String> lore, Optional<StringListData> statData) {
+    @Override
+    public void whenDisplayed(List<String> lore, Optional<StringListData> statData) {
 
-		if (statData.isPresent()) {
-			lore.add(ChatColor.GRAY + "Current Value:");
-			StringListData data =  statData.get();
-			data.getList().forEach(element -> lore.add(ChatColor.GRAY + MythicLib.plugin.parseColors(element)));
+        if (statData.isPresent()) {
+            lore.add(ChatColor.GRAY + "Current Value:");
+            StringListData data = statData.get();
+            data.getList().forEach(element -> lore.add(ChatColor.GRAY + MythicLib.plugin.parseColors(element)));
 
-		} else
-			lore.add(ChatColor.GRAY + "Current Value: " + ChatColor.RED + "None");
+        } else
+            lore.add(ChatColor.GRAY + "Current Value: " + ChatColor.RED + "None");
 
-		lore.add("");
-		lore.add(ChatColor.YELLOW + AltChar.listDash + " Click to add a line.");
-		lore.add(ChatColor.YELLOW + AltChar.listDash + " Right click to remove the last line.");
-	}
+        lore.add("");
+        lore.add(ChatColor.YELLOW + AltChar.listDash + " Click to add a line.");
+        lore.add(ChatColor.YELLOW + AltChar.listDash + " Right click to remove the last line.");
+    }
 
-	/*
-	 * The lore is not directly inserted into the final itemStack lore
-	 * because all stats have not registered all their lore placeholders
-	 * yet. The lore is only saved in a JSon array so that it can be
-	 * recalculated LATER on with right placeholders
-	 */
+    /*
+     * The lore is not directly inserted into the final itemStack lore
+     * because all stats have not registered all their lore placeholders
+     * yet. The lore is only saved in a JSon array so that it can be
+     * recalculated LATER on with right placeholders
+     */
 }

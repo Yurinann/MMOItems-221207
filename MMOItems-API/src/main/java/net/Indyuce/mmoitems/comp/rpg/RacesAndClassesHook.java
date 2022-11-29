@@ -62,15 +62,15 @@ public class RacesAndClassesHook implements RPGHandler, Listener {
         }
 
         @Override
-        public double getStamina() {
-            RaCPlayer info = RaCPlayerManager.get().getPlayer(getPlayer().getUniqueId());
-            return info.getPlayer().getFoodLevel();
-        }
-
-        @Override
         public void setMana(double value) {
             RaCPlayer info = RaCPlayerManager.get().getPlayer(getPlayer().getUniqueId());
             info.getManaManager().fillMana(value - info.getManaManager().getCurrentMana());
+        }
+
+        @Override
+        public double getStamina() {
+            RaCPlayer info = RaCPlayerManager.get().getPlayer(getPlayer().getUniqueId());
+            return info.getPlayer().getFoodLevel();
         }
 
         @Override

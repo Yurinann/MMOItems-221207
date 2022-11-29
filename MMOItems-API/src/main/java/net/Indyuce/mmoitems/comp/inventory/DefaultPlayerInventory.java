@@ -15,25 +15,27 @@ import java.util.List;
  */
 public class DefaultPlayerInventory implements PlayerInventory {
 
-	@Override
-	@NotNull
-	public List<EquippedItem> getInventory(Player player) {
-		List<EquippedItem> list = new ArrayList<>();
+    @Override
+    @NotNull
+    public List<EquippedItem> getInventory(Player player) {
+        List<EquippedItem> list = new ArrayList<>();
 
-		if (player.getEquipment() == null) { return list; }
+        if (player.getEquipment() == null) {
+            return list;
+        }
 
-		// Mainhand
-		list.add(new EIDefaultInventory(player, -7, player.getEquipment().getItemInMainHand(), EquipmentSlot.MAIN_HAND));
+        // Mainhand
+        list.add(new EIDefaultInventory(player, -7, player.getEquipment().getItemInMainHand(), EquipmentSlot.MAIN_HAND));
 
-		// Offhand
-		list.add(new EIDefaultInventory(player, -106, player.getEquipment().getItemInOffHand(), EquipmentSlot.OFF_HAND));
+        // Offhand
+        list.add(new EIDefaultInventory(player, -106, player.getEquipment().getItemInOffHand(), EquipmentSlot.OFF_HAND));
 
-		// Armor
-		list.add(new EIDefaultInventory(player, 103, player.getEquipment().getHelmet(), EquipmentSlot.ARMOR));
-		list.add(new EIDefaultInventory(player, 102, player.getEquipment().getChestplate(), EquipmentSlot.ARMOR));
-		list.add(new EIDefaultInventory(player, 101, player.getEquipment().getLeggings(), EquipmentSlot.ARMOR));
-		list.add(new EIDefaultInventory(player, 100, player.getEquipment().getBoots(), EquipmentSlot.ARMOR));
+        // Armor
+        list.add(new EIDefaultInventory(player, 103, player.getEquipment().getHelmet(), EquipmentSlot.ARMOR));
+        list.add(new EIDefaultInventory(player, 102, player.getEquipment().getChestplate(), EquipmentSlot.ARMOR));
+        list.add(new EIDefaultInventory(player, 101, player.getEquipment().getLeggings(), EquipmentSlot.ARMOR));
+        list.add(new EIDefaultInventory(player, 100, player.getEquipment().getBoots(), EquipmentSlot.ARMOR));
 
-		return list;
-	}
+        return list;
+    }
 }

@@ -17,18 +17,22 @@ import java.util.ArrayList;
  */
 public class RequiredBiomes extends StringListStat implements ItemRestriction, GemStoneStat {
     public RequiredBiomes() {
-        super("REQUIRED_BIOMES",  Material.JUNGLE_SAPLING, "Required Biomes", new String[] { "The biome the player must be within", "for this item to activate." }, new String[] { "!block", "all" });
+        super("REQUIRED_BIOMES", Material.JUNGLE_SAPLING, "Required Biomes", new String[]{"The biome the player must be within", "for this item to activate."}, new String[]{"!block", "all"});
     }
 
     @Override
     public boolean canUse(RPGPlayer player, NBTItem item, boolean message) {
 
         // bruh
-        if (!item.hasTag(getNBTPath())) { return true; }
+        if (!item.hasTag(getNBTPath())) {
+            return true;
+        }
 
         // Find the relevant tags
         ArrayList<ItemTag> relevantTags = new ArrayList<>();
-        if (item.hasTag(getNBTPath())) { relevantTags.add(ItemTag.getTagAtPath(getNBTPath(), item, SupportedNBTTagValues.STRING)); }
+        if (item.hasTag(getNBTPath())) {
+            relevantTags.add(ItemTag.getTagAtPath(getNBTPath(), item, SupportedNBTTagValues.STRING));
+        }
 
         // Generate data
         StringListData data = (StringListData) getLoadedNBT(relevantTags);
@@ -41,13 +45,18 @@ public class RequiredBiomes extends StringListStat implements ItemRestriction, G
 
                 // Crop
                 String tst = biome.toLowerCase().replace(" ", "_").replace("-", "_");
-                if (tst.startsWith("!")) { counter = true; tst = tst.substring(1); }
+                if (tst.startsWith("!")) {
+                    counter = true;
+                    tst = tst.substring(1);
+                }
 
                 // Get biome
                 String b = player.getPlayer().getLocation().getBlock().getBiome().getKey().getKey();
 
                 // Check
-                if (b.contains(tst)) { return !counter; }
+                if (b.contains(tst)) {
+                    return !counter;
+                }
             }
 
             // If the biome evaded all restrictions it will return true; if the biome didn't met any specifications it will be false.
@@ -58,5 +67,7 @@ public class RequiredBiomes extends StringListStat implements ItemRestriction, G
     }
 
     @Override
-    public boolean isDynamic() { return true; }
+    public boolean isDynamic() {
+        return true;
+    }
 }

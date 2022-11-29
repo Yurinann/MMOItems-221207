@@ -31,9 +31,38 @@ public class ReforgeOptions {
 
     @NotNull
     String keepCase = ChatColor.GRAY.toString();
+    @NotNull
+    ArrayList<String> blacklistedItems = new ArrayList<>();
 
-    public void setKeepCase(@NotNull String kc) {
-        keepCase = kc;
+    public ReforgeOptions(ConfigurationSection config) {
+        keepName = config.getBoolean("display-name");
+        keepLore = config.getBoolean("lore");
+        keepEnchantments = config.getBoolean("enchantments");
+        keepUpgrades = config.getBoolean("upgrades");
+        keepGemStones = config.getBoolean("gemstones", false) || config.getBoolean("gems", false);
+        keepSkins = config.getBoolean("skins", false);
+        keepSoulBind = config.getBoolean("soulbound");
+        keepCase = config.getString("kept-lore-prefix", ChatColor.GRAY.toString());
+        keepExternalSH = config.getBoolean("external-sh", true);
+        keepModifications = config.getBoolean("modifications");
+        reRoll = config.getBoolean("reroll");
+        keepAdvancedEnchantments = config.getBoolean("advanced-enchantments");
+        keepTier = config.contains("tier") ? config.getBoolean("tier", true) : null;
+    }
+
+    public ReforgeOptions(boolean... values) {
+        keepName = arr(values, 0);
+        keepLore = arr(values, 1);
+        keepEnchantments = arr(values, 2);
+        keepUpgrades = arr(values, 3);
+        keepGemStones = arr(values, 4);
+        keepSoulBind = arr(values, 5);
+        keepExternalSH = arr(values, 6);
+        reRoll = arr(values, 7);
+        keepModifications = arr(values, 8);
+        keepAdvancedEnchantments = arr(values, 9);
+        keepSkins = arr(values, 10);
+        keepTier = arr(values, 11);
     }
 
     @NotNull
@@ -41,8 +70,9 @@ public class ReforgeOptions {
         return keepCase;
     }
 
-    @NotNull
-    ArrayList<String> blacklistedItems = new ArrayList<>();
+    public void setKeepCase(@NotNull String kc) {
+        keepCase = kc;
+    }
 
     /**
      * Apparently, people like to use MMOItems for quests. This
@@ -81,37 +111,6 @@ public class ReforgeOptions {
      */
     public void clearBlacklist() {
         blacklistedItems.clear();
-    }
-
-    public ReforgeOptions(ConfigurationSection config) {
-        keepName = config.getBoolean("display-name");
-        keepLore = config.getBoolean("lore");
-        keepEnchantments = config.getBoolean("enchantments");
-        keepUpgrades = config.getBoolean("upgrades");
-        keepGemStones = config.getBoolean("gemstones", false) || config.getBoolean("gems", false);
-        keepSkins = config.getBoolean("skins", false);
-        keepSoulBind = config.getBoolean("soulbound");
-        keepCase = config.getString("kept-lore-prefix", ChatColor.GRAY.toString());
-        keepExternalSH = config.getBoolean("external-sh", true);
-        keepModifications = config.getBoolean("modifications");
-        reRoll = config.getBoolean("reroll");
-        keepAdvancedEnchantments = config.getBoolean("advanced-enchantments");
-        keepTier = config.contains("tier") ? config.getBoolean("tier", true) : null;
-    }
-
-    public ReforgeOptions(boolean... values) {
-        keepName = arr(values, 0);
-        keepLore = arr(values, 1);
-        keepEnchantments = arr(values, 2);
-        keepUpgrades = arr(values, 3);
-        keepGemStones = arr(values, 4);
-        keepSoulBind = arr(values, 5);
-        keepExternalSH = arr(values, 6);
-        reRoll = arr(values, 7);
-        keepModifications = arr(values, 8);
-        keepAdvancedEnchantments = arr(values, 9);
-        keepSkins = arr(values, 10);
-        keepTier = arr(values, 11);
     }
 
     boolean arr(@NotNull boolean[] booleans, int idx) {

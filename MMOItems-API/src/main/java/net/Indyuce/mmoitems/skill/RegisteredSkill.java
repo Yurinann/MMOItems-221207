@@ -11,10 +11,14 @@ import java.util.Map;
 import java.util.Objects;
 
 public class RegisteredSkill {
-    @NotNull private final SkillHandler<?> handler;
-    @NotNull private final String name;
-    @NotNull private final Map<String, String> modifierNames = new HashMap<>();
-    @NotNull private final Map<String, Double> modifierDefaultValues = new HashMap<>();
+    @NotNull
+    private final SkillHandler<?> handler;
+    @NotNull
+    private final String name;
+    @NotNull
+    private final Map<String, String> modifierNames = new HashMap<>();
+    @NotNull
+    private final Map<String, Double> modifierDefaultValues = new HashMap<>();
 
     public RegisteredSkill(@NotNull SkillHandler<?> handler, @NotNull ConfigurationSection config) {
         this.handler = handler;
@@ -32,11 +36,13 @@ public class RegisteredSkill {
         this.name = name;
     }
 
-    @NotNull public SkillHandler<?> getHandler() {
+    @NotNull
+    public SkillHandler<?> getHandler() {
         return handler;
     }
 
-    @NotNull public String getName() {
+    @NotNull
+    public String getName() {
         return name;
     }
 

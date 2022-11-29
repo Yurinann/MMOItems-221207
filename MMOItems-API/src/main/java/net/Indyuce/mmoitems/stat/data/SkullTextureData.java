@@ -6,18 +6,18 @@ import net.Indyuce.mmoitems.stat.data.random.RandomStatData;
 import net.Indyuce.mmoitems.stat.data.type.StatData;
 
 public class SkullTextureData implements StatData, RandomStatData<SkullTextureData> {
-	private final GameProfile profile;
+    private final GameProfile profile;
 
-	public SkullTextureData(GameProfile profile) {
-		this.profile = profile;
-	}
+    public SkullTextureData(GameProfile profile) {
+        this.profile = profile;
+    }
 
-	public GameProfile getGameProfile() {
-		return profile;
-	}
+    public GameProfile getGameProfile() {
+        return profile;
+    }
 
-	@Override
-	public SkullTextureData randomize(MMOItemBuilder builder) {
-		return this;
-	}
+    @Override
+    public SkullTextureData randomize(MMOItemBuilder builder) {
+        return this;
+    }
 }

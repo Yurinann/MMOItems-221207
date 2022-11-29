@@ -37,6 +37,12 @@ public class GemSocketsData implements StatData, Mergeable<GemSocketsData>, Rand
         emptySlots.forEach(el -> this.emptySlots.add(el.getAsString()));
     }
 
+    @NotNull
+    public static String getUncoloredGemSlot() {
+        String s = MMOItems.plugin.getConfig().getString("gem-sockets.uncolored");
+        return s == null ? "Uncolored" : s;
+    }
+
     /**
      * Attempts to find a slot of the same color of this gem within the item.
      * <p></p>
@@ -58,12 +64,6 @@ public class GemSocketsData implements StatData, Mergeable<GemSocketsData>, Rand
             if (gem.equals("") || slot.equals(getUncoloredGemSlot()) || gem.equals(slot))
                 return slot;
         return null;
-    }
-
-    @NotNull
-    public static String getUncoloredGemSlot() {
-        String s = MMOItems.plugin.getConfig().getString("gem-sockets.uncolored");
-        return s == null ? "Uncolored" : s;
     }
 
     public void add(GemstoneData gem) {

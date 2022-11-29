@@ -17,25 +17,47 @@ import org.jetbrains.annotations.Nullable;
  */
 public class RBA_Experience extends RBA_DoubleButton {
 
+    public static final String FURNACE_EXPERIENCE = "exp";
+    public static final double DEFAULT = 0.35;
+    @NotNull
+    final ItemStack doubleButton = RecipeMakerGUI.addLore(ItemFactory.of(Material.EXPERIENCE_BOTTLE).name("\u00a7aExperience").lore(SilentNumbers.chop(
+            "This recipe gives experience when crafted, how much?"
+            , 65, "\u00a77")).build(), SilentNumbers.toArrayList(""));
+
     /**
      * A button of an Edition Inventory. Nice!
      *
      * @param inv The edition inventory this is a button of
      */
-    public RBA_Experience(@NotNull RecipeMakerGUI inv) { super(inv); }
+    public RBA_Experience(@NotNull RecipeMakerGUI inv) {
+        super(inv);
+    }
 
-    public static final String FURNACE_EXPERIENCE = "exp";
-    @NotNull @Override public String getDoubleConfigPath() { return FURNACE_EXPERIENCE; }
+    @NotNull
+    @Override
+    public String getDoubleConfigPath() {
+        return FURNACE_EXPERIENCE;
+    }
 
-    @Nullable @Override public QuickNumberRange getRange() { return new QuickNumberRange(0D, null); }
+    @Nullable
+    @Override
+    public QuickNumberRange getRange() {
+        return new QuickNumberRange(0D, null);
+    }
 
-    @Override public boolean requireInteger() { return false; }
+    @Override
+    public boolean requireInteger() {
+        return false;
+    }
 
-    public static final double DEFAULT = 0.35;
-    @Override public double getDefaultValue() { return DEFAULT; }
+    @Override
+    public double getDefaultValue() {
+        return DEFAULT;
+    }
 
-    @NotNull final ItemStack doubleButton = RecipeMakerGUI.addLore(ItemFactory.of(Material.EXPERIENCE_BOTTLE).name("\u00a7aExperience").lore(SilentNumbers.chop(
-            "This recipe gives experience when crafted, how much?"
-            , 65, "\u00a77")).build(), SilentNumbers.toArrayList(""));
-    @NotNull @Override public ItemStack getDoubleButton() { return doubleButton; }
+    @NotNull
+    @Override
+    public ItemStack getDoubleButton() {
+        return doubleButton;
+    }
 }

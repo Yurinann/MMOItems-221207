@@ -14,7 +14,7 @@ public interface RandomStatData<S extends StatData> {
     /**
      * @param builder The builder of the random item being generated
      * @return A random stat data instance which will then be merged onto the
-     *         base item template
+     * base item template
      */
     S randomize(MMOItemBuilder builder);
 }

@@ -9,13 +9,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class CustomDurabilityRepair extends Event implements Cancellable {
 
+    private static final HandlerList handlers = new HandlerList();
     @NotNull
     private final DurabilityItem sourceItem;
     private final int durabilityIncrease;
-
     private boolean cancelled;
-
-    private static final HandlerList handlers = new HandlerList();
 
     public CustomDurabilityRepair(@NotNull DurabilityItem item, int impendingRepair) {
         sourceItem = item;

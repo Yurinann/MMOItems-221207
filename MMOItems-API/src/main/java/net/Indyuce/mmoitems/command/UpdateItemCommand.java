@@ -7,20 +7,20 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class UpdateItemCommand implements CommandExecutor {
-	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.RED + "This command is only for players.");
-			return true;
-		}
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.RED + "This command is only for players.");
+            return true;
+        }
 
-		if (!sender.hasPermission("mmoitems.update")) return true;
+        if (!sender.hasPermission("mmoitems.update")) return true;
 
-		Player player = (Player) sender;
-		if (args.length < 1 || !player.hasPermission("mmoitems.admin")) {
+        Player player = (Player) sender;
+        if (args.length < 1 || !player.hasPermission("mmoitems.admin")) {
 //			NBTItem item = MythicLib.plugin.getVersion().getWrapper().getNBTItem(player.getInventory().getItemInMainHand());
 
-			// for items generated before 2.0
+            // for items generated before 2.0
 			/*if (!item.hasTag("MMOITEMS_ITEM_TYPE")) {
 				sender.sendMessage(ChatColor.RED + "Could not update your item.");
 				return true;
@@ -35,13 +35,13 @@ public class UpdateItemCommand implements CommandExecutor {
 			player.getInventory().setItemInMainHand(newItem);
 			sender.sendMessage(ChatColor.YELLOW + "Successfully updated your item.");
 			return true;*/
-		}
+        }
 
-		/*
-		 * TODO Cleanup
-		 * Commented this out to reuse some of the code, bear with it until this system has been cleaned!
-		 */
-		// toggles on/off item updater
+        /*
+         * TODO Cleanup
+         * Commented this out to reuse some of the code, bear with it until this system has been cleaned!
+         */
+        // toggles on/off item updater
 		/*if () {
 			Message.NOT_ENOUGH_PERMS_COMMAND.format(ChatColor.RED).send(sender);
 			return true;
@@ -62,6 +62,6 @@ public class UpdateItemCommand implements CommandExecutor {
 			return true;
 		}*/
 
-		return true;
-	}
+        return true;
+    }
 }

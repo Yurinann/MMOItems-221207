@@ -18,157 +18,161 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ConfigItem {
-	private final String id;
-	private final ItemStack icon;
+    private final String id;
+    private final ItemStack icon;
+    @Nullable
+    protected Material material = null;
+    @Nullable
+    protected Integer customModelData = null;
+    // updated when the plugin reloads
+    private String name;
+    private List<String> lore;
+    // generated
+    private ItemStack item;
 
-	// updated when the plugin reloads
-	private String name;
-	private List<String> lore;
+    public ConfigItem(String id, Material material) {
+        this(id, material, null);
+    }
 
-	// generated
-	private ItemStack item;
+    public ConfigItem(String id, Material material, String name, String... lore) {
+        Validate.notNull(id, "ID cannot be null");
+        Validate.notNull(material, "Material cannot be null");
 
-	public ConfigItem(String id, Material material) {
-		this(id, material, null);
-	}
+        this.id = id;
+        this.icon = new ItemStack(material);
+        this.name = name;
+        this.lore = Arrays.asList(lore);
+    }
 
-	public ConfigItem(String id, Material material, String name, String... lore) {
-		Validate.notNull(id, "ID cannot be null");
-		Validate.notNull(material, "Material cannot be null");
+    /*
+     * used as util to load an item stack from a config
+     */
+    public ConfigItem(ConfigurationSection config) {
+        Validate.notNull(config, "Config cannot be null");
+        id = config.getName();
 
-		this.id = id;
-		this.icon = new ItemStack(material);
-		this.name = name;
-		this.lore = Arrays.asList(lore);
-	}
+        Validate.isTrue(config.contains("material"), "Could not find material");
 
-	/*
-	 * used as util to load an item stack from a config
-	 */
-	public ConfigItem(ConfigurationSection config) {
-		Validate.notNull(config, "Config cannot be null");
-		id = config.getName();
+        icon = MMOUtils.readIcon(config.getString("material"));
 
-		Validate.isTrue(config.contains("material"), "Could not find material");
+        name = config.getString("name", "");
+        lore = config.getStringList("lore");
 
-		icon = MMOUtils.readIcon(config.getString("material"));
+        updateItem();
+    }
 
-		name = config.getString("name", "");
-		lore = config.getStringList("lore");
+    public String getId() {
+        return id;
+    }
 
-		updateItem();
-	}
+    public void setup(ConfigurationSection config) {
+        config.set("name", getName());
+        config.set("lore", getLore());
+    }
 
-	public String getId() {
-		return id;
-	}
+    public void update(ConfigurationSection config) {
+        Validate.notNull(config, "Config cannot be null");
 
-	public void setup(ConfigurationSection config) {
-		config.set("name", getName());
-		config.set("lore", getLore());
-	}
+        setName(config.getString("name", ""));
+        setLore(config.contains("lore") ? config.getStringList("lore") : new ArrayList<>());
 
-	public void update(ConfigurationSection config) {
-		Validate.notNull(config, "Config cannot be null");
+        String mat = config.getString("material");
+        if (mat != null && !mat.isEmpty()) {
+            try {
+                // Get the material
+                Material m = Material.valueOf(config.getString("material"));
 
-		setName(config.getString("name", ""));
-		setLore(config.contains("lore") ? config.getStringList("lore") : new ArrayList<>());
+                if (m.isItem()) {
 
-		String mat = config.getString("material");
-		if (mat != null && !mat.isEmpty()) {
-			try {
-				// Get the material
-				Material m = Material.valueOf(config.getString("material"));
+                    // That's the material
+                    setMaterial(m);
+                }
 
-				if (m.isItem()) {
+            } catch (IllegalArgumentException ignored) {
+            }
+        }
 
-					// That's the material
-					setMaterial(m); }
+        setModel(SilentNumbers.IntegerParse(config.getString("model")));
 
-			} catch (IllegalArgumentException ignored) {} }
+        updateItem();
+    }
 
-		setModel(SilentNumbers.IntegerParse(config.getString("model")));
+    public void updateItem() {
+        setItem(icon);
+        if (icon.getType() == Material.AIR)
+            return;
 
-		updateItem();
-	}
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(MythicLib.plugin.parseColors(getName()));
+        meta.addItemFlags(ItemFlag.values());
 
-	public void updateItem() {
-		setItem(icon);
-		if (icon.getType() == Material.AIR)
-			return;
+        if (hasLore()) {
+            List<String> lore = new ArrayList<>();
+            getLore().forEach(str -> lore.add(ChatColor.GRAY + MythicLib.plugin.parseColors(str)));
+            meta.setLore(lore);
+        }
 
-		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(MythicLib.plugin.parseColors(getName()));
-		meta.addItemFlags(ItemFlag.values());
+        item.setItemMeta(meta);
+        item = MythicLib.plugin.getVersion().getWrapper().getNBTItem(item).addTag(new ItemTag("ItemId", id)).toItem();
+    }
 
-		if (hasLore()) {
-			List<String> lore = new ArrayList<>();
-			getLore().forEach(str -> lore.add(ChatColor.GRAY + MythicLib.plugin.parseColors(str)));
-			meta.setLore(lore);
-		}
+    public String getName() {
+        return name;
+    }
 
-		item.setItemMeta(meta);
-		item = MythicLib.plugin.getVersion().getWrapper().getNBTItem(item).addTag(new ItemTag("ItemId", id)).toItem();
-	}
+    protected void setName(String name) {
+        this.name = name;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public List<String> getLore() {
+        return lore;
+    }
 
-	public List<String> getLore() {
-		return lore;
-	}
+    protected void setLore(List<String> lore) {
+        this.lore = lore;
+    }
 
-	public boolean hasLore() {
-		return lore != null;
-	}
+    public boolean hasLore() {
+        return lore != null;
+    }
 
-	public ItemStack getItem() {
-		return item;
-	}
+    public ItemStack getItem() {
+        return item;
+    }
 
-	public ItemStack getNewItem() {
-		return item.clone();
-	}
+    protected void setItem(ItemStack item) {
+        this.item = item;
+    }
 
-	protected void setName(String name) {
-		this.name = name;
-	}
+    public ItemStack getNewItem() {
+        return item.clone();
+    }
 
-	protected void setLore(List<String> lore) {
-		this.lore = lore;
-	}
+    /**
+     * Unidentified items are ruined when, using a custom resourcepack, they get the material and
+     * custom model data of what they should be, making them not really unidentified.... this will
+     * kick in for unidentified items when being built, thus making them no longer identifiable by
+     * their texture.
+     *
+     * @param mat Material to set (optional)
+     * @author Gunging
+     * @see #setModel(Integer)
+     */
+    protected void setMaterial(@Nullable Material mat) {
+        material = mat;
+    }
 
-	protected void setItem(ItemStack item) {
-		this.item = item;
-	}
-
-
-	/**
-	 * Unidentified items are ruined when, using a custom resourcepack, they get the material and
-	 * custom model data of what they should be, making them not really unidentified.... this will
-	 * kick in for unidentified items when being built, thus making them no longer identifiable by
-	 * their texture.
-	 *
-	 * @param mat Material to set (optional)
-	 *
-	 * @author Gunging
-	 * @see #setModel(Integer)
-	 */
-	protected void setMaterial(@Nullable Material mat) { material = mat;}
-	@Nullable protected Material material = null;
-
-	/**
-	 * Unidentified items are ruined when, using a custom resourcepack, they get the material and
-	 * custom model data of what they should be, making them not really unidentified.... this will
-	 * kick in for unidentified items when being built, thus making them no longer identifiable by
-	 * their texture.
-	 *
-	 * @param cmd Custom Model Data to set (optional)
-	 *
-	 * @author Gunging
-	 * @see #setMaterial(Material)
-	 */
-	protected void setModel(@Nullable Integer cmd) { customModelData = cmd;}
-	@Nullable protected Integer customModelData = null;
+    /**
+     * Unidentified items are ruined when, using a custom resourcepack, they get the material and
+     * custom model data of what they should be, making them not really unidentified.... this will
+     * kick in for unidentified items when being built, thus making them no longer identifiable by
+     * their texture.
+     *
+     * @param cmd Custom Model Data to set (optional)
+     * @author Gunging
+     * @see #setMaterial(Material)
+     */
+    protected void setModel(@Nullable Integer cmd) {
+        customModelData = cmd;
+    }
 }

@@ -6,5 +6,5 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public interface PlayerInventory {
-	List<EquippedItem> getInventory(Player player);
+    List<EquippedItem> getInventory(Player player);
 }

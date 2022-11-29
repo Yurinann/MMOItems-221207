@@ -7,5 +7,9 @@ import org.jetbrains.annotations.NotNull;
  * The campfire yes
  */
 public class RMGRR_LBCampfire extends RMGRR_LegacyBurning {
-    @NotNull @Override public CraftingType getLegacyBurningType() { return CraftingType.CAMPFIRE; }
+    @NotNull
+    @Override
+    public CraftingType getLegacyBurningType() {
+        return CraftingType.CAMPFIRE;
+    }
 }

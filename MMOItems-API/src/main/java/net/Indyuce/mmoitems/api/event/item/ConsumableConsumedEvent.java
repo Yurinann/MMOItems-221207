@@ -16,15 +16,13 @@ import org.jetbrains.annotations.Nullable;
  * @author Gunging
  */
 public class ConsumableConsumedEvent extends PlayerDataEvent {
+    private static final HandlerList handlers = new HandlerList();
     @NotNull
     private final VolatileMMOItem mmoitem;
     @NotNull
     private final Consumable useItem;
-
     @Nullable
     private boolean consumed = true;
-
-    private static final HandlerList handlers = new HandlerList();
 
     public ConsumableConsumedEvent(@NotNull PlayerData player, @NotNull VolatileMMOItem mmo, @NotNull Consumable useItem) {
         super(player);
@@ -42,6 +40,10 @@ public class ConsumableConsumedEvent extends PlayerDataEvent {
 
         this.mmoitem = mmo;
         this.useItem = useItem;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 
     @NotNull
@@ -71,13 +73,6 @@ public class ConsumableConsumedEvent extends PlayerDataEvent {
     }
 
     /**
-     * @deprecated Use {@link ConsumableConsumedEvent#setConsumed(boolean)} instead
-     */
-    public void setConsume(@Nullable Boolean consume) {
-        this.consumed = consume;
-    }
-
-    /**
      * @param consumed If the consumable will be consumed.
      *                 <br>
      *                 <code>null</code> is the default, and means that it will be consumed if it successfully
@@ -89,11 +84,16 @@ public class ConsumableConsumedEvent extends PlayerDataEvent {
         this.consumed = consumed;
     }
 
+    /**
+     * @deprecated Use {@link ConsumableConsumedEvent#setConsumed(boolean)} instead
+     */
+    public void setConsume(@Nullable Boolean consume) {
+        this.consumed = consume;
+    }
+
     @NotNull
     @Override
     public HandlerList getHandlers() {
         return handlers;
     }
-
-    public static HandlerList getHandlerList() { return handlers; }
 }

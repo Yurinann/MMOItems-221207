@@ -10,33 +10,11 @@ import io.lumine.mythic.lib.api.item.NBTItem;
 import net.Indyuce.mmoitems.api.item.util.identify.IdentifiedItem;
 
 public class MMOItemsItemProperty implements Property {
+    public static final String[] handledMechs = new String[]{}; // None
     private final ItemTag item;
 
     public MMOItemsItemProperty(ItemTag item) {
         this.item = item;
-    }
-
-    @Override
-    public String getPropertyString() {
-        return null;
-    }
-
-    @Override
-    public String getPropertyId() {
-        return "MMOItemsItem";
-    }
-
-    public boolean isMMOItem() {
-        return NBTItem.get(item.getItemStack()).hasTag("MMOITEMS_TYPE");
-    }
-
-    public MMOItemTag getMMOItem() {
-        return new MMOItemTag(item);
-    }
-
-    @Override
-    public void adjust(Mechanism mechanism) {
-        // None
     }
 
     public static boolean describes(ObjectTag object) {
@@ -46,8 +24,6 @@ public class MMOItemsItemProperty implements Property {
     public static MMOItemsItemProperty getFrom(ObjectTag object) {
         return object instanceof ItemTag ? new MMOItemsItemProperty((ItemTag) object) : null;
     }
-
-    public static final String[] handledMechs = new String[]{}; // None
 
     public static void registerTags() {
 
@@ -95,6 +71,29 @@ public class MMOItemsItemProperty implements Property {
          * Returns:
          * MMOItemTag used to manipulate the item
          */
-       /* PropertyParser.<MMOItemsItemProperty>registerTag("mmoitem", (attribute, object) -> object.isMMOItem() ? object.getMMOItem() : null);*/
+        /* PropertyParser.<MMOItemsItemProperty>registerTag("mmoitem", (attribute, object) -> object.isMMOItem() ? object.getMMOItem() : null);*/
+    }
+
+    @Override
+    public String getPropertyString() {
+        return null;
+    }
+
+    @Override
+    public String getPropertyId() {
+        return "MMOItemsItem";
+    }
+
+    public boolean isMMOItem() {
+        return NBTItem.get(item.getItemStack()).hasTag("MMOITEMS_TYPE");
+    }
+
+    public MMOItemTag getMMOItem() {
+        return new MMOItemTag(item);
+    }
+
+    @Override
+    public void adjust(Mechanism mechanism) {
+        // None
     }
 }

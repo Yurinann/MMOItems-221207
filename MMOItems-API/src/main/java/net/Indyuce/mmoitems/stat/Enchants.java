@@ -46,6 +46,161 @@ public class Enchants extends ItemStat<RandomEnchantListData, EnchantListData> i
         super("ENCHANTS", Material.ENCHANTED_BOOK, "Enchantments", new String[]{"The item enchants."}, new String[]{"all"});
     }
 
+    /**
+     * @param source Something that may not even have enchs.
+     * @return Enchantments of this extracted as a list of enchants data.
+     */
+    @NotNull
+    public static EnchantListData fromVanilla(@Nullable ItemStack source) {
+
+        // List
+        EnchantListData eld = new EnchantListData();
+
+        // Null is clear
+        if (source == null) {
+            return eld;
+        }
+
+        // For each enchants
+        for (Enchantment e : source.getEnchantments().keySet()) {
+
+            // Get level
+            int l = source.getEnchantmentLevel(e);
+
+            // Add if significant
+            if (l != 0) {
+                eld.addEnchant(e, l);
+            }
+        }
+
+        return eld;
+    }
+
+    /**
+     * Players may enchant an item via 'vanilla' means (Not Gemstones, not Upgrades).
+     * If they do so, the enchantments of their item will be wiped if they try to put
+     * a gemstone in or upgrade the item, which is not nice.
+     * <p></p>
+     * This operation classifies these discrepancies in the enchantment levels as
+     * 'externals' in the Stat History of enchantments. From then on, they will be
+     * accounted for.
+     */
+    public static void separateEnchantments(@NotNull MMOItem mmoitem) {
+
+        // Cancellation because the player could not have done so HMMM
+        if (mmoitem.hasData(ItemStats.DISABLE_REPAIRING) && mmoitem.hasData(ItemStats.DISABLE_ENCHANTING)) {
+            return;
+        }
+        boolean additiveMerge = MMOItems.plugin.getConfig().getBoolean("stat-merging.additive-enchantments", false);
+        //SENCH//MMOItems.log(" \u00a79>\u00a73>\u00a77 Separating Enchantments");
+
+        // Does it have enchantment data?
+        if (mmoitem.hasData(ItemStats.ENCHANTS)) {
+
+            // Get that data
+            EnchantListData data = (EnchantListData) mmoitem.getData(ItemStats.ENCHANTS);
+            StatHistory hist = StatHistory.from(mmoitem, ItemStats.ENCHANTS);
+
+            //SENCH//MMOItems.log(" \u00a7b:\u00a73:\u00a79: \u00a77Early Analysis: \u00a73o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o");
+            //SENCH//MMOItems.log("  \u00a73=\u00a7b> \u00a77Active:");
+            //SENCH//for (Enchantment e : data.getEnchants()) { MMOItems.log("  \u00a7b * \u00a77" + e.getName() + " \u00a7f" + data.getLevel(e)); }
+
+            //SENCH//MMOItems.log("  \u00a73> \u00a77History:");
+            //SENCH//MMOItems.log("  \u00a73=\u00a7b> \u00a77Original:");
+            //SENCH//for (Enchantment e : ((EnchantListData) hist.getOriginalData()).getEnchants()) { MMOItems.log("  \u00a7b * \u00a77" + e.getName() + " \u00a7f" + ((EnchantListData) hist.getOriginalData()).getLevel(e)); }
+            //SENCH//MMOItems.log("  \u00a73=\u00a7b> \u00a77Stones:");
+            //SENCH//for (UUID date : hist.getAllGemstones()) { MMOItems.log("  \u00a7b==\u00a73> \u00a77" + date.toString()); for (Enchantment e : ((EnchantListData) hist.getGemstoneData(date)).getEnchants()) { MMOItems.log("  \u00a7b    *\u00a73* \u00a77" + e.getName() + " \u00a7f" + ((EnchantListData) hist.getGemstoneData(date)).getLevel(e)); } }
+            //SENCH//MMOItems.log("  \u00a73=\u00a7b> \u00a77Externals:");
+            //SENCH//for (StatData date : hist.getExternalData()) { MMOItems.log("  \u00a7b==\u00a73> \u00a77 --------- "); for (Enchantment e : ((EnchantListData) date).getEnchants()) { MMOItems.log("  \u00a7b    *\u00a73* \u00a77" + e.getName() + " \u00a7f" + ((EnchantListData) date).getLevel(e)); } }
+
+            // All right, whats the expected enchantment levels?
+            //HSY//MMOItems.log(" \u00a73-\u00a7a- \u00a77Enchantment Separation Recalculation \u00a73-\u00a7a-\u00a73-\u00a7a-\u00a73-\u00a7a-\u00a73-\u00a7a-");
+            EnchantListData expected = (EnchantListData) hist.recalculate(mmoitem.getUpgradeLevel());
+
+            // Gather a list of extraneous enchantments
+            HashMap<Enchantment, Integer> discrepancies = new HashMap<>();
+
+            // For every enchantment
+            for (Enchantment e : Enchantment.values()) {
+
+                // Get both
+                int actual = data.getLevel(e);
+                int ideal = expected.getLevel(e);
+
+                // Intuitive additive merge
+                if (additiveMerge) {
+
+                    // Get difference, and register.
+                    int offset = actual - ideal;
+                    if (offset != 0) {
+                        discrepancies.put(e, offset);
+                        //SENCH//MMOItems.log("\u00a77 Act \u00a7f" + actual + "\u00a77 Ide \u00a73" + ideal + "\u00a77 Off \u00a79" + offset + " \u00a77 -- of \u00a7b" + e.getName() );
+                    }
+
+                    // Weird maximum enchantment
+                } else {
+
+                    // We can only know that, if the actual is greater than the ideal, there is a greater external.
+                    if (actual > ideal) {
+                        discrepancies.put(e, actual);
+                        //SENCH//MMOItems.log("\u00a77 Act \u00a7f" + actual + "\u00a77 Ide \u00a73" + ideal + " \u00a77 -- of \u00a7b" + e.getName() );
+                    }
+                }
+            }
+
+            // It has been extracted
+            if (discrepancies.size() > 0) {
+                // Generate enchantment list with offsets
+                EnchantListData extraneous = new EnchantListData();
+                for (Enchantment e : discrepancies.keySet()) {
+                    //SENCH//MMOItems.log("\u00a77 Discrepancy of \u00a7f" + discrepancies.get(e) + " \u00a77 -- in \u00a7b" + e.getName() );
+
+                    extraneous.addEnchant(e, discrepancies.get(e));
+                }
+
+                // Register extraneous
+                hist.registerExternalData(extraneous);
+            }
+
+            //SENCH//MMOItems.log(" \u00a7b:\u00a73:\u00a79: \u00a77Results \u00a79o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o");
+            //SENCH//MMOItems.log("  \u00a73> \u00a77History:");
+            //SENCH//MMOItems.log("  \u00a73=\u00a7b> \u00a77Original:");
+            //SENCH//for (Enchantment e : ((EnchantListData) hist.getOriginalData()).getEnchants()) { MMOItems.log("  \u00a7b * \u00a77" + e.getName() + " \u00a7f" + ((EnchantListData) hist.getOriginalData()).getLevel(e)); }
+            //SENCH//MMOItems.log("  \u00a73=\u00a7b> \u00a77Stones:");
+            //SENCH//for (UUID date : hist.getAllGemstones()) { MMOItems.log("  \u00a7b==\u00a73> \u00a77" + date.toString()); for (Enchantment e : ((EnchantListData) hist.getGemstoneData(date)).getEnchants()) { MMOItems.log("  \u00a7b    *\u00a73* \u00a77" + e.getName() + " \u00a7f" + ((EnchantListData) hist.getGemstoneData(date)).getLevel(e)); } }
+            //SENCH//MMOItems.log("  \u00a73=\u00a7b> \u00a77Externals:");
+            //SENCH//for (StatData date : hist.getExternalData()) { MMOItems.log("  \u00a7b==\u00a73> \u00a77 --------- "); for (Enchantment e : ((EnchantListData) date).getEnchants()) { MMOItems.log("  \u00a7b    *\u00a73* \u00a77" + e.getName() + " \u00a7f" + ((EnchantListData) date).getLevel(e)); } }
+
+        }
+    }
+
+    /**
+     * This is useful for custom enchant plugins which
+     * utilize the Enchantment bukkit interface.
+     *
+     * @param key String input which can either be the enchant key or name
+     * @return Found bukkit enchantment instance
+     */
+    @SuppressWarnings("deprecation")
+    public static Enchantment getEnchant(String key) {
+        key = key.toLowerCase().replace("-", "_");
+        Enchantment enchant = Enchantment.getByKey(NamespacedKey.minecraft(key));
+
+        //  Vanilla enchant
+        if (enchant != null)
+            return enchant;
+
+        // Check for custom enchants
+        for (EnchantPlugin enchPlugin : MMOItems.plugin.getEnchantPlugins()) {
+            Enchantment checked = Enchantment.getByKey(enchPlugin.getNamespacedKey(key));
+            if (checked != null)
+                return checked;
+        }
+
+        // Last try, vanilla enchant with name
+        return Enchantment.getByName(key);
+    }
+
     @Override
     public RandomEnchantListData whenInitialized(Object object) {
         Validate.isTrue(object instanceof ConfigurationSection, "Must specify a config section");
@@ -180,33 +335,6 @@ public class Enchants extends ItemStat<RandomEnchantListData, EnchantListData> i
     }
 
     /**
-     * @param source Something that may not even have enchs.
-     *
-     * @return Enchantments of this extracted as a list of enchants data.
-     */
-    @NotNull public static EnchantListData fromVanilla(@Nullable ItemStack source) {
-
-        // List
-        EnchantListData eld = new EnchantListData();
-
-        // Null is clear
-        if (source == null) { return eld; }
-
-        // For each enchants
-        for (Enchantment e : source.getEnchantments().keySet()) {
-
-            // Get level
-            int l = source.getEnchantmentLevel(e);
-
-            // Add if significant
-            if (l != 0) { eld.addEnchant(e, l); }
-        }
-
-        return eld;
-    }
-
-
-    /**
      * Since GemStones shall be removable, the enchantments must also be stored.
      */
     @Nullable
@@ -274,8 +402,10 @@ public class Enchants extends ItemStat<RandomEnchantListData, EnchantListData> i
                 // Vanilla enchanted books expect this behaviour from enchants I guess
                 ((EnchantmentStorageMeta) item.getMeta()).addStoredEnchant(enchant, lvl, true);
 
-            // Add normally
-            } else { item.getMeta().addEnchant(enchant, lvl, true); }
+                // Add normally
+            } else {
+                item.getMeta().addEnchant(enchant, lvl, true);
+            }
 
             // Handle custom enchant
             for (EnchantPlugin enchantPlugin : MMOItems.plugin.getEnchantPlugins())
@@ -388,134 +518,12 @@ public class Enchants extends ItemStat<RandomEnchantListData, EnchantListData> i
         return original;
     }
 
-    /**
-     * Players may enchant an item via 'vanilla' means (Not Gemstones, not Upgrades).
-     * If they do so, the enchantments of their item will be wiped if they try to put
-     * a gemstone in or upgrade the item, which is not nice.
-     * <p></p>
-     * This operation classifies these discrepancies in the enchantment levels as
-     * 'externals' in the Stat History of enchantments. From then on, they will be
-     * accounted for.
-     */
-    public static void separateEnchantments(@NotNull MMOItem mmoitem) {
-
-        // Cancellation because the player could not have done so HMMM
-        if (mmoitem.hasData(ItemStats.DISABLE_REPAIRING) && mmoitem.hasData(ItemStats.DISABLE_ENCHANTING)) {
-            return;
-        }
-        boolean additiveMerge = MMOItems.plugin.getConfig().getBoolean("stat-merging.additive-enchantments", false);
-        //SENCH//MMOItems.log(" \u00a79>\u00a73>\u00a77 Separating Enchantments");
-
-        // Does it have enchantment data?
-        if (mmoitem.hasData(ItemStats.ENCHANTS)) {
-
-            // Get that data
-            EnchantListData data = (EnchantListData) mmoitem.getData(ItemStats.ENCHANTS);
-            StatHistory hist = StatHistory.from(mmoitem, ItemStats.ENCHANTS);
-
-            //SENCH//MMOItems.log(" \u00a7b:\u00a73:\u00a79: \u00a77Early Analysis: \u00a73o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o");
-            //SENCH//MMOItems.log("  \u00a73=\u00a7b> \u00a77Active:");
-            //SENCH//for (Enchantment e : data.getEnchants()) { MMOItems.log("  \u00a7b * \u00a77" + e.getName() + " \u00a7f" + data.getLevel(e)); }
-
-            //SENCH//MMOItems.log("  \u00a73> \u00a77History:");
-            //SENCH//MMOItems.log("  \u00a73=\u00a7b> \u00a77Original:");
-            //SENCH//for (Enchantment e : ((EnchantListData) hist.getOriginalData()).getEnchants()) { MMOItems.log("  \u00a7b * \u00a77" + e.getName() + " \u00a7f" + ((EnchantListData) hist.getOriginalData()).getLevel(e)); }
-            //SENCH//MMOItems.log("  \u00a73=\u00a7b> \u00a77Stones:");
-            //SENCH//for (UUID date : hist.getAllGemstones()) { MMOItems.log("  \u00a7b==\u00a73> \u00a77" + date.toString()); for (Enchantment e : ((EnchantListData) hist.getGemstoneData(date)).getEnchants()) { MMOItems.log("  \u00a7b    *\u00a73* \u00a77" + e.getName() + " \u00a7f" + ((EnchantListData) hist.getGemstoneData(date)).getLevel(e)); } }
-            //SENCH//MMOItems.log("  \u00a73=\u00a7b> \u00a77Externals:");
-            //SENCH//for (StatData date : hist.getExternalData()) { MMOItems.log("  \u00a7b==\u00a73> \u00a77 --------- "); for (Enchantment e : ((EnchantListData) date).getEnchants()) { MMOItems.log("  \u00a7b    *\u00a73* \u00a77" + e.getName() + " \u00a7f" + ((EnchantListData) date).getLevel(e)); } }
-
-            // All right, whats the expected enchantment levels?
-            //HSY//MMOItems.log(" \u00a73-\u00a7a- \u00a77Enchantment Separation Recalculation \u00a73-\u00a7a-\u00a73-\u00a7a-\u00a73-\u00a7a-\u00a73-\u00a7a-");
-            EnchantListData expected = (EnchantListData) hist.recalculate(mmoitem.getUpgradeLevel());
-
-            // Gather a list of extraneous enchantments
-            HashMap<Enchantment, Integer> discrepancies = new HashMap<>();
-
-            // For every enchantment
-            for (Enchantment e : Enchantment.values()) {
-
-                // Get both
-                int actual = data.getLevel(e);
-                int ideal = expected.getLevel(e);
-
-                // Intuitive additive merge
-                if (additiveMerge) {
-
-                    // Get difference, and register.
-                    int offset = actual - ideal;
-                    if (offset != 0) {
-                        discrepancies.put(e, offset);
-                        //SENCH//MMOItems.log("\u00a77 Act \u00a7f" + actual + "\u00a77 Ide \u00a73" + ideal + "\u00a77 Off \u00a79" + offset + " \u00a77 -- of \u00a7b" + e.getName() );
-                    }
-
-                    // Weird maximum enchantment
-                } else {
-
-                    // We can only know that, if the actual is greater than the ideal, there is a greater external.
-                    if (actual > ideal) {
-                        discrepancies.put(e, actual);
-                        //SENCH//MMOItems.log("\u00a77 Act \u00a7f" + actual + "\u00a77 Ide \u00a73" + ideal + " \u00a77 -- of \u00a7b" + e.getName() );
-                    }
-                }
-            }
-
-            // It has been extracted
-            if (discrepancies.size() > 0) {
-                // Generate enchantment list with offsets
-                EnchantListData extraneous = new EnchantListData();
-                for (Enchantment e : discrepancies.keySet()) {
-                    //SENCH//MMOItems.log("\u00a77 Discrepancy of \u00a7f" + discrepancies.get(e) + " \u00a77 -- in \u00a7b" + e.getName() );
-
-                    extraneous.addEnchant(e, discrepancies.get(e));
-                }
-
-                // Register extraneous
-                hist.registerExternalData(extraneous);
-            }
-
-            //SENCH//MMOItems.log(" \u00a7b:\u00a73:\u00a79: \u00a77Results \u00a79o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o");
-            //SENCH//MMOItems.log("  \u00a73> \u00a77History:");
-            //SENCH//MMOItems.log("  \u00a73=\u00a7b> \u00a77Original:");
-            //SENCH//for (Enchantment e : ((EnchantListData) hist.getOriginalData()).getEnchants()) { MMOItems.log("  \u00a7b * \u00a77" + e.getName() + " \u00a7f" + ((EnchantListData) hist.getOriginalData()).getLevel(e)); }
-            //SENCH//MMOItems.log("  \u00a73=\u00a7b> \u00a77Stones:");
-            //SENCH//for (UUID date : hist.getAllGemstones()) { MMOItems.log("  \u00a7b==\u00a73> \u00a77" + date.toString()); for (Enchantment e : ((EnchantListData) hist.getGemstoneData(date)).getEnchants()) { MMOItems.log("  \u00a7b    *\u00a73* \u00a77" + e.getName() + " \u00a7f" + ((EnchantListData) hist.getGemstoneData(date)).getLevel(e)); } }
-            //SENCH//MMOItems.log("  \u00a73=\u00a7b> \u00a77Externals:");
-            //SENCH//for (StatData date : hist.getExternalData()) { MMOItems.log("  \u00a7b==\u00a73> \u00a77 --------- "); for (Enchantment e : ((EnchantListData) date).getEnchants()) { MMOItems.log("  \u00a7b    *\u00a73* \u00a77" + e.getName() + " \u00a7f" + ((EnchantListData) date).getLevel(e)); } }
-
-        }
-    }
-
-    /**
-     * This is useful for custom enchant plugins which
-     * utilize the Enchantment bukkit interface.
-     *
-     * @param key String input which can either be the enchant key or name
-     * @return Found bukkit enchantment instance
-     */
-    @SuppressWarnings("deprecation")
-    public static Enchantment getEnchant(String key) {
-        key = key.toLowerCase().replace("-", "_");
-        Enchantment enchant = Enchantment.getByKey(NamespacedKey.minecraft(key));
-
-        //  Vanilla enchant
-        if (enchant != null)
-            return enchant;
-
-        // Check for custom enchants
-        for (EnchantPlugin enchPlugin : MMOItems.plugin.getEnchantPlugins()) {
-            Enchantment checked = Enchantment.getByKey(enchPlugin.getNamespacedKey(key));
-            if (checked != null)
-                return checked;
-        }
-
-        // Last try, vanilla enchant with name
-        return Enchantment.getByName(key);
-    }
-
     public static class EnchantUpgradeInfo implements UpgradeInfo {
         @NotNull
         HashMap<Enchantment, PlusMinusPercent> perEnchantmentOperations = new HashMap<>();
+
+        public EnchantUpgradeInfo() {
+        }
 
         /**
          * Generate a <code>DoubleUpgradeInfo</code> from this <code><b>String List</b></code>
@@ -640,9 +648,6 @@ public class Enchants extends ItemStat<RandomEnchantListData, EnchantListData> i
 
             // Success
             return eui;
-        }
-
-        public EnchantUpgradeInfo() {
         }
 
         /**

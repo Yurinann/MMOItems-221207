@@ -19,33 +19,33 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class CanIdentify extends BooleanStat implements ConsumableItemInteraction {
-	public CanIdentify() {
-		super("CAN_IDENTIFY", Material.PAPER, "Can Identify?",
-				new String[] { "Players can identify & make their", "item usable using this consumable." }, new String[] { "consumable" });
-	}
+    public CanIdentify() {
+        super("CAN_IDENTIFY", Material.PAPER, "Can Identify?",
+                new String[]{"Players can identify & make their", "item usable using this consumable."}, new String[]{"consumable"});
+    }
 
-	@Override
-	public boolean handleConsumableEffect(@NotNull InventoryClickEvent event, @NotNull PlayerData playerData, @NotNull Consumable consumable, @NotNull NBTItem target, Type targetType) {
-		if (targetType != null)
-			return false;
+    @Override
+    public boolean handleConsumableEffect(@NotNull InventoryClickEvent event, @NotNull PlayerData playerData, @NotNull Consumable consumable, @NotNull NBTItem target, Type targetType) {
+        if (targetType != null)
+            return false;
 
-		if (!consumable.getNBTItem().getBoolean("MMOITEMS_CAN_IDENTIFY") || !target.hasTag("MMOITEMS_UNIDENTIFIED_ITEM"))
-			return false;
+        if (!consumable.getNBTItem().getBoolean("MMOITEMS_CAN_IDENTIFY") || !target.hasTag("MMOITEMS_UNIDENTIFIED_ITEM"))
+            return false;
 
-		Player player = playerData.getPlayer();
-		if (target.getItem().getAmount() > 1) {
-			Message.CANNOT_IDENTIFY_STACKED_ITEMS.format(ChatColor.RED).send(player);
-			return false;
-		}
+        Player player = playerData.getPlayer();
+        if (target.getItem().getAmount() > 1) {
+            Message.CANNOT_IDENTIFY_STACKED_ITEMS.format(ChatColor.RED).send(player);
+            return false;
+        }
 
-		IdentifyItemEvent called = new IdentifyItemEvent(playerData, consumable.getMMOItem(), target);
-		Bukkit.getPluginManager().callEvent(called);
-		if (called.isCancelled())
-			return false;
+        IdentifyItemEvent called = new IdentifyItemEvent(playerData, consumable.getMMOItem(), target);
+        Bukkit.getPluginManager().callEvent(called);
+        if (called.isCancelled())
+            return false;
 
-		event.setCurrentItem(new IdentifiedItem(target).identify());
-		Message.SUCCESSFULLY_IDENTIFIED.format(ChatColor.YELLOW, "#item#", MMOUtils.getDisplayName(target.getItem())).send(player);
-		player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
-		return true;
-	}
+        event.setCurrentItem(new IdentifiedItem(target).identify());
+        Message.SUCCESSFULLY_IDENTIFIED.format(ChatColor.YELLOW, "#item#", MMOUtils.getDisplayName(target.getItem())).send(player);
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
+        return true;
+    }
 }

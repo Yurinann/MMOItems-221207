@@ -12,25 +12,47 @@ import org.jetbrains.annotations.Nullable;
 
 public class RBA_CookingTime extends RBA_DoubleButton {
 
+    public static final String FURNACE_TIME = "time";
+    public static final double DEFAULT = 200;
+    @NotNull
+    final ItemStack doubleButton = RecipeMakerGUI.addLore(ItemFactory.of(Material.CLOCK).name("\u00a7cDuration").lore(SilentNumbers.chop(
+            "How long it takes this recipe to finish 'cooking' x)"
+            , 65, "\u00a77")).build(), SilentNumbers.toArrayList(""));
+
     /**
      * A button of an Edition Inventory. Nice!
      *
      * @param inv The edition inventory this is a button of
      */
-    public RBA_CookingTime(@NotNull RecipeMakerGUI inv) { super(inv); }
+    public RBA_CookingTime(@NotNull RecipeMakerGUI inv) {
+        super(inv);
+    }
 
-    public static final String FURNACE_TIME = "time";
-    @NotNull @Override public String getDoubleConfigPath() { return FURNACE_TIME; }
+    @NotNull
+    @Override
+    public String getDoubleConfigPath() {
+        return FURNACE_TIME;
+    }
 
-    @Nullable @Override public QuickNumberRange getRange() { return new QuickNumberRange(0D, null); }
+    @Nullable
+    @Override
+    public QuickNumberRange getRange() {
+        return new QuickNumberRange(0D, null);
+    }
 
-    @Override public boolean requireInteger() { return true; }
+    @Override
+    public boolean requireInteger() {
+        return true;
+    }
 
-    public static final double DEFAULT = 200;
-    @Override public double getDefaultValue() { return DEFAULT; }
+    @Override
+    public double getDefaultValue() {
+        return DEFAULT;
+    }
 
-    @NotNull final ItemStack doubleButton = RecipeMakerGUI.addLore(ItemFactory.of(Material.CLOCK).name("\u00a7cDuration").lore(SilentNumbers.chop(
-            "How long it takes this recipe to finish 'cooking' x)"
-            , 65, "\u00a77")).build(), SilentNumbers.toArrayList(""));
-    @NotNull @Override public ItemStack getDoubleButton() { return doubleButton; }
+    @NotNull
+    @Override
+    public ItemStack getDoubleButton() {
+        return doubleButton;
+    }
 }

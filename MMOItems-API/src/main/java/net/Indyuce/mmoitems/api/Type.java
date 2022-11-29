@@ -62,32 +62,26 @@ public class Type {
     private final TypeSet set;
     private final ModifierSource modifierSource;
     private final boolean weapon;
-
+    /**
+     * List of stats which can be applied onto an item which has this type. This
+     * improves performance when generating an item by a significant amount.
+     */
+    private final List<ItemStat> available = new ArrayList<>();
     private String name;
-
     @Nullable
     private String loreFormat;
-
     /**
      * Used to display the item in the item explorer and in the item recipes
      * list in the advanced workbench. can also be edited using the config
      * files.
      */
     private ItemStack item;
-
     /**
      * Any type can have a subtype which basically dictates what the item type
      * does.
      */
     private Type parent;
-
     private UnidentifiedItem unidentifiedTemplate;
-
-    /**
-     * List of stats which can be applied onto an item which has this type. This
-     * improves performance when generating an item by a significant amount.
-     */
-    private final List<ItemStat> available = new ArrayList<>();
 
     @Deprecated
     public Type(TypeSet set, String id, boolean weapon, ModifierSource modSource, boolean fourGUIMode) {
@@ -113,6 +107,45 @@ public class Type {
         this.loreFormat = config.getString("LoreFormat", (parent != null ? parent.loreFormat : null));
     }
 
+    /**
+     * Reads an ItemStack in hopes for finding its MMOItem Type.
+     *
+     * @param item The item to retrieve the type from
+     * @return The type of the item, if it has a type.
+     */
+    @Nullable
+    public static Type get(@Nullable ItemStack item) {
+        if (item == null) {
+            return null;
+        }
+        return get(NBTItem.get(item).getType());
+    }
+
+    /**
+     * Used in command executors and completions for easier manipulation
+     *
+     * @param id The type id
+     * @return The type or null if it couldn't be found
+     */
+    @Nullable
+    public static Type get(@Nullable String id) {
+        if (id == null) {
+            return null;
+        }
+        String format = id.toUpperCase().replace("-", "_").replace(" ", "_");
+        return MMOItems.plugin.getTypes().has(format) ? MMOItems.plugin.getTypes().get(format) : null;
+    }
+
+    /**
+     * Used in command executors and completions for easier manipulation
+     *
+     * @param id The type id
+     * @return If a registered type with this ID could be found
+     */
+    public static boolean isValid(@Nullable String id) {
+        return id != null && MMOItems.plugin.getTypes().has(id.toUpperCase().replace("-", "_").replace(" ", "_"));
+    }
+
     public void load(ConfigurationSection config) {
         Validate.notNull(config, "Could not find config for " + getId());
 
@@ -127,7 +160,7 @@ public class Type {
 
     /**
      * @deprecated Type is no longer an enum so that external plugins
-     *         can register their own types. Use getId() instead
+     * can register their own types. Use getId() instead
      */
     @Deprecated
     public String name() {
@@ -206,7 +239,7 @@ public class Type {
 
     /**
      * @return Either if the two types are the same,
-     *         or if this type is a subtype of the given type.
+     * or if this type is a subtype of the given type.
      */
     public boolean corresponds(Type type) {
         return getSupertype().equals(type);
@@ -219,8 +252,8 @@ public class Type {
 
     /**
      * @return The collection of all stats which can be applied onto this
-     *         specific item type. This list is cached when types are being
-     *         loaded and is a PRETTY GOOD performance improvement.
+     * specific item type. This list is cached when types are being
+     * loaded and is a PRETTY GOOD performance improvement.
      */
     public List<ItemStat> getAvailableStats() {
         return available;
@@ -228,7 +261,7 @@ public class Type {
 
     /**
      * @return Finds the /item config file corresponding to the item type and
-     *         loads it
+     * loads it
      */
     public ConfigFile getConfigFile() {
         return new ConfigFile("/item", getId().toLowerCase());
@@ -274,44 +307,5 @@ public class Type {
         return "Type{" +
                 "id='" + id + '\'' +
                 '}';
-    }
-
-    /**
-     * Reads an ItemStack in hopes for finding its MMOItem Type.
-     *
-     * @param item The item to retrieve the type from
-     * @return The type of the item, if it has a type.
-     */
-    @Nullable
-    public static Type get(@Nullable ItemStack item) {
-        if (item == null) {
-            return null;
-        }
-        return get(NBTItem.get(item).getType());
-    }
-
-    /**
-     * Used in command executors and completions for easier manipulation
-     *
-     * @param id The type id
-     * @return The type or null if it couldn't be found
-     */
-    @Nullable
-    public static Type get(@Nullable String id) {
-        if (id == null) {
-            return null;
-        }
-        String format = id.toUpperCase().replace("-", "_").replace(" ", "_");
-        return MMOItems.plugin.getTypes().has(format) ? MMOItems.plugin.getTypes().get(format) : null;
-    }
-
-    /**
-     * Used in command executors and completions for easier manipulation
-     *
-     * @param id The type id
-     * @return If a registered type with this ID could be found
-     */
-    public static boolean isValid(@Nullable String id) {
-        return id != null && MMOItems.plugin.getTypes().has(id.toUpperCase().replace("-", "_").replace(" ", "_"));
     }
 }

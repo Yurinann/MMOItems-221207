@@ -25,132 +25,130 @@ import java.util.List;
 import java.util.Optional;
 
 public class BooleanStat extends ItemStat<RandomBooleanData, BooleanData> {
-	public BooleanStat(String id, Material mat, String name, String[] lore, String[] types, Material... materials) {
-		super(id, mat, name, lore, types, materials);
-	}
+    public BooleanStat(String id, Material mat, String name, String[] lore, String[] types, Material... materials) {
+        super(id, mat, name, lore, types, materials);
+    }
 
-	@Override
-	public RandomBooleanData whenInitialized(Object object) {
+    @Override
+    public RandomBooleanData whenInitialized(Object object) {
 
-		if (object instanceof Boolean)
-			return new RandomBooleanData((boolean) object);
+        if (object instanceof Boolean)
+            return new RandomBooleanData((boolean) object);
 
-		if (object instanceof Number)
-			return new RandomBooleanData(Double.parseDouble(object.toString()));
+        if (object instanceof Number)
+            return new RandomBooleanData(Double.parseDouble(object.toString()));
 
-		throw new IllegalArgumentException("Must specify a number (chance) or true/false");
-	}
+        throw new IllegalArgumentException("Must specify a number (chance) or true/false");
+    }
 
-	@Override
-	public void whenApplied(@NotNull ItemStackBuilder item, @NotNull BooleanData data) {
+    @Override
+    public void whenApplied(@NotNull ItemStackBuilder item, @NotNull BooleanData data) {
 
-		// Only if enabled yo
-		if (data.isEnabled()) {
+        // Only if enabled yo
+        if (data.isEnabled()) {
 
-			// Add those
-			item.addItemTag(getAppliedNBT(data));
+            // Add those
+            item.addItemTag(getAppliedNBT(data));
 
-			// Show in lore
-			item.getLore().insert(getPath(), MMOItems.plugin.getLanguage().getStatFormat(getPath()));
-		}
-	}
+            // Show in lore
+            item.getLore().insert(getPath(), MMOItems.plugin.getLanguage().getStatFormat(getPath()));
+        }
+    }
 
-	@NotNull
-	@Override
-	public ArrayList<ItemTag> getAppliedNBT(@NotNull BooleanData data) {
+    @NotNull
+    @Override
+    public ArrayList<ItemTag> getAppliedNBT(@NotNull BooleanData data) {
 
-		// Create Fresh
-		ArrayList<ItemTag> ret = new ArrayList<>();
+        // Create Fresh
+        ArrayList<ItemTag> ret = new ArrayList<>();
 
-		if (data.isEnabled()) {
+        if (data.isEnabled()) {
 
-			// Add sole tag
-			ret.add(new ItemTag(getNBTPath(), true));
-		}
+            // Add sole tag
+            ret.add(new ItemTag(getNBTPath(), true));
+        }
 
-		// Return thay
-		return ret;
-	}
+        // Return thay
+        return ret;
+    }
 
-	@Override
-	public void whenClicked(@NotNull EditionInventory inv, @NotNull InventoryClickEvent event) {
-		if (event.getAction() == InventoryAction.PICKUP_ALL) {
-			inv.getEditedSection().set(getPath(), inv.getEditedSection().getBoolean(getPath()) ? null : true);
-			inv.registerTemplateEdition();
-		}
+    @Override
+    public void whenClicked(@NotNull EditionInventory inv, @NotNull InventoryClickEvent event) {
+        if (event.getAction() == InventoryAction.PICKUP_ALL) {
+            inv.getEditedSection().set(getPath(), inv.getEditedSection().getBoolean(getPath()) ? null : true);
+            inv.registerTemplateEdition();
+        } else if (event.getAction() == InventoryAction.PICKUP_HALF)
+            new StatEdition(inv, this).enable("Write in the chat the probability you want (a percentage)");
+    }
 
-		else if (event.getAction() == InventoryAction.PICKUP_HALF)
-			new StatEdition(inv, this).enable("Write in the chat the probability you want (a percentage)");
-	}
+    @Override
+    public void whenInput(@NotNull EditionInventory inv, @NotNull String message, Object... info) {
 
-	@Override
-	public void whenInput(@NotNull EditionInventory inv, @NotNull String message, Object... info) {
+        double probability = MMOUtils.parseDouble(message);
+        Validate.isTrue(probability >= 0 && probability <= 100, "Chance must be between 0 and 100");
 
-		double probability = MMOUtils.parseDouble(message);
-		Validate.isTrue(probability >= 0 && probability <= 100, "Chance must be between 0 and 100");
+        inv.getEditedSection().set(getPath(), probability / 100);
+        inv.registerTemplateEdition();
+        inv.getPlayer().sendMessage(MMOItems.plugin.getPrefix() + getName() + " successfully changed to " + ChatColor.GREEN
+                + MythicLib.plugin.getMMOConfig().decimal.format(probability) + "% Chance" + ChatColor.GRAY + ".");
+    }
 
-		inv.getEditedSection().set(getPath(), probability / 100);
-		inv.registerTemplateEdition();
-		inv.getPlayer().sendMessage(MMOItems.plugin.getPrefix() + getName() + " successfully changed to " + ChatColor.GREEN
-				+ MythicLib.plugin.getMMOConfig().decimal.format(probability) + "% Chance" + ChatColor.GRAY + ".");
-	}
+    @Override
+    public void whenLoaded(@NotNull ReadMMOItem mmoitem) {
 
-	@Override
-	public void whenLoaded(@NotNull ReadMMOItem mmoitem) {
+        // Find the useful tags
+        ArrayList<ItemTag> relevantTags = new ArrayList<>();
 
-		// Find the useful tags
-		ArrayList<ItemTag> relevantTags = new ArrayList<>();
+        // That one is useful
+        if (mmoitem.getNBT().hasTag(getNBTPath()))
+            relevantTags.add(ItemTag.getTagAtPath(getNBTPath(), mmoitem.getNBT(), SupportedNBTTagValues.BOOLEAN));
 
-		// That one is useful
-		if (mmoitem.getNBT().hasTag(getNBTPath()))
-			relevantTags.add(ItemTag.getTagAtPath(getNBTPath(), mmoitem.getNBT(), SupportedNBTTagValues.BOOLEAN));
+        BooleanData data = (BooleanData) getLoadedNBT(relevantTags);
 
-		BooleanData data = (BooleanData) getLoadedNBT(relevantTags);
+        // Success?
+        if (data != null) {
 
-		// Success?
-		if (data != null) {
+            // Set the data if it was successful
+            mmoitem.setData(this, data);
+        }
+    }
 
-			// Set the data if it was successful
-			mmoitem.setData(this, data);
-		}
-	}
+    @Nullable
+    @Override
+    public BooleanData getLoadedNBT(@NotNull ArrayList<ItemTag> storedTags) {
 
-	@Nullable
-	@Override
-	public BooleanData getLoadedNBT(@NotNull ArrayList<ItemTag> storedTags) {
+        // Find relevant tag
+        ItemTag encoded = ItemTag.getTagAtPath(getNBTPath(), storedTags);
 
-		// Find relevant tag
-		ItemTag encoded = ItemTag.getTagAtPath(getNBTPath(), storedTags);
+        // Found it?
+        if (encoded != null) {
 
-		// Found it?
-		if (encoded != null) {
+            // Well read it!
+            return new BooleanData((Boolean) encoded.getValue());
+        }
 
-			// Well read it!
-			return new BooleanData((Boolean) encoded.getValue());
-		}
+        return null;
+    }
 
-		return null;
-	}
+    @Override
+    public void whenDisplayed(List<String> lore, Optional<RandomBooleanData> statData) {
 
-	@Override
-	public void whenDisplayed(List<String> lore, Optional<RandomBooleanData> statData) {
+        if (statData.isPresent()) {
+            final double chance = statData.get().getChance();
+            lore.add(ChatColor.GRAY + "Current Value: " + (chance >= 1 ? ChatColor.GREEN + "True"
+                    : chance <= 0 ? ChatColor.RED + "False" : ChatColor.GREEN + MythicLib.plugin.getMMOConfig().decimal.format(chance * 100) + "% Chance"));
 
-		if (statData.isPresent()) {
-			final double chance = statData.get().getChance();
-			lore.add(ChatColor.GRAY + "Current Value: " + (chance >= 1 ? ChatColor.GREEN + "True"
-					: chance <= 0 ? ChatColor.RED + "False" : ChatColor.GREEN + MythicLib.plugin.getMMOConfig().decimal.format(chance * 100) + "% Chance"));
+        } else
+            lore.add(ChatColor.GRAY + "Current Value: " + ChatColor.RED + "False");
 
-		} else
-			lore.add(ChatColor.GRAY + "Current Value: " + ChatColor.RED + "False");
+        lore.add("");
+        lore.add(ChatColor.YELLOW + AltChar.listDash + " Left click to switch this value.");
+        lore.add(ChatColor.YELLOW + AltChar.listDash + " Right click to choose a probability to have this option.");
+    }
 
-		lore.add("");
-		lore.add(ChatColor.YELLOW + AltChar.listDash + " Left click to switch this value.");
-		lore.add(ChatColor.YELLOW + AltChar.listDash + " Right click to choose a probability to have this option.");
-	}
-
-	@NotNull
-	@Override
-	public BooleanData getClearStatData() {
-		return new BooleanData(false);
-	}
+    @NotNull
+    @Override
+    public BooleanData getClearStatData() {
+        return new BooleanData(false);
+    }
 }

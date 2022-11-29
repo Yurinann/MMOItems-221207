@@ -9,47 +9,47 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 
 public class MMOItemsBlockType implements BlockType {
-	private final int id;
+    private final int id;
 
-	public MMOItemsBlockType(MMOLineConfig config) {
-		config.validate("id");
+    public MMOItemsBlockType(MMOLineConfig config) {
+        config.validate("id");
 
-		id = config.getInt("id");
-	}
+        id = config.getInt("id");
+    }
 
-	public MMOItemsBlockType(CustomBlock block) {
-		id = block.getId();
-	}
+    public MMOItemsBlockType(CustomBlock block) {
+        id = block.getId();
+    }
 
-	public int getBlockId() {
-		return id;
-	}
+    public static boolean matches(Block block) {
+        return MMOItems.plugin.getCustomBlocks().isMushroomBlock(block.getType());
+    }
 
-	public static boolean matches(Block block) {
-		return MMOItems.plugin.getCustomBlocks().isMushroomBlock(block.getType());
-	}
+    public int getBlockId() {
+        return id;
+    }
 
-	@Override
-	public void place(RegeneratingBlock regeneratingBlock) {
-		Location loc = regeneratingBlock.getLocation();
-		CustomBlock block = MMOItems.plugin.getCustomBlocks().getBlock(id);
+    @Override
+    public void place(RegeneratingBlock regeneratingBlock) {
+        Location loc = regeneratingBlock.getLocation();
+        CustomBlock block = MMOItems.plugin.getCustomBlocks().getBlock(id);
 
-		loc.getBlock().setType(block.getState().getType());
-		loc.getBlock().setBlockData(block.getState().getBlockData());
-	}
+        loc.getBlock().setType(block.getState().getType());
+        loc.getBlock().setBlockData(block.getState().getBlockData());
+    }
 
-	@Override
-	public void regenerate(RegeneratingBlock regeneratingBlock) {
-		place(regeneratingBlock);
-	}
+    @Override
+    public void regenerate(RegeneratingBlock regeneratingBlock) {
+        place(regeneratingBlock);
+    }
 
-	@Override
-	public String generateKey() {
-		return "mmoitems-custom-block-" + id;
-	}
-	
-	@Override
-	public boolean breakRestrictions(Block block) {
-		return true;
-	}
+    @Override
+    public String generateKey() {
+        return "mmoitems-custom-block-" + id;
+    }
+
+    @Override
+    public boolean breakRestrictions(Block block) {
+        return true;
+    }
 }

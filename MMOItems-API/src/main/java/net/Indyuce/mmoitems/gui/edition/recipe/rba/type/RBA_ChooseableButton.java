@@ -23,14 +23,17 @@ public abstract class RBA_ChooseableButton extends RecipeButtonAction {
      *
      * @param inv The edition inventory this is a button of
      */
-    public RBA_ChooseableButton(@NotNull RecipeMakerGUI inv) { super(inv); }
+    public RBA_ChooseableButton(@NotNull RecipeMakerGUI inv) {
+        super(inv);
+    }
 
     /**
      * Cycles to the next value
      *
      * @return True
      */
-    @Override public boolean runPrimary() {
+    @Override
+    public boolean runPrimary() {
 
         // Get current
         String current = getCurrentChooseableValue();
@@ -39,11 +42,15 @@ public abstract class RBA_ChooseableButton extends RecipeButtonAction {
         int currentIndex = getChooseableList().indexOf(current);
 
         // Invalid value? Cancel and default
-        if (currentIndex == -1) { return runSecondary(); }
+        if (currentIndex == -1) {
+            return runSecondary();
+        }
 
         // Increase and Cap
         currentIndex++;
-        if (currentIndex >= getChooseableList().size()) { currentIndex = 0; }
+        if (currentIndex >= getChooseableList().size()) {
+            currentIndex = 0;
+        }
 
         // Get
         String next = getChooseableList().get(currentIndex);
@@ -56,12 +63,14 @@ public abstract class RBA_ChooseableButton extends RecipeButtonAction {
         getInv().registerTemplateEdition();
         return true;
     }
+
     /**
      * Resets the list to the default value.
      *
      * @return True
      */
-    @Override public boolean runSecondary() {
+    @Override
+    public boolean runSecondary() {
         // Clear the saved value
         getInv().getNameSection().set(getChooseableConfigPath(), null);
         clickSFX();
@@ -73,14 +82,16 @@ public abstract class RBA_ChooseableButton extends RecipeButtonAction {
 
     /**
      * @return The button ItemStack with its name and description. To
-     *         it, all the chooseable values will be appended (as well
-     *         as the definition of the current value chosen) when asked
-     *         for in {@link #getButton()}
+     * it, all the chooseable values will be appended (as well
+     * as the definition of the current value chosen) when asked
+     * for in {@link #getButton()}
      */
-    @NotNull public abstract ItemStack getChooseableButton();
+    @NotNull
+    public abstract ItemStack getChooseableButton();
+
     /**
      * @return Same as {@link #getChooseableButton()} but with
-     *         the chooseable information appended to it.
+     * the chooseable information appended to it.
      */
     @NotNull
     @Override
@@ -101,9 +112,12 @@ public abstract class RBA_ChooseableButton extends RecipeButtonAction {
 
             // Is it the one?
             String pick = ChatColor.GOLD.toString();
-            if (str.equals(current)) { pick = ChatColor.RED.toString() + ChatColor.BOLD;}
+            if (str.equals(current)) {
+                pick = ChatColor.RED.toString() + ChatColor.BOLD;
+            }
 
-            addedDefinitions.add(pick + "  " + AltChar.smallListDash + " \u00a77" + str); }
+            addedDefinitions.add(pick + "  " + AltChar.smallListDash + " \u00a77" + str);
+        }
 
         // Clone button and add the lore
         return RecipeMakerGUI.addLore(getChooseableButton().clone(), addedDefinitions);
@@ -112,50 +126,60 @@ public abstract class RBA_ChooseableButton extends RecipeButtonAction {
     /**
      * @return The path to save this value in the config
      */
-    @NotNull public abstract String getChooseableConfigPath();
+    @NotNull
+    public abstract String getChooseableConfigPath();
 
     /**
      * @return The list of different options the player may choose from.
      */
-    @NotNull public abstract ArrayList<String> getChooseableList();
+    @NotNull
+    public abstract ArrayList<String> getChooseableList();
+
     /**
      * @return The value currently written onto the files.
      */
-    @NotNull public String getCurrentChooseableValue() {
+    @NotNull
+    public String getCurrentChooseableValue() {
 
         // Get or default
         String ret = getInv().getNameSection().getString(getChooseableConfigPath());
         return ret != null ? ret : getDefaultValue();
     }
+
     /**
      * @return Of al the entries in {@link #getChooseableList()}, which
-     *         is the default / initial one?
+     * is the default / initial one?
      */
-    @NotNull public abstract String getDefaultValue();
+    @NotNull
+    public abstract String getDefaultValue();
+
     /**
-     * @return Definition of what this choosing type does, for display in lore.
-     *
      * @param ofChooseable Entry contained in the {@link #getChooseableList()} list.
+     * @return Definition of what this choosing type does, for display in lore.
      */
-    @NotNull public abstract String getChooseableDefinition(@NotNull String ofChooseable);
+    @NotNull
+    public abstract String getChooseableDefinition(@NotNull String ofChooseable);
 
 
     /**
      * This method doesnt run
      *
      * @param message Input from the user
-     * @param info Additional objects, specific to each case, provided.
-     *
+     * @param info    Additional objects, specific to each case, provided.
      * @throws IllegalArgumentException Never
      */
-    @Override public void secondaryProcessInput(@NotNull String message, Object... info) throws IllegalArgumentException { }
+    @Override
+    public void secondaryProcessInput(@NotNull String message, Object... info) throws IllegalArgumentException {
+    }
+
     /**
      * This method doesnt run
      *
      * @param message Input from the user
-     * @param info Additional objects, specific to each case, provided.
-     *
+     * @param info    Additional objects, specific to each case, provided.
      * @throws IllegalArgumentException Never
      */
-    @Override public void primaryProcessInput(@NotNull String message, Object... info) throws IllegalArgumentException { }
+    @Override
+    public void primaryProcessInput(@NotNull String message, Object... info) throws IllegalArgumentException {
+    }
 }

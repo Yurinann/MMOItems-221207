@@ -10,16 +10,15 @@ import org.bukkit.event.Listener;
  * as a RPGCore plugin however there are features which should enable even if
  * McMMO is not detected as a RPG Core plugin if other RPG plugins are used at
  * the same time.
- * 
- * @author cympe
  *
+ * @author cympe
  */
 public class McMMONonRPGHook implements Listener {
 
-	@EventHandler(ignoreCancelled = true)
-	public void handleNoMcMMORepair(McMMOPlayerRepairCheckEvent event) {
-		NBTItem nbt = NBTItem.get(event.getRepairedObject());
-		if (nbt.hasType() && nbt.getBoolean("MMOITEMS_DISABLE_MCMMO_REPAIR"))
-			event.setCancelled(true);
-	}
+    @EventHandler(ignoreCancelled = true)
+    public void handleNoMcMMORepair(McMMOPlayerRepairCheckEvent event) {
+        NBTItem nbt = NBTItem.get(event.getRepairedObject());
+        if (nbt.hasType() && nbt.getBoolean("MMOITEMS_DISABLE_MCMMO_REPAIR"))
+            event.setCancelled(true);
+    }
 }

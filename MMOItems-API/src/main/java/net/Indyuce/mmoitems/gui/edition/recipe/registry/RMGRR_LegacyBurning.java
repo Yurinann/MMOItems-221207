@@ -28,24 +28,36 @@ import org.jetbrains.annotations.NotNull;
  * Recipes for furnaces. Ive never worked with these,
  * and I don't claim to support them. They are just kinda
  * compatible with the new crafting GUI and THAT'S IT.
- *
+ * <p>
  * Still using Aria's code.
  *
  * @author Gunging
  */
 public abstract class RMGRR_LegacyBurning implements RecipeRegistry {
 
-    @NotNull public abstract CraftingType getLegacyBurningType();
-
-    @NotNull public static String capitalizeFirst(@NotNull String str) { return str.substring(0, 1).toUpperCase() + str.substring(1); }
-
-    @NotNull @Override public String getRecipeConfigPath() { return getLegacyBurningType().name().toLowerCase(); }
-
-    @NotNull @Override public String getRecipeTypeName() { return "§8{§4§oL§8} " + capitalizeFirst(getRecipeConfigPath()); }
-
     @SuppressWarnings("NotNullFieldNotInitialized")
     @NotNull
     private final ItemStack displayListItem = RecipeMakerGUI.rename(getLegacyBurningType().getItem(), FFPMMOItems.get().getExampleFormat() + capitalizeFirst(getRecipeConfigPath()) + " Recipe");
+
+    @NotNull
+    public static String capitalizeFirst(@NotNull String str) {
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+
+    @NotNull
+    public abstract CraftingType getLegacyBurningType();
+
+    @NotNull
+    @Override
+    public String getRecipeConfigPath() {
+        return getLegacyBurningType().name().toLowerCase();
+    }
+
+    @NotNull
+    @Override
+    public String getRecipeTypeName() {
+        return "§8{§4§oL§8} " + capitalizeFirst(getRecipeConfigPath());
+    }
 
     @NotNull
     @Override
@@ -53,14 +65,19 @@ public abstract class RMGRR_LegacyBurning implements RecipeRegistry {
         return displayListItem;
     }
 
-    @Override public void openForPlayer(@NotNull EditionInventory inv, @NotNull String recipeName, Object... otherParams) { new RMG_BurningLegacy(inv.getPlayer(), inv.getEdited(), recipeName, this).open(inv.getPreviousPage()); }
+    @Override
+    public void openForPlayer(@NotNull EditionInventory inv, @NotNull String recipeName, Object... otherParams) {
+        new RMG_BurningLegacy(inv.getPlayer(), inv.getEdited(), recipeName, this).open(inv.getPreviousPage());
+    }
 
     /**
      * Actually doesnt really send this thing to MythicLib
      * its just guaranteed to throw an exception and uses
      * the legacy MMOItems way of registering.
      */
-    @NotNull @Override public MythicRecipeBlueprint sendToMythicLib(@NotNull MMOItemTemplate template, @NotNull ConfigurationSection recipeTypeSection, @NotNull String recipeName, @NotNull Ref<NamespacedKey> namespace, @NotNull FriendlyFeedbackProvider ffp) throws IllegalArgumentException {
+    @NotNull
+    @Override
+    public MythicRecipeBlueprint sendToMythicLib(@NotNull MMOItemTemplate template, @NotNull ConfigurationSection recipeTypeSection, @NotNull String recipeName, @NotNull Ref<NamespacedKey> namespace, @NotNull FriendlyFeedbackProvider ffp) throws IllegalArgumentException {
 
         // Never happening
         Validate.isTrue(namespace.getValue() != null);
@@ -70,7 +87,9 @@ public abstract class RMGRR_LegacyBurning implements RecipeRegistry {
 
         // Get ingredient
         String itemIngredient = recipeSection.getString("item");
-        if (itemIngredient == null) { throw new IllegalArgumentException("Missing input ingredient"); }
+        if (itemIngredient == null) {
+            throw new IllegalArgumentException("Missing input ingredient");
+        }
         WorkbenchIngredient ingredient = RecipeManager.getWorkbenchIngredient(itemIngredient);
 
         // Read amount from configuration

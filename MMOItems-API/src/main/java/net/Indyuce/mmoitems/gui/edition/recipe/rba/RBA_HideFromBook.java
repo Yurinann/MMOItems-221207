@@ -22,17 +22,29 @@ import org.jetbrains.annotations.NotNull;
  */
 public class RBA_HideFromBook extends RBA_BooleanButton {
 
+    public static final String BOOK_HIDDEN = "hidden";
+    @NotNull
+    final ItemStack booleanButton = RecipeMakerGUI.addLore(ItemFactory.of(Material.KNOWLEDGE_BOOK).name("\u00a7cHide from Crafting Book").lore(SilentNumbers.chop(
+            "Even if the crafting book is enabled, this recipe wont be automatically unlocked by players."
+            , 65, "\u00a77")).build(), SilentNumbers.toArrayList(""));
+
     /**
      * A button of an Edition Inventory. Nice!
      *
      * @param inv The edition inventory this is a button of
      */
-    public RBA_HideFromBook(@NotNull RecipeMakerGUI inv) { super(inv); }
+    public RBA_HideFromBook(@NotNull RecipeMakerGUI inv) {
+        super(inv);
+    }
 
-    public static final String BOOK_HIDDEN = "hidden";
-    @NotNull @Override public String getBooleanConfigPath() { return BOOK_HIDDEN; }
+    @NotNull
+    @Override
+    public String getBooleanConfigPath() {
+        return BOOK_HIDDEN;
+    }
 
-    @Override public boolean runSecondary() {
+    @Override
+    public boolean runSecondary() {
 
         // Set value
         ItemStack book = new ItemStack(Material.KNOWLEDGE_BOOK);
@@ -57,15 +69,18 @@ public class RBA_HideFromBook extends RBA_BooleanButton {
         getInv().getPlayer().playSound(getInv().getPlayer().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 2);
 
         // Done
-        return true; }
+        return true;
+    }
 
-    @NotNull final ItemStack booleanButton = RecipeMakerGUI.addLore(ItemFactory.of(Material.KNOWLEDGE_BOOK).name("\u00a7cHide from Crafting Book").lore(SilentNumbers.chop(
-            "Even if the crafting book is enabled, this recipe wont be automatically unlocked by players."
-            , 65, "\u00a77")).build(), SilentNumbers.toArrayList(""));
+    @NotNull
+    @Override
+    public ItemStack getBooleanButton() {
+        return booleanButton;
+    }
 
-    @NotNull @Override public ItemStack getBooleanButton() { return booleanButton; }
-
-    @NotNull @Override public ItemStack getButton() {
+    @NotNull
+    @Override
+    public ItemStack getButton() {
 
         // Dictate the correct one
         String input = isEnabled() ? "\u00a7cNO\u00a78, it's hidden." : "\u00a7aYES\u00a78, it's shown.";
@@ -73,8 +88,8 @@ public class RBA_HideFromBook extends RBA_BooleanButton {
         // Copy and send
         return RecipeMakerGUI.addLore(getBooleanButton().clone(),
                 SilentNumbers.toArrayList(
-                "", "\u00a77Currently in Book? " + input, "",
+                        "", "\u00a77Currently in Book? " + input, "",
                         ChatColor.YELLOW + AltChar.listDash + " Right click to generate recipe unlock book.",
-                        ChatColor.YELLOW + AltChar.listDash + " Left click to toggle this option." ));
+                        ChatColor.YELLOW + AltChar.listDash + " Left click to toggle this option."));
     }
 }

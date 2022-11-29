@@ -8,5 +8,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public class RMGRR_LBFurnace extends RMGRR_LegacyBurning {
 
-    @NotNull @Override public CraftingType getLegacyBurningType() { return CraftingType.FURNACE; }
+    @NotNull
+    @Override
+    public CraftingType getLegacyBurningType() {
+        return CraftingType.FURNACE;
+    }
 }

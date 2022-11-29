@@ -13,82 +13,82 @@ import org.jetbrains.annotations.NotNull;
 
 
 public class StaffSpiritStat extends StringStat {
-	public StaffSpiritStat() {
-		super("STAFF_SPIRIT", VersionMaterial.BONE_MEAL.toMaterial(), "Staff Spirit",
-				new String[] { "Spirit changes the texture", "of the magic attack.", "&9Tip: /mi list spirit" }, new String[] { "staff", "wand" });
-	}
+    public StaffSpiritStat() {
+        super("STAFF_SPIRIT", VersionMaterial.BONE_MEAL.toMaterial(), "Staff Spirit",
+                new String[]{"Spirit changes the texture", "of the magic attack.", "&9Tip: /mi list spirit"}, new String[]{"staff", "wand"});
+    }
 
-	@Override
-	public void whenInput(@NotNull EditionInventory inv, @NotNull String message, Object... info) {
-		try {
-			StaffSpirit spirit = StaffSpirit.valueOf(message.toUpperCase().replace(" ", "_").replace("-", "_"));
-			inv.getEditedSection().set("staff-spirit", spirit.name());
-			inv.registerTemplateEdition();
-			inv.getPlayer().sendMessage(MMOItems.plugin.getPrefix() + "Staff Spirit successfully changed to " + spirit.getName() + ".");
-		} catch (IllegalArgumentException exception) {
-			throw new IllegalArgumentException(exception.getMessage() + " (See all Staff Spirits here: /mi list spirit).");
-		}
-	}
+    @Override
+    public void whenInput(@NotNull EditionInventory inv, @NotNull String message, Object... info) {
+        try {
+            StaffSpirit spirit = StaffSpirit.valueOf(message.toUpperCase().replace(" ", "_").replace("-", "_"));
+            inv.getEditedSection().set("staff-spirit", spirit.name());
+            inv.registerTemplateEdition();
+            inv.getPlayer().sendMessage(MMOItems.plugin.getPrefix() + "Staff Spirit successfully changed to " + spirit.getName() + ".");
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException(exception.getMessage() + " (See all Staff Spirits here: /mi list spirit).");
+        }
+    }
 
-	@Override
-	public void whenApplied(@NotNull ItemStackBuilder item, @NotNull StringData data) {
-		StaffSpirit staffSpirit = StaffSpirit.valueOf(data.toString().toUpperCase().replace(" ", "_").replace("-", "_"));
-		item.addItemTag(new ItemTag("MMOITEMS_STAFF_SPIRIT", staffSpirit.name()));
-		item.getLore().insert("staff-spirit", staffSpirit.getName());
-	}
+    @Override
+    public void whenApplied(@NotNull ItemStackBuilder item, @NotNull StringData data) {
+        StaffSpirit staffSpirit = StaffSpirit.valueOf(data.toString().toUpperCase().replace(" ", "_").replace("-", "_"));
+        item.addItemTag(new ItemTag("MMOITEMS_STAFF_SPIRIT", staffSpirit.name()));
+        item.getLore().insert("staff-spirit", staffSpirit.getName());
+    }
 
-	public enum StaffSpirit {
-		NETHER_SPIRIT("Nether Spirit", "Shoots fire beams.", new NetherSpirit()),
-		VOID_SPIRIT("Void Spirit", "Shoots shulker missiles.", new VoidSpirit()),
-		MANA_SPIRIT("Mana Spirit", "Summons mana bolts.", new ManaSpirit()),
-		LIGHTNING_SPIRIT("Lightning Spirit", "Summons lightning bolts.", new LightningSpirit()),
-		XRAY_SPIRIT("X-Ray Spirit", "Fires piercing & powerful X-rays.", new XRaySpirit()),
-		THUNDER_SPIRIT("Thunder Spirit", "Fires AoE damaging thunder strikes.", new ThunderSpirit()),
-		SUNFIRE_SPIRIT("Sunfire Spirit", "Fires AoE damaging fire comets.", new SunfireSpirit()),
-		// CURSED_SPIRIT(ChatColor.DARK_PURPLE, "Cursed Spirit", "Fires a
-		// targeted cursed projectile."), new CursedSpirit()),
-		;
+    public enum StaffSpirit {
+        NETHER_SPIRIT("Nether Spirit", "Shoots fire beams.", new NetherSpirit()),
+        VOID_SPIRIT("Void Spirit", "Shoots shulker missiles.", new VoidSpirit()),
+        MANA_SPIRIT("Mana Spirit", "Summons mana bolts.", new ManaSpirit()),
+        LIGHTNING_SPIRIT("Lightning Spirit", "Summons lightning bolts.", new LightningSpirit()),
+        XRAY_SPIRIT("X-Ray Spirit", "Fires piercing & powerful X-rays.", new XRaySpirit()),
+        THUNDER_SPIRIT("Thunder Spirit", "Fires AoE damaging thunder strikes.", new ThunderSpirit()),
+        SUNFIRE_SPIRIT("Sunfire Spirit", "Fires AoE damaging fire comets.", new SunfireSpirit()),
+        // CURSED_SPIRIT(ChatColor.DARK_PURPLE, "Cursed Spirit", "Fires a
+        // targeted cursed projectile."), new CursedSpirit()),
+        ;
 
-		private final String lore;
-		private final StaffAttackHandler handler;
+        private final String lore;
+        private final StaffAttackHandler handler;
 
-		private final String name;
+        private final String name;
 
-		StaffSpirit(String name, String lore, StaffAttackHandler handler) {
-			this.name = name;
-			this.lore = lore;
-			this.handler = handler;
-		}
+        StaffSpirit(String name, String lore, StaffAttackHandler handler) {
+            this.name = name;
+            this.lore = lore;
+            this.handler = handler;
+        }
 
-		public static StaffSpirit get(NBTItem item) {
-			try {
-				return StaffSpirit.valueOf(item.getString("MMOITEMS_STAFF_SPIRIT"));
-			} catch (Exception e) {
-				return null;
-			}
-		}
+        public static StaffSpirit get(NBTItem item) {
+            try {
+                return StaffSpirit.valueOf(item.getString("MMOITEMS_STAFF_SPIRIT"));
+            } catch (Exception e) {
+                return null;
+            }
+        }
 
-		public String getDefaultName() {
-			return name;
-		}
+        public String getDefaultName() {
+            return name;
+        }
 
-		/*
-		 * TODO make update
-		 */
-		public String getName() {
-			return MMOItems.plugin.getLanguage().getStaffSpiritName(this);
-		}
+        /*
+         * TODO make update
+         */
+        public String getName() {
+            return MMOItems.plugin.getLanguage().getStaffSpiritName(this);
+        }
 
-		public boolean hasLore() {
-			return lore != null;
-		}
+        public boolean hasLore() {
+            return lore != null;
+        }
 
-		public String getLore() {
-			return lore;
-		}
+        public String getLore() {
+            return lore;
+        }
 
-		public StaffAttackHandler getAttack() {
-			return handler;
-		}
-	}
+        public StaffAttackHandler getAttack() {
+            return handler;
+        }
+    }
 }
